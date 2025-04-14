@@ -1,9 +1,12 @@
 import javafx.application.Application;
+import javafx.fxml.FXML;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
 
@@ -21,17 +24,20 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws IOException {
         primaryStage.setTitle("UAS Mission Application");
 
-        Parent parent = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("scenes/main.fxml")));
+        VBox root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("scenes/main.fxml")));
+        SplitPane splitpane = (SplitPane) root.getChildren().get(1);
 
-        Parent newMission = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("scenes/new_mission.fxml")));
+        AnchorPane newMission = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("scenes/new_mission.fxml")));
 
-        Scene root = new Scene(parent);
+        AnchorPane leftAnchorPane = (AnchorPane) splitpane.getItems().getFirst();
+        leftAnchorPane.getChildren().add(newMission);
 
-        AnchorPane leftAnchorPane = (AnchorPane) root.lookup("left_anchor");
-        leftAnchorPane.getChildren().addAll(newMission.getChildrenUnmodifiable());
+        Scene scene = new Scene(root);
 
-        primaryStage.setScene(root);
+        primaryStage.setScene(scene);
         primaryStage.show();
+
+        //leftAnchorPane.getChildren().addAll(newMission.getChildrenUnmodifiable());
     }
 }
 
