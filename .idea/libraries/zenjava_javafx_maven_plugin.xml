@@ -1,0 +1,10 @@
+<component name="libraryTable">
+  <library name="zenjava.javafx.maven.plugin" type="repository">
+    <properties maven-id="com.zenjava:javafx-maven-plugin:8.8.3" />
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/lib/javafx-maven-plugin-8.8.3.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>
