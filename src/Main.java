@@ -40,4 +40,3 @@ public class Main extends Application {
         //leftAnchorPane.getChildren().addAll(newMission.getChildrenUnmodifiable());
     }
 }
-
