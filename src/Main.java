@@ -1,17 +1,19 @@
+import controller.RootController;
+import enums.SplitPanePosition;
+import exception.UMASException;
 import javafx.application.Application;
 import javafx.fxml.FXML;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.fxml.FXMLLoader;
+import loader.SceneLoader;
 
+import java.awt.*;
 import java.io.IOException;
-import java.net.URL;
 import java.util.Objects;
 
 public class Main extends Application {
@@ -21,18 +23,21 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws IOException {
+    public void start(Stage primaryStage) throws IOException, UMASException {
         primaryStage.setTitle("UAS Mission Application");
 
-        VBox root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("scenes/main.fxml")));
-        SplitPane splitpane = (SplitPane) root.getChildren().get(1);
+        SceneLoader sceneLoader = new SceneLoader(this.getClass(), "scenes/");
 
-        AnchorPane newMission = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("scenes/new_mission.fxml")));
+        VBox root = (VBox) sceneLoader.loadSceneFromFXML("main.fxml");
+        RootController rootController = new RootController(root);
 
-        AnchorPane leftAnchorPane = (AnchorPane) splitpane.getItems().getFirst();
-        leftAnchorPane.getChildren().add(newMission);
+
+        Pane newMission = sceneLoader.loadSceneFromFXML("new_mission.fxml");
+        rootController.getSplitPaneController().switchSceneTo(SplitPanePosition.LEFT, newMission);
 
         Scene scene = new Scene(root);
+
+        scene.getStylesheets().add("resources/dark-mode.css");
 
         primaryStage.setScene(scene);
         primaryStage.show();
