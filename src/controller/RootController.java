@@ -3,6 +3,7 @@ package controller;
 import controller.elements.MenuController;
 import controller.elements.SplitPaneController;
 import controller.elements.StatusController;
+import exception.UMASException;
 import javafx.fxml.FXML;
 import javafx.scene.control.Control;
 import javafx.scene.control.MenuBar;
@@ -19,10 +20,10 @@ public class RootController {
     private final SplitPaneController splitPaneController;
     private final StatusController statusController;
 
-    public RootController(VBox vBox){
+    public RootController(VBox vBox) throws UMASException {
         this.vBox = vBox;
 
-        this.menuController = new MenuController((MenuBar) vBox.getChildren().getFirst());
+        this.menuController = new MenuController(this, (MenuBar) vBox.getChildren().getFirst());
         this.splitPaneController = new SplitPaneController((SplitPane) vBox.getChildren().get(1));
         this.statusController = new StatusController((HBox) vBox.getChildren().getLast());
 

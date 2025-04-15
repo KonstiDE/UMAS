@@ -2,19 +2,13 @@ import controller.RootController;
 import enums.SplitPanePosition;
 import exception.UMASException;
 import javafx.application.Application;
-import javafx.fxml.FXML;
 import javafx.scene.Scene;
-import javafx.scene.control.SplitPane;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.fxml.FXMLLoader;
 import loader.SceneLoader;
 
-import java.awt.*;
 import java.io.IOException;
-import java.util.Objects;
 
 public class Main extends Application {
 
@@ -26,14 +20,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws IOException, UMASException {
         primaryStage.setTitle("UAS Mission Application");
 
-        SceneLoader sceneLoader = new SceneLoader(this.getClass(), "scenes/");
+        SceneLoader loader = new SceneLoader(this.getClass(), "scenes/");
 
-        VBox root = (VBox) sceneLoader.loadSceneFromFXML("main.fxml");
-        RootController rootController = new RootController(root);
-
-
-        Pane newMission = sceneLoader.loadSceneFromFXML("new_mission.fxml");
-        rootController.getSplitPaneController().switchSceneTo(SplitPanePosition.LEFT, newMission);
+        VBox root = (VBox) loader.loadSceneFromFXML("main.fxml");
+        new RootController(root);
 
         Scene scene = new Scene(root);
 
