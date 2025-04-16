@@ -36,6 +36,8 @@ public class MenuController {
             );
         });
 
+        mainMenu.getLast().setOnAction(ignored -> System.exit(0));
+
 
     }
 

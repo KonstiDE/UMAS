@@ -53,7 +53,7 @@
       <menus>
         <Menu mnemonicParsing="false" text="Menu">
           <items>
-            <MenuItem mnemonicParsing="false" text="New Mission" />
+            <MenuItem id="newmission" mnemonicParsing="false" text="New Mission" />
             <MenuItem mnemonicParsing="false" text="Open Mission" />
             <Menu mnemonicParsing="false" text="Open Recent..." />
             <SeparatorMenuItem mnemonicParsing="false" />
