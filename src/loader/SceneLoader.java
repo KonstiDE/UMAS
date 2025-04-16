@@ -52,4 +52,7 @@ public class SceneLoader {
         }
     }
 
+    public static HashMap<String, Pane> getAvailableScenes() {
+        return availableScenes;
+    }
 }

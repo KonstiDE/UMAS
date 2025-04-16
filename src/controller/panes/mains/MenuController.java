@@ -1,6 +1,7 @@
-package controller.elements;
+package controller.panes.mains;
 
 import controller.RootController;
+import controller.panes.views.NewMissionController;
 import enums.ErrorType;
 import enums.SplitPanePosition;
 import exception.UMASException;
@@ -24,23 +25,6 @@ public class MenuController {
         init(rootController);
     }
 
-    private void init(RootController rootController) throws UMASException {
-        ObservableList<Menu> menus = this.menuBar.getMenus();
-
-        ObservableList<MenuItem> mainMenu = menus.getFirst().getItems();
-
-        getMenuItem(mainMenu, "newmission").setOnAction(actionEvent -> {
-            rootController.getSplitPaneController().switchSceneTo(
-                    SplitPanePosition.LEFT,
-                    SceneLoader.availableScenes.get("new_mission")
-            );
-        });
-
-        mainMenu.getLast().setOnAction(ignored -> System.exit(0));
-
-
-    }
-
     private MenuItem getMenuItem(ObservableList<MenuItem> menu, String id) throws UMASException {
         Optional<MenuItem> menuItem = menu
                 .stream()
@@ -52,6 +36,28 @@ public class MenuController {
         }else{
             throw new UMASException(ErrorType.INTERNAL, "Could not find menu-item with the id of \"" + id + "\"");
         }
+    }
+
+    private void init(RootController rootController) throws UMASException {
+        ObservableList<Menu> menus = this.menuBar.getMenus();
+
+        ObservableList<MenuItem> mainMenu = menus.getFirst().getItems();
+
+        getMenuItem(mainMenu, "newmission").setOnAction(_ -> {
+            try {
+                rootController.getDisplayController().switchSceneTo(
+                        SplitPanePosition.LEFT,
+                        SceneLoader.getAvailableScenes().get("new_mission"),
+                        new NewMissionController()
+                );
+            } catch (UMASException _) {
+
+            }
+        });
+
+        mainMenu.getLast().setOnAction(ignored -> System.exit(0));
+
+
     }
 
 }

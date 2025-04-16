@@ -1,14 +1,15 @@
-package controller.elements;
+package controller.panes.mains;
 
+import controller.panes.views.ViewController;
 import enums.SplitPanePosition;
+import exception.UMASException;
 import javafx.fxml.FXML;
-import javafx.scene.control.Control;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 
-public class SplitPaneController {
+public class DisplayController {
 
     @FXML
     private SplitPane rootControl;
@@ -17,19 +18,19 @@ public class SplitPaneController {
     private ScrollPane center;
     private AnchorPane right;
 
-    public SplitPaneController(SplitPane rootControl){
+    public DisplayController(SplitPane rootControl){
         this.rootControl = rootControl;
-        this.left = (AnchorPane) rootControl.getItems().getFirst();
-        this.center = (ScrollPane) rootControl.getItems().get(1);
-        this.right = (AnchorPane) rootControl.getItems().getLast();
     }
 
-    public boolean switchSceneTo(SplitPanePosition key, Pane pane){
+    public boolean switchSceneTo(SplitPanePosition key, Pane pane, ViewController trigger) throws UMASException {
+        trigger.init(pane, this);
+
         return switch (key){
             case LEFT -> setLeft(pane);
             case CENTER -> setCenter(pane);
             case RIGHT -> setRight(pane);
         };
+
     }
 
     private boolean setLeft(Pane pane){

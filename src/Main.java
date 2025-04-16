@@ -31,7 +31,5 @@ public class Main extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
-
-        //leftAnchorPane.getChildren().addAll(newMission.getChildrenUnmodifiable());
     }
 }
