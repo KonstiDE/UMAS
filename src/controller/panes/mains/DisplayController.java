@@ -20,32 +20,40 @@ public class DisplayController {
 
     public DisplayController(SplitPane rootControl){
         this.rootControl = rootControl;
+
+        this.left = (AnchorPane) rootControl.getItems().getFirst();
+        this.center = (ScrollPane) rootControl.getItems().get(1);
+        this.right = (AnchorPane) rootControl.getItems().getLast();
     }
 
-    public boolean switchSceneTo(SplitPanePosition key, Pane pane, ViewController trigger) throws UMASException {
-        trigger.init(pane, this);
+    public void switchSceneTo(SplitPanePosition key, Pane pane, ViewController trigger) {
+        try{
+            trigger.init(pane, this);
+        }catch (UMASException e){
+            e.printStackTrace();
+        }
 
-        return switch (key){
+        switch (key) {
             case LEFT -> setLeft(pane);
             case CENTER -> setCenter(pane);
             case RIGHT -> setRight(pane);
-        };
+        }
 
     }
 
-    private boolean setLeft(Pane pane){
+    private void setLeft(Pane pane){
         this.left.getChildren().clear();
-        return this.left.getChildren().add(pane);
+        this.left.getChildren().add(pane);
     }
 
-    private boolean setCenter(Pane pane){
+    private void setCenter(Pane pane){
         this.left.getChildren().clear();
-        return this.left.getChildren().add(pane);
+        this.left.getChildren().add(pane);
     }
 
-    private boolean setRight(Pane pane){
+    private void setRight(Pane pane){
         this.left.getChildren().clear();
-        return this.left.getChildren().add(pane);
+        this.left.getChildren().add(pane);
     }
 
 }

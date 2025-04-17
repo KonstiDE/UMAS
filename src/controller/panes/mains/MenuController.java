@@ -1,7 +1,7 @@
 package controller.panes.mains;
 
 import controller.RootController;
-import controller.panes.views.NewMissionController;
+import controller.panes.views.NewMissionViewController;
 import enums.ErrorType;
 import enums.SplitPanePosition;
 import exception.UMASException;
@@ -26,8 +26,7 @@ public class MenuController {
     }
 
     private MenuItem getMenuItem(ObservableList<MenuItem> menu, String id) throws UMASException {
-        Optional<MenuItem> menuItem = menu
-                .stream()
+        Optional<MenuItem> menuItem = menu.stream()
                 .filter(m -> m.getId().equals(id))
                 .findFirst();
 
@@ -44,15 +43,12 @@ public class MenuController {
         ObservableList<MenuItem> mainMenu = menus.getFirst().getItems();
 
         getMenuItem(mainMenu, "newmission").setOnAction(_ -> {
-            try {
+
                 rootController.getDisplayController().switchSceneTo(
                         SplitPanePosition.LEFT,
                         SceneLoader.getAvailableScenes().get("new_mission"),
-                        new NewMissionController()
+                        new NewMissionViewController()
                 );
-            } catch (UMASException _) {
-
-            }
         });
 
         mainMenu.getLast().setOnAction(ignored -> System.exit(0));
