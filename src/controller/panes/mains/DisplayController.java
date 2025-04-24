@@ -1,17 +1,16 @@
 package controller.panes.mains;
 
+import controller.panes.views.DialogController;
 import controller.panes.views.ViewController;
 import enums.SplitPanePosition;
 import exception.UMASException;
-import javafx.fxml.FXML;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.SplitPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import models.Flight;
 
 public class DisplayController {
-
-    @FXML
+    
     public SplitPane rootControl;
 
     private AnchorPane left;
@@ -39,6 +38,22 @@ public class DisplayController {
             e.printStackTrace();
         }
 
+    }
+
+    public Flight openDialog(DialogPane pane, DialogController trigger) {
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setDialogPane(pane);
+        dialog.setResultConverter(trigger::jsonCallback);
+
+        try{
+            trigger.init(pane, this);
+        }catch (UMASException e){
+            e.printStackTrace();
+        }
+
+        String json = dialog.showAndWait().toString();
+
+        return Flight.factoryFromJson(json);
     }
 
     private void setLeft(Pane pane){

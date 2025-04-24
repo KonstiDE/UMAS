@@ -11,7 +11,7 @@
 <?import javafx.scene.text.Font?>
 
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox spacing="12.0" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="12.0">
          <children>
@@ -26,15 +26,18 @@
                </children>
             </HBox>
             <Separator prefWidth="200.0" />
-            <TableView id="showflights.table">
+            <TableView id="showflights.table" prefWidth="776.0">
               <columns>
                 <TableColumn prefWidth="75.0" text="Date" />
                 <TableColumn prefWidth="75.0" text="Location" />
-                  <TableColumn prefWidth="75.0" text="Drone" />
+                  <TableColumn prefWidth="75.0" text="AOI" />
+                  <TableColumn prefWidth="75.0" text="UAV" />
                   <TableColumn prefWidth="75.0" text="Sensor" />
                   <TableColumn prefWidth="75.0" text="Pilot" />
+                  <TableColumn prefWidth="75.0" text="CoPilot" />
                   <TableColumn prefWidth="75.0" text="Images" />
-                  <TableColumn prefWidth="75.0" text="Processed" />
+                  <TableColumn prefWidth="75.0" text="Height" />
+                  <TableColumn prefWidth="76.0" text="Processed" />
               </columns>
             </TableView>
          </children>

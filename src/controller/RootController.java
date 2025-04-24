@@ -9,19 +9,15 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import loader.SceneLoader;
 
 public class RootController {
-
-    @FXML
-    private VBox vBox;
 
     private final MenuController menuController;
     private final DisplayController splitPaneController;
     private final StatusController statusController;
 
-    public RootController(VBox vBox) throws UMASException {
-        this.vBox = vBox;
-
+    public RootController(SceneLoader sceneLoader, VBox vBox) throws UMASException {
         this.menuController = new MenuController(this, (MenuBar) vBox.getChildren().getFirst());
         this.splitPaneController = new DisplayController((SplitPane) vBox.getChildren().get(1));
         this.statusController = new StatusController((HBox) vBox.getChildren().getLast());
