@@ -1,11 +1,23 @@
 package exception;
 
 import enums.ErrorType;
+import javafx.scene.control.Alert;
 
 public class UMASException extends Exception {
 
-    public UMASException(ErrorType errorType, String message){
+    public ErrorType errorType;
+    public String message;
+
+    public UMASException(ErrorType errorType, String message) {
         super("[[[" + errorType.toString() + "]]]\n" + message);
     }
+
+    public static void throwWindow(ErrorType errorType, String message) {
+        Alert errorAlert = new Alert(Alert.AlertType.ERROR);
+        errorAlert.setHeaderText(errorType.toString());
+        errorAlert.setContentText(message);
+        errorAlert.showAndWait();
+    }
+
 
 }

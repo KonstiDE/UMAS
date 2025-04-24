@@ -12,7 +12,7 @@ import javafx.scene.layout.Pane;
 public class DisplayController {
 
     @FXML
-    private SplitPane rootControl;
+    public SplitPane rootControl;
 
     private AnchorPane left;
     private ScrollPane center;
@@ -27,16 +27,16 @@ public class DisplayController {
     }
 
     public void switchSceneTo(SplitPanePosition key, Pane pane, ViewController trigger) {
-        try{
-            trigger.init(pane, this);
-        }catch (UMASException e){
-            e.printStackTrace();
-        }
-
         switch (key) {
             case LEFT -> setLeft(pane);
             case CENTER -> setCenter(pane);
             case RIGHT -> setRight(pane);
+        }
+
+        try{
+            trigger.init(pane, this);
+        }catch (UMASException e){
+            e.printStackTrace();
         }
 
     }
@@ -47,13 +47,13 @@ public class DisplayController {
     }
 
     private void setCenter(Pane pane){
-        this.left.getChildren().clear();
-        this.left.getChildren().add(pane);
+        ((AnchorPane) this.center.getContent()).getChildren().clear();
+        ((AnchorPane) this.center.getContent()).getChildren().add(pane);
     }
 
     private void setRight(Pane pane){
-        this.left.getChildren().clear();
-        this.left.getChildren().add(pane);
+        this.right.getChildren().clear();
+        this.right.getChildren().add(pane);
     }
 
 }
