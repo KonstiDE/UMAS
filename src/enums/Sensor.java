@@ -4,11 +4,11 @@ import java.util.List;
 
 public enum Sensor {
 
-    FIXEDM2("Fixed", List.of(ImageType.RGB)),
-    FIXEDM3M("Fixed", List.of(ImageType.RGB, ImageType.MULTISPECTRAL)),
-    FIXEDM3T("Fixed", List.of(ImageType.RGB, ImageType.IR)),
-    FIXEDM4T("Fixed", List.of(ImageType.RGB, ImageType.IR)),
-    FIXEDMPHANTOM("Fixed", List.of(ImageType.RGB, ImageType.IR)),
+    FIXEDM2("FixedM2", List.of(ImageType.RGB)),
+    FIXEDM3M("FixedM3M", List.of(ImageType.RGB, ImageType.MULTISPECTRAL)),
+    FIXEDM3T("FixedM3T", List.of(ImageType.RGB, ImageType.IR)),
+    FIXEDM4T("FixedM4T", List.of(ImageType.RGB, ImageType.IR)),
+    FIXEDMPHANTOM("FixedPhantom", List.of(ImageType.RGB, ImageType.IR)),
     H20T("H20T", List.of(ImageType.RGB, ImageType.IR)),
     MXDUAL("MXDUAL", List.of(ImageType.MULTISPECTRAL)),
     D2M("D2M", List.of(ImageType.RGB)),

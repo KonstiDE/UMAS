@@ -52,7 +52,7 @@ public class ProjectCache {
     }
 
 
-    public static void addToCache(File projectFile) throws IOException, ClassNotFoundException {
+    public static void addToCache(File projectFile) throws IOException {
         if(cache.size() >= 10){
             String oldestKey = "";
             Timestamp current = Timestamp.from(Instant.now());

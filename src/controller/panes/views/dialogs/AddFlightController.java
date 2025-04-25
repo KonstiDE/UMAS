@@ -7,6 +7,8 @@ import enums.UAV;
 import exception.UMASException;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import models.Flight;
@@ -15,11 +17,15 @@ import org.controlsfx.control.CheckComboBox;
 import utils.ItemSearcher;
 
 import java.io.File;
+import java.nio.file.Paths;
 import java.time.Instant;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Stream;
+
+import static java.io.File.separator;
 
 public class AddFlightController implements DialogController {
 
@@ -81,7 +87,7 @@ public class AddFlightController implements DialogController {
 
             List<ImageType> imageTypes = switch (Sensor.fromName(selectSensor.getValue())){
                 case FIXEDM2 -> List.of(ImageType.RGB, ImageType.PANORAMA);
-                case FIXEDM3M -> List.of(ImageType.RGB, ImageType.MULTISPECTRAL);
+                case FIXEDM3M -> List.of(ImageType.RGB, ImageType.MULTISPECTRAL, ImageType.PANORAMA);
                 case FIXEDM3T, FIXEDM4T, H20T -> List.of(ImageType.RGB, ImageType.IR);
                 case FIXEDMPHANTOM -> List.of(ImageType.RGB);
                 case MXDUAL -> List.of(ImageType.MULTISPECTRAL);
@@ -95,6 +101,7 @@ public class AddFlightController implements DialogController {
                 case Q2 -> List.of(ImageType.LIDAR);
             };
             selectImageTypes.getItems().addAll(imageTypes.stream().map(ImageType::name).toList());
+
 
             this.sensor = Sensor.fromName(selectSensor.getValue());
         });
@@ -111,8 +118,11 @@ public class AddFlightController implements DialogController {
             directoryChooser.setTitle("Choose an image directory");
             File path = directoryChooser.showDialog(display.rootControl.getScene().getWindow());
 
-            flightDirs.setRoot(new TreeItem<>(path.getParent()));
+            if(flightDirs.getRoot() == null){
+                flightDirs.setRoot(new TreeItem<>(path.getParent()));
+            }
             flightDirs.getRoot().getChildren().add(new TreeItem<>(path.getName()));
+            addTreeViewDeleteBehavior(flightDirs);
 
             this.baseDirectory = path;
         });
@@ -122,8 +132,25 @@ public class AddFlightController implements DialogController {
             directoryChooser.setTitle("Choose an calibration directory");
             File path = directoryChooser.showDialog(display.rootControl.getScene().getWindow());
 
-            calibDirs.setRoot(new TreeItem<>(path.getParent()));
+            if(calibDirs.getRoot() == null){
+                calibDirs.setRoot(new TreeItem<>(path.getParent()));
+            }else{
+                String[] oldRoot = calibDirs.getRoot().getValue().split(separator);
+                String[] newPath = path.getAbsolutePath().split(separator);
+
+                ArrayList<String> matchingElements = new ArrayList<>();
+                for(int i = 0; i < Math.max(oldRoot.length, newPath.length); i++){
+                    if(oldRoot[i].equals(newPath[i])){
+                        matchingElements.add(oldRoot[i]);
+                    }else{
+                        File newRoot = Paths.get(String.join(separator, matchingElements)).toFile();
+                        calibDirs.setRoot(new TreeItem<>(newRoot.getAbsolutePath()));
+                        calibDirs.getRoot().getChildren().add(new TreeItem<>(String.join(separator, matchingElements.subList(i + 1, newPath.length))));
+                    }
+                }
+            }
             calibDirs.getRoot().getChildren().add(new TreeItem<>(path.getName()));
+            addTreeViewDeleteBehavior(calibDirs);
 
             this.baseDirectory = path;
         });
@@ -166,5 +193,42 @@ public class AddFlightController implements DialogController {
         }
     }
 
+    private void addTreeViewDeleteBehavior(TreeView<String> treeView){
+        treeView.setCellFactory(tv -> {
+            TreeCell<String> cell = new TreeCell<>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(empty ? null : item);
+                }
+            };
+
+            cell.setOnContextMenuRequested(event -> {
+                if (!cell.isEmpty()) {
+                    ContextMenu contextMenu = new ContextMenu();
+                    MenuItem deleteItem = new MenuItem("Delete");
+
+                    deleteItem.setOnAction(e -> {
+                        TreeItem<String> selectedItem = cell.getTreeItem();
+                        TreeItem<String> parent = selectedItem.getParent();
+
+                        if (parent != null) {
+                            parent.getChildren().remove(selectedItem);
+                            if(parent.getChildren().isEmpty()){
+                                treeView.setRoot(null);
+                            }
+                        } else {
+                            treeView.setRoot(null);
+                        }
+                    });
+
+                    contextMenu.getItems().add(deleteItem);
+                    contextMenu.show(cell, event.getScreenX(), event.getScreenY());
+                }
+            });
+
+            return cell;
+        });
+    }
 
 }
