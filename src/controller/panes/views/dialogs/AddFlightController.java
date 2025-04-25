@@ -62,7 +62,7 @@ public class AddFlightController implements DialogController {
 
         selectUAV.getItems().addAll(Stream.of(UAV.values()).map(UAV::getName).toList());
 
-        selectUAV.setOnAction(_ -> {
+        selectUAV.setOnAction(__ -> {
             clearComboBoxes(selectSensor);
             clearCheckComboBoxes(selectImageTypes);
 
@@ -82,7 +82,7 @@ public class AddFlightController implements DialogController {
             this.uav = UAV.fromName(selectUAV.getValue());
         });
 
-        selectSensor.setOnAction(_ -> {
+        selectSensor.setOnAction(__ -> {
             clearCheckComboBoxes(selectImageTypes);
 
             List<ImageType> imageTypes = switch (Sensor.fromName(selectSensor.getValue())){
@@ -113,7 +113,7 @@ public class AddFlightController implements DialogController {
                     .toList();
         });
 
-        browse.setOnAction(_ -> {
+        browse.setOnAction(__ -> {
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Choose an image directory");
             File path = directoryChooser.showDialog(display.rootControl.getScene().getWindow());
@@ -127,7 +127,7 @@ public class AddFlightController implements DialogController {
             this.baseDirectory = path;
         });
 
-        browseCalib.setOnAction(_ -> {
+        browseCalib.setOnAction(__ -> {
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Choose an calibration directory");
             File path = directoryChooser.showDialog(display.rootControl.getScene().getWindow());
@@ -155,15 +155,15 @@ public class AddFlightController implements DialogController {
             this.baseDirectory = path;
         });
 
-        datePicker.setOnAction(_ -> {
+        datePicker.setOnAction(__ -> {
             this.date = Date.from(Instant.parse(datePicker.getEditor().getCharacters()));
         });
 
-        location.textProperty().addListener(_ -> {this.location = location.getText();});
-        aoi.textProperty().addListener(_ -> {this.aoi = aoi.getText();});
-        pilot.textProperty().addListener(_ -> {this.pilot = pilot.getText();});
-        coPilot.textProperty().addListener(_ -> {this.coPilot = coPilot.getText();});
-        notes.textProperty().addListener(_ -> {this.notes = notes.textProperty().get();});
+        location.textProperty().addListener(__ -> {this.location = location.getText();});
+        aoi.textProperty().addListener(__ -> {this.aoi = aoi.getText();});
+        pilot.textProperty().addListener(__ -> {this.pilot = pilot.getText();});
+        coPilot.textProperty().addListener(__ -> {this.coPilot = coPilot.getText();});
+        notes.textProperty().addListener(__ -> {this.notes = notes.textProperty().get();});
 
     }
 

@@ -84,8 +84,8 @@ public class ProjectCache {
             return Paths.get(System.getProperty("user.home"), ".cache");
         }
 
-        if (osName.contains("win")) {
-            return Paths.get(System.getenv("LOCALAPPDATA"), "Caches");
+        if (osName.contains("indows")) {
+            return Paths.get(System.getenv("LOCALAPPDATA"));
         }
 
         return Paths.get(System.getProperty("user.home"), "caches");
