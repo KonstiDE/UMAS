@@ -1,21 +1,22 @@
 package utils;
 
-import controller.panes.views.ViewController;
 import enums.ErrorType;
 import exception.UMASException;
-import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.MenuItem;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.*;
+import org.controlsfx.control.CheckComboBox;
 
 import java.util.ArrayList;
 import java.util.Optional;
-import java.util.function.Function;
 
 public class ItemSearcher {
 
     public static <T extends Node> T getItemById(String query, Parent root, Class<T> type) throws UMASException {
+        if(root instanceof DialogPane){
+            root = (Parent) ((DialogPane) root).getContent();
+        }
+
         ArrayList<Node> list = getAllNodes(root);
 
         Optional<Node> item = list.stream()
@@ -32,7 +33,58 @@ public class ItemSearcher {
         } else {
             throw new UMASException(ErrorType.INTERNAL, "Could not find item with the id of \"" + query + "\"");
         }
+    }
 
+    @SuppressWarnings("unchecked")
+    public static <T extends Control, G, R extends T> R getGenericControlById(String id, Parent root, Class<T> type, Class<G> genericType) throws UMASException {
+        Node node = getItemByIdWithGeneric(id, root, type, genericType);
+
+        return (R) node;
+    }
+
+    private static <T extends Control, G> T getItemByIdWithGeneric(String query, Parent root, Class<T> type, Class<G> genericType) throws UMASException {
+        if(root instanceof DialogPane) {
+            root = (Parent) ((DialogPane) root).getContent();
+        }
+
+        ArrayList<Node> list = getAllNodes(root);
+
+        Optional<Node> item = list.stream()
+                .filter(e -> e.getId() != null && e.getId().equals(query))
+                .findFirst();
+
+        if (item.isPresent()) {
+            Node found = item.get();
+            if (type.isInstance(found)) {
+                T casted = type.cast(found);
+
+                if (genericType != null) {
+                    boolean valid;
+                    if (casted instanceof ComboBox<?> combo) {
+                        valid = combo.getItems().isEmpty() || genericType.isInstance(combo.getItems().getFirst());
+                    } else if (casted instanceof TableView<?> table) {
+                        valid = table.getItems().isEmpty() || genericType.isInstance(table.getItems().getFirst());
+                    } else if (casted instanceof CheckComboBox<?> checkcombo) {
+                        valid = checkcombo.getItems().isEmpty() || genericType.isInstance(checkcombo.getItems().getFirst());
+                    }else {
+                        throw new UMASException(ErrorType.INTERNAL, "Generic check not supported for type: " + type.getSimpleName());
+                    }
+
+                    if (!valid) {
+                        throw new UMASException(ErrorType.INTERNAL,
+                                "Generic type of component doesn't match expected: " + genericType.getSimpleName());
+                    }
+                }
+
+                return casted;
+            } else {
+                throw new UMASException(ErrorType.INTERNAL,
+                        "Item found but is not of type: \"" + type.getSimpleName() + "\"");
+            }
+        } else {
+            throw new UMASException(ErrorType.INTERNAL,
+                    "Could not find item with the id of \"" + query + "\"");
+        }
     }
 
     public static ArrayList<Node> getAllNodes(Parent root) {

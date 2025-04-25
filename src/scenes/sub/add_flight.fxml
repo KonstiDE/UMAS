@@ -2,7 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ButtonType?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.DialogPane?>
@@ -17,12 +17,13 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.CheckComboBox?>
 
-<DialogPane xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<DialogPane prefHeight="484.0" prefWidth="406.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <content>
-      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+      <AnchorPane prefHeight="488.0" prefWidth="406.0">
          <children>
-            <VBox prefHeight="442.0" prefWidth="384.0" spacing="8.0">
+            <VBox alignment="BOTTOM_RIGHT" prefHeight="446.0" prefWidth="406.0" spacing="8.0">
                <children>
                   <HBox prefWidth="200.0">
                      <children>
@@ -51,6 +52,8 @@
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                         <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
@@ -59,28 +62,32 @@
                               <Font size="14.0" />
                            </font>
                         </Label>
-                        <DatePicker prefWidth="191.0" GridPane.columnIndex="1" />
+                        <DatePicker id="addflight.date" prefWidth="191.0" GridPane.columnIndex="1" />
                         <Label text="Location" GridPane.rowIndex="1" />
-                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <Label text="Pilot" GridPane.rowIndex="2" />
-                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                        <Label text="CoPilot" GridPane.rowIndex="3" />
-                        <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <Label text="UAV" GridPane.rowIndex="4" />
-                        <ComboBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="4" />
-                        <Label text="Sensor" GridPane.rowIndex="5" />
-                        <ComboBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="5" />
-                        <Label text="Images captured" GridPane.rowIndex="6" />
-                        <ChoiceBox prefWidth="150.0" GridPane.columnIndex="1" GridPane.rowIndex="6" />
-                        <Label text="Notes" GridPane.rowIndex="7" />
-                        <TextArea GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <TextField id="addflight.location" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label text="Pilot" GridPane.rowIndex="3" />
+                        <TextField id="addflight.pilot" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label text="CoPilot" GridPane.rowIndex="4" />
+                        <TextField id="addflight.copilot" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Label text="UAV" GridPane.rowIndex="5" />
+                        <ComboBox id="addflight.uav" prefWidth="150.0" promptText="Select UAV" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <Label text="Sensor" GridPane.rowIndex="6" />
+                        <ComboBox id="addflight.sensor" prefWidth="150.0" promptText="Select Sensor" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <Label text="Image types captured" GridPane.rowIndex="7" />
+                        <CheckComboBox id="addflight.imagetypes" prefHeight="26.0" prefWidth="152.0" showCheckedCount="true" title="Select" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <Label text="Image folder path" GridPane.rowIndex="8" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                           <children>
+                              <Button id="addflight.browse" mnemonicParsing="false" text="Browse" />
+                              <Label id="addflight.dir" />
+                           </children>
+                        </HBox>
+                        <Label text="Notes" GridPane.rowIndex="9" />
+                        <TextArea id="addflight.notes" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                        <Label text="AOI" GridPane.rowIndex="2" />
+                        <TextField id="addflight.aoi" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                      </children>
                   </GridPane>
-                  <HBox alignment="CENTER" prefHeight="72.0" prefWidth="360.0">
-                     <children>
-                        <Button mnemonicParsing="false" text="Add flight" />
-                     </children>
-                  </HBox>
                </children>
                <padding>
                   <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
@@ -89,4 +96,8 @@
          </children>
       </AnchorPane>
    </content>
+   <buttonTypes>
+      <ButtonType fx:constant="CANCEL" />
+      <ButtonType fx:constant="FINISH" />
+   </buttonTypes>
 </DialogPane>

@@ -28,12 +28,21 @@ public enum Sensor {
         this.imageTypes = imageTypes;
     }
 
-    public String toString(){
+    public String getName(){
         return name;
     }
 
     public List<ImageType> getImageTypes() {
         return imageTypes;
+    }
+
+    public static Sensor fromName(String name){
+        for(Sensor sensor : Sensor.values()){
+            if(sensor.name.equals(name)){
+                return sensor;
+            }
+        }
+        throw new IllegalArgumentException("Invalid Sensor name: " + name);
     }
 
 }

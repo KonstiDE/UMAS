@@ -1,21 +1,22 @@
 package controller.panes.mains;
 
-import controller.panes.views.DialogController;
-import controller.panes.views.ViewController;
+import controller.panes.views.dialogs.DialogController;
+import controller.panes.views.panes.ViewController;
 import enums.SplitPanePosition;
 import exception.UMASException;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Window;
 import models.Flight;
 
 public class DisplayController {
     
     public SplitPane rootControl;
 
-    private AnchorPane left;
-    private ScrollPane center;
-    private AnchorPane right;
+    private final AnchorPane left;
+    private final ScrollPane center;
+    private final AnchorPane right;
 
     public DisplayController(SplitPane rootControl){
         this.rootControl = rootControl;
@@ -43,7 +44,11 @@ public class DisplayController {
     public Flight openDialog(DialogPane pane, DialogController trigger) {
         Dialog<String> dialog = new Dialog<>();
         dialog.setDialogPane(pane);
+        dialog.setTitle("Add a new flight");
         dialog.setResultConverter(trigger::jsonCallback);
+
+        Window window = dialog.getDialogPane().getScene().getWindow();
+        window.setOnCloseRequest(_ -> window.hide());
 
         try{
             trigger.init(pane, this);

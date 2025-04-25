@@ -1,10 +1,10 @@
-package controller.panes.views;
+package controller.panes.views.panes;
 
 import controller.panes.mains.DisplayController;
+import controller.panes.views.dialogs.AddFlightController;
 import exception.UMASException;
 import javafx.scene.control.Button;
 import javafx.scene.control.DialogPane;
-import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.Pane;
 import loader.SceneLoader;

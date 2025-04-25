@@ -1,13 +1,8 @@
-package controller.panes.views;
+package controller.panes.views.panes;
 
 import controller.panes.mains.DisplayController;
-import enums.ErrorType;
 import exception.UMASException;
-import javafx.collections.ObservableList;
 import javafx.scene.layout.Pane;
-
-import java.util.Optional;
-import java.util.function.Function;
 
 public interface ViewController {
 

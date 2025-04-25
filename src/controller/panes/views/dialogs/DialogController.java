@@ -1,10 +1,9 @@
-package controller.panes.views;
+package controller.panes.views.dialogs;
 
 import controller.panes.mains.DisplayController;
 import exception.UMASException;
 import javafx.scene.control.ButtonType;
 import javafx.scene.layout.Pane;
-import models.Flight;
 
 public interface DialogController {
 

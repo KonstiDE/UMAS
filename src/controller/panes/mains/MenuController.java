@@ -1,9 +1,9 @@
 package controller.panes.mains;
 
 import controller.RootController;
-import controller.panes.views.CreateProjectController;
-import controller.panes.views.ShowFlightsController;
-import controller.panes.views.ShowProjectController;
+import controller.panes.views.panes.CreateProjectController;
+import controller.panes.views.panes.ShowFlightsController;
+import controller.panes.views.panes.ShowProjectController;
 import enums.ErrorType;
 import enums.SplitPanePosition;
 import exception.UMASException;

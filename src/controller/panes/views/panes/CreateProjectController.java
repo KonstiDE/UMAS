@@ -1,4 +1,4 @@
-package controller.panes.views;
+package controller.panes.views.panes;
 
 import controller.panes.mains.DisplayController;
 import enums.ErrorType;
