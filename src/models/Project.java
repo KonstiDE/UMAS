@@ -61,8 +61,8 @@ public class Project implements Serializable {
         this.flights.addAll(Arrays.stream(flights).toList());
     }
 
-    public String getAbsoluteFilePath(){
-        return Paths.get(directory.getAbsolutePath(), name, name.concat(".umasproject")).toAbsolutePath().toString();
+    public File getFile(){
+        return Paths.get(directory.getAbsolutePath(), name, name.concat(".umasproject")).toFile();
     }
 
     public void save() throws IOException {

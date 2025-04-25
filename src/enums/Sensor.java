@@ -12,7 +12,7 @@ public enum Sensor {
     H20T("H20T", List.of(ImageType.RGB, ImageType.IR)),
     MXDUAL("MXDUAL", List.of(ImageType.MULTISPECTRAL)),
     D2M("D2M", List.of(ImageType.RGB)),
-    ALTUM("ALTUM", List.of(ImageType.RGB, ImageType.MULTISPECTRAL)),
+    ALTUM("ALTUM", List.of(ImageType.RGB, ImageType.MULTISPECTRAL, ImageType.IR)),
     ALTUMPT("ALTUMPT", List.of(ImageType.MULTISPECTRAL)),
     L1("L1", List.of(ImageType.LIDAR)),
     NIKONRGB("NikonRGB", List.of(ImageType.RGB)),

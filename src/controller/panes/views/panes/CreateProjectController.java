@@ -58,7 +58,7 @@ public class CreateProjectController implements ViewController {
 
                 try {
                     project.save();
-                    project = Project.read(project.getAbsoluteFilePath());
+                    project = Project.read(project.getFile().getAbsolutePath());
 
                     display.switchSceneTo(
                             SplitPanePosition.LEFT,

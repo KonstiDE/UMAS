@@ -6,6 +6,7 @@ import javafx.scene.Scene;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import loader.ProjectCache;
 import loader.SceneLoader;
 
 import java.io.IOException;
@@ -20,7 +21,10 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws IOException, UMASException {
         primaryStage.setTitle("UAS Mission Application");
 
+        ProjectCache.initCache();
+
         SceneLoader loader = new SceneLoader(this.getClass(), "scenes/");
+
 
         VBox root = (VBox) loader.loadSceneFromFXML("main.fxml");
         new RootController(loader, root);

@@ -13,11 +13,14 @@ import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
+import loader.ProjectCache;
 import loader.SceneLoader;
 import models.Project;
 
 import java.io.File;
 import java.io.IOException;
+import java.sql.Timestamp;
+import java.util.Map;
 import java.util.Optional;
 
 public class MenuController {
@@ -85,6 +88,34 @@ public class MenuController {
                 }
             }
         });
+
+        Menu recentMenu = (Menu) menus.getFirst().getItems().get(2);
+        for(Map.Entry<String, Timestamp> entry : ProjectCache.cache.entrySet()){
+            File projectFile = new File(entry.getKey());
+
+            recentMenu.getItems().add(new MenuItem(projectFile.getName()));
+            recentMenu.getItems().getLast().setOnAction(_ -> {
+                try {
+                    Project project = Project.read(projectFile.getAbsolutePath());
+
+                    rootController.getDisplayController().switchSceneTo(
+                            SplitPanePosition.LEFT,
+                            SceneLoader.getAvailableScenes().get("show_mission"),
+                            new ShowProjectController(project)
+                    );
+
+                    rootController.getDisplayController().switchSceneTo(
+                            SplitPanePosition.CENTER,
+                            SceneLoader.getAvailableScenes().get("show_flights"),
+                            new ShowFlightsController()
+                    );
+
+                } catch (IOException | ClassNotFoundException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+        }
+
 
         mainMenu.getLast().setOnAction(ignored -> System.exit(0));
 

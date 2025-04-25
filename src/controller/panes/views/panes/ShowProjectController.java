@@ -5,15 +5,21 @@ import exception.UMASException;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Pane;
+import loader.ProjectCache;
 import models.Project;
 import utils.ItemSearcher;
+
+import java.io.File;
+import java.io.IOException;
 
 public class ShowProjectController implements ViewController {
 
     private Project project;
 
-    public ShowProjectController(Project project) {
+    public ShowProjectController(Project project) throws IOException, ClassNotFoundException {
         this.project = project;
+
+        ProjectCache.addToCache(project.getFile());
     }
 
     @Override

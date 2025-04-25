@@ -10,6 +10,7 @@
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -19,11 +20,11 @@
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.CheckComboBox?>
 
-<DialogPane prefHeight="484.0" prefWidth="406.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<DialogPane prefHeight="674.0" prefWidth="785.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <content>
-      <AnchorPane prefHeight="488.0" prefWidth="406.0">
+      <AnchorPane prefWidth="785.0">
          <children>
-            <VBox alignment="BOTTOM_RIGHT" prefHeight="446.0" prefWidth="406.0" spacing="8.0">
+            <VBox prefHeight="648.0" prefWidth="750.0" spacing="8.0">
                <children>
                   <HBox prefWidth="200.0">
                      <children>
@@ -39,22 +40,23 @@
                         <Insets />
                      </opaqueInsets>
                   </Separator>
-                  <GridPane prefHeight="382.0" prefWidth="360.0">
+                  <GridPane prefHeight="591.0" prefWidth="726.0">
                      <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="476.0" minWidth="10.0" prefWidth="172.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="559.0" minWidth="10.0" prefWidth="554.0" />
                      </columnConstraints>
                      <rowConstraints>
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints minHeight="10.0" prefHeight="60.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="0.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="0.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="0.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="100.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="4.0" prefHeight="100.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="55.0" minHeight="0.0" prefHeight="34.0" vgrow="SOMETIMES" />
                      </rowConstraints>
                      <children>
                         <Label alignment="CENTER" text="Flight Date" textAlignment="CENTER">
@@ -65,6 +67,8 @@
                         <DatePicker id="addflight.date" prefWidth="191.0" GridPane.columnIndex="1" />
                         <Label text="Location" GridPane.rowIndex="1" />
                         <TextField id="addflight.location" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label text="AOI" GridPane.rowIndex="2" />
+                        <TextField id="addflight.aoi" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <Label text="Pilot" GridPane.rowIndex="3" />
                         <TextField id="addflight.pilot" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <Label text="CoPilot" GridPane.rowIndex="4" />
@@ -75,17 +79,30 @@
                         <ComboBox id="addflight.sensor" prefWidth="150.0" promptText="Select Sensor" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                         <Label text="Image types captured" GridPane.rowIndex="7" />
                         <CheckComboBox id="addflight.imagetypes" prefHeight="26.0" prefWidth="152.0" showCheckedCount="true" title="Select" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                        <Label text="Image folder path" GridPane.rowIndex="8" />
-                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                        <Label text="Image folder paths" GridPane.rowIndex="8" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="554.0" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
                            <children>
                               <Button id="addflight.browse" mnemonicParsing="false" text="Browse" />
-                              <Label id="addflight.dir" />
+                              <TreeView id="addflight.flightdirs" prefHeight="92.0" prefWidth="468.0">
+                                 <HBox.margin>
+                                    <Insets top="4.0" />
+                                 </HBox.margin>
+                              </TreeView>
                            </children>
                         </HBox>
-                        <Label text="Notes" GridPane.rowIndex="9" />
-                        <TextArea id="addflight.notes" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-                        <Label text="AOI" GridPane.rowIndex="2" />
-                        <TextField id="addflight.aoi" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label text="Calibration folder paths" GridPane.rowIndex="9" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="9">
+                           <children>
+                              <Button id="addflight.browsecalib" mnemonicParsing="false" text="Browse" />
+                              <TreeView id="addflight.calibdirs" prefHeight="92.0" prefWidth="468.0">
+                                 <HBox.margin>
+                                    <Insets bottom="4.0" top="4.0" />
+                                 </HBox.margin>
+                              </TreeView>
+                           </children>
+                        </HBox>
+                        <Label text="Notes" GridPane.rowIndex="10" />
+                        <TextArea id="addflight.notes" prefHeight="134.0" prefWidth="554.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
                      </children>
                   </GridPane>
                </children>
