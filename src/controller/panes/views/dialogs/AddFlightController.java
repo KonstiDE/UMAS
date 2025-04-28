@@ -1,5 +1,6 @@
 package controller.panes.views.dialogs;
 
+import controller.listeners.CopyProgressListener;
 import controller.panes.mains.DisplayController;
 import enums.ImageType;
 import enums.Sensor;
@@ -25,7 +26,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-public class AddFlightController implements DialogController {
+public class AddFlightController implements DialogController, CopyProgressListener {
 
     private String date;
     private String location;
@@ -38,6 +39,8 @@ public class AddFlightController implements DialogController {
     private final List<String> flightsOrigins = new ArrayList<>();
     private final List<String> calibOrigins = new ArrayList<>();
     private String notes;
+
+    private ProgressBar progressBar;
 
     @Override
     public void init(Pane pane, DisplayController display) throws UMASException {
@@ -58,6 +61,8 @@ public class AddFlightController implements DialogController {
         TreeView<String> calibDirs = ItemSearcher.getGenericControlById("addflight.calibdirs", pane, TreeView.class, String.class);
 
         TextArea notes =  ItemSearcher.getItemById("addflight.notes", pane, TextArea.class);
+
+        this.progressBar = ItemSearcher.getItemById("addflight.progress", pane, ProgressBar.class);
 
         selectUAV.getItems().addAll(Stream.of(UAV.values()).map(UAV::getName).toList());
 
@@ -248,7 +253,7 @@ public class AddFlightController implements DialogController {
         Path baseDirectory = Paths.get(ProjectCache.currentlyOpenedProject.getFile().getParent());
 
         Flight flight = new Flight(this.date, this.location, this.aoi, this.pilot, this.coPilot,
-                this.uav, this.sensor, this.imageTypes, baseDirectory.toFile().getAbsolutePath(), this.flightsOrigins, this.calibOrigins, this.notes);
+                this.uav, this.sensor, this.imageTypes, baseDirectory.toFile().getAbsolutePath(), this.flightsOrigins, this.calibOrigins, this.notes, this);
 
         if (buttonType == ButtonType.FINISH) {
             return Flight.toJson(flight);
@@ -310,4 +315,9 @@ public class AddFlightController implements DialogController {
     }
 
 
+    @Override
+    public void receivedProgress(double progress) {
+        this.progressBar.setProgress(progress);
+        System.out.println(progress);
+    }
 }

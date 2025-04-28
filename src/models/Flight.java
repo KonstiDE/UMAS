@@ -1,17 +1,15 @@
 package models;
 
 import com.google.gson.Gson;
+import controller.listeners.CopyProgressListener;
 import enums.ErrorType;
 import enums.ImageType;
 import enums.Sensor;
 import enums.UAV;
 import exception.UMASException;
 import loader.ProjectCache;
-import utils.ImageUtils;
 
 import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -22,23 +20,23 @@ public class Flight implements Serializable {
     @Serial
     private static final long serialVersionUID = 6529685098267757691L;
 
-    private String date;
-    private String location;
-    private String aoi;
-    private String pilot;
-    private String coPilot;
-    private UAV uav;
-    private Sensor sensor;
-    private List<ImageType> imageTypes;
-    private String baseDirectory;
-    private String flightDirectory;
-    private List<String> originFlightDirs;
-    private List<String> originCalibDirs;
-    private String notes;
+    private final String date;
+    private final String location;
+    private final String aoi;
+    private final String pilot;
+    private final String coPilot;
+    private final UAV uav;
+    private final Sensor sensor;
+    private final List<ImageType> imageTypes;
+    private final String baseDirectory;
+    private final String flightDirectory;
+    private final List<String> originFlightDirs;
+    private final List<String> originCalibDirs;
+    private final String notes;
 
     private HashMap<ImageType, Integer> numberOfImages;
 
-    public Flight(String date, String location, String aoi, String pilot, String coPilot, UAV uav, Sensor sensor, List<ImageType> imageTypes, String baseDirectory, List<String> originFlightDirs, List<String> originCalibDirs, String notes) {
+    public Flight(String date, String location, String aoi, String pilot, String coPilot, UAV uav, Sensor sensor, List<ImageType> imageTypes, String baseDirectory, List<String> originFlightDirs, List<String> originCalibDirs, String notes, CopyProgressListener copyProgressListener) {
         this.date = date;
         this.location = location;
         this.aoi = aoi;
@@ -57,8 +55,8 @@ public class Flight implements Serializable {
         boolean created = createFolders();
         if (created) {
             try {
-                copyFiles();
-            } catch(Exception e) {
+                copyFiles(copyProgressListener);
+            } catch (Exception e) {
                 UMASException.throwWindow(ErrorType.USER, "Could not copy files.");
             }
 
@@ -68,51 +66,57 @@ public class Flight implements Serializable {
                 UMASException.throwWindow(ErrorType.USER, "Could not automatically save the flight. Please save it manually now!");
             }*/
 
-        }else{
+        } else {
             UMASException.throwWindow(ErrorType.USER, "Could not create the folder structure 0_RGB (and so on...). " +
                     "Please create it manually!");
         }
 
     }
 
-    public String getFlightDirectory(){
+    public String getFlightDirectory() {
         DateTimeFormatter dtf_old = DateTimeFormatter.ofPattern("M/d/yyyy");
         DateTimeFormatter dtf_new = DateTimeFormatter.ofPattern("ddMMyyyy");
 
-        return Paths.get(baseDirectory, "0_Flights", dtf_new.format(dtf_old.parse(date)) + "_" + this.location +  "_" + this.aoi + "_" + this.uav + this.sensor).toFile().getAbsolutePath();
+        return Paths.get(baseDirectory, "0_Flights", dtf_new.format(dtf_old.parse(date)) + "_" + this.location + "_" + this.aoi + "_" + this.uav + this.sensor).toFile().getAbsolutePath();
     }
 
-    private boolean createFolders(){
+    private boolean createFolders() {
         File folder = new File(flightDirectory);
         boolean success = folder.exists() || folder.mkdirs();
 
-        if(success){
+        if (success) {
             success = createFolderStructure("0_Images") &&
-                        createFolderStructure("1_Agisoft") &&
-                        createFolderStructure("2_Reports") &&
-                        createFolderStructure("3_FlightFiles") &&
-                        createFolderStructure("4_RawOutput");
+                    createFolderStructure("1_Agisoft") &&
+                    createFolderStructure("2_Reports") &&
+                    createFolderStructure("3_FlightFiles") &&
+                    createFolderStructure("4_RawOutput");
 
-                if(success){
-                    for (ImageType imageType : imageTypes) {
-                        if(imageType == ImageType.RGB) createImageTypeFolders("0_RGB");
-                        if(imageType == ImageType.MULTISPECTRAL) {
-                            createImageTypeFolders("1_MS");
-                            createImageTypeFolders("2_CALIB");
-                        }
+            if (success) {
+                for (ImageType imageType : imageTypes) {
+                    if (imageType == ImageType.RGB) createImageTypeFolders("0_RGB");
+                    if (imageType == ImageType.MULTISPECTRAL) {
+                        createImageTypeFolders("1_MS");
+                        createImageTypeFolders("2_CALIB");
                     }
                 }
+            }
 
             return true;
-        }else{
+        } else {
             UMASException.throwWindow(ErrorType.USER, "Could not create the flight folder \"" + flightDirectory + "\". Please create it manually!");
             return false;
         }
     }
 
-    private void copyFiles() throws IOException {
-        switch (uav){
-            case MAVICM3M -> UAV.copyM3M(this.imageTypes, this.flightDirectory, this.originFlightDirs, this.originCalibDirs);
+    private void copyFiles(CopyProgressListener copyProgressListener) throws IOException {
+        switch (uav) {
+            case MAVICM3M -> new Thread(() -> {
+                try {
+                    UAV.copyM3M(this.imageTypes, this.flightDirectory, this.originFlightDirs, copyProgressListener, this.originCalibDirs);
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
         }
     }
 
@@ -122,18 +126,18 @@ public class Flight implements Serializable {
     }
 
     private HashMap<ImageType, Integer> countImages(List<ImageType> imageTypes) {
-        switch (uav){
+        switch (uav) {
             case MAVICM3M -> new HashMap<>();
         }
 
         return null;
     }
 
-    public boolean createFolderStructure(String name){
+    public boolean createFolderStructure(String name) {
         File rgbFolder = Paths.get(new File(flightDirectory).getAbsolutePath(), name).toFile();
-        if(!rgbFolder.exists()){
+        if (!rgbFolder.exists()) {
             boolean success = rgbFolder.mkdir();
-            if(!success){
+            if (!success) {
                 UMASException.throwWindow(
                         ErrorType.USER,
                         "Could not create folder \"" + name + "\"." +
@@ -144,19 +148,17 @@ public class Flight implements Serializable {
         return true;
     }
 
-    public boolean createImageTypeFolders(String name){
+    public void createImageTypeFolders(String name) {
         File rgbFolder = Paths.get(new File(flightDirectory).getAbsolutePath(), "0_Images", name).toFile();
-        if(!rgbFolder.exists()){
+        if (!rgbFolder.exists()) {
             boolean success = rgbFolder.mkdir();
-            if(!success){
+            if (!success) {
                 UMASException.throwWindow(
                         ErrorType.USER,
                         "Could not create folder \"" + name + "\"." +
                                 " Please create in manually or make sure permissions are set for UMAS.");
-                return false;
             }
         }
-        return true;
     }
 
     public static String toJson(Flight flight) {

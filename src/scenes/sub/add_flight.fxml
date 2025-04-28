@@ -7,6 +7,7 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
@@ -26,13 +27,14 @@
          <children>
             <VBox prefHeight="648.0" prefWidth="750.0" spacing="8.0">
                <children>
-                  <HBox prefWidth="200.0">
+                  <HBox prefWidth="200.0" spacing="12.0">
                      <children>
                         <Label text="Add Flight">
                            <font>
                               <Font size="16.0" />
                            </font>
                         </Label>
+                        <ProgressBar id="addflight.progress" prefWidth="200.0" progress="0.0" />
                      </children>
                   </HBox>
                   <Separator prefWidth="200.0">
