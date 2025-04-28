@@ -7,29 +7,27 @@ import enums.UAV;
 import exception.UMASException;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.*;
-import javafx.scene.input.MouseButton;
-import javafx.scene.input.MouseEvent;
+import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
+import loader.ProjectCache;
 import models.Flight;
-import models.ImageCollection;
 import org.controlsfx.control.CheckComboBox;
 import utils.ItemSearcher;
 
 import java.io.File;
-import java.nio.file.Paths;
-import java.time.Instant;
+import java.nio.file.*;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Stream;
 
-import static java.io.File.separator;
-
 public class AddFlightController implements DialogController {
 
-    private Date date;
+    private String date;
     private String location;
     private String aoi;
     private String pilot;
@@ -37,7 +35,8 @@ public class AddFlightController implements DialogController {
     private UAV uav;
     private Sensor sensor;
     private List<ImageType> imageTypes;
-    private File baseDirectory;
+    private final List<String> flightsOrigins = new ArrayList<>();
+    private final List<String> calibOrigins = new ArrayList<>();
     private String notes;
 
     @Override
@@ -118,13 +117,10 @@ public class AddFlightController implements DialogController {
             directoryChooser.setTitle("Choose an image directory");
             File path = directoryChooser.showDialog(display.rootControl.getScene().getWindow());
 
-            if(flightDirs.getRoot() == null){
-                flightDirs.setRoot(new TreeItem<>(path.getParent()));
-            }
-            flightDirs.getRoot().getChildren().add(new TreeItem<>(path.getName()));
-            addTreeViewDeleteBehavior(flightDirs);
+            addPath(flightDirs, path.getAbsolutePath());
+            this.flightsOrigins.add(path.getAbsolutePath());
 
-            this.baseDirectory = path;
+            addTreeViewDeleteBehavior(flightDirs, this.flightsOrigins);
         });
 
         browseCalib.setOnAction(__ -> {
@@ -132,39 +128,103 @@ public class AddFlightController implements DialogController {
             directoryChooser.setTitle("Choose an calibration directory");
             File path = directoryChooser.showDialog(display.rootControl.getScene().getWindow());
 
-            if(calibDirs.getRoot() == null){
-                calibDirs.setRoot(new TreeItem<>(path.getParent()));
-            }else{
-                String[] oldRoot = calibDirs.getRoot().getValue().split(separator);
-                String[] newPath = path.getAbsolutePath().split(separator);
+            addPath(calibDirs, path.getAbsolutePath());
+            this.calibOrigins.add(path.getAbsolutePath());
 
-                ArrayList<String> matchingElements = new ArrayList<>();
-                for(int i = 0; i < Math.max(oldRoot.length, newPath.length); i++){
-                    if(oldRoot[i].equals(newPath[i])){
-                        matchingElements.add(oldRoot[i]);
-                    }else{
-                        File newRoot = Paths.get(String.join(separator, matchingElements)).toFile();
-                        calibDirs.setRoot(new TreeItem<>(newRoot.getAbsolutePath()));
-                        calibDirs.getRoot().getChildren().add(new TreeItem<>(String.join(separator, matchingElements.subList(i + 1, newPath.length))));
-                    }
-                }
-            }
-            calibDirs.getRoot().getChildren().add(new TreeItem<>(path.getName()));
-            addTreeViewDeleteBehavior(calibDirs);
-
-            this.baseDirectory = path;
+            addTreeViewDeleteBehavior(calibDirs, this.calibOrigins);
         });
 
         datePicker.setOnAction(__ -> {
-            this.date = Date.from(Instant.parse(datePicker.getEditor().getCharacters()));
+            this.date = datePicker.getEditor().getCharacters().toString();
         });
 
-        location.textProperty().addListener(__ -> {this.location = location.getText();});
-        aoi.textProperty().addListener(__ -> {this.aoi = aoi.getText();});
-        pilot.textProperty().addListener(__ -> {this.pilot = pilot.getText();});
-        coPilot.textProperty().addListener(__ -> {this.coPilot = coPilot.getText();});
-        notes.textProperty().addListener(__ -> {this.notes = notes.textProperty().get();});
+        location.textProperty().addListener(__ -> this.location = location.getText());
+        aoi.textProperty().addListener(__ -> this.aoi = aoi.getText());
+        pilot.textProperty().addListener(__ -> this.pilot = pilot.getText());
+        coPilot.textProperty().addListener(__ -> this.coPilot = coPilot.getText());
+        notes.textProperty().addListener(__ -> this.notes = notes.textProperty().get());
 
+    }
+
+    private void addPath(TreeView<String> treeView, String pathStr) {
+        if (pathStr == null || pathStr.isEmpty()) return;
+
+        Path newPath = Paths.get(pathStr);
+
+        if (treeView.getRoot() == null) {
+            TreeItem<String> rootItem = new TreeItem<>(newPath.getRoot() != null ? newPath.getRoot().toString() : "/");
+            rootItem.setExpanded(true);
+            treeView.setRoot(rootItem);
+            insertPath(rootItem, newPath);
+        } else {
+            TreeItem<String> root = treeView.getRoot();
+
+            Path treeRootPath = Paths.get(root.getValue());
+
+            if (!newPath.startsWith(treeRootPath)) {
+                Path newCommonRoot = findCommonRoot(treeRootPath, newPath);
+                if (newCommonRoot != null) {
+                    TreeItem<String> newRoot = new TreeItem<>(newCommonRoot.toString());
+                    newRoot.setExpanded(true);
+
+                    root = rebaseTree(root, newCommonRoot.relativize(treeRootPath));
+                    newRoot.getChildren().add(root);
+
+                    treeView.setRoot(newRoot);
+                    root = newRoot;
+                }
+            }
+            insertPath(root, newPath);
+        }
+    }
+
+    private TreeItem<String> rebaseTree(TreeItem<String> oldRoot, Path relativePath) {
+        TreeItem<String> current = oldRoot;
+        for (int i = relativePath.getNameCount() - 1; i >= 0; i--) {
+            TreeItem<String> newItem = new TreeItem<>(relativePath.getName(i).toString());
+            newItem.getChildren().add(current);
+            current = newItem;
+        }
+        return current;
+    }
+
+    private Path findCommonRoot(Path p1, Path p2) {
+        int minCount = Math.min(p1.getNameCount(), p2.getNameCount());
+        int i = 0;
+        while (i < minCount && p1.getName(i).equals(p2.getName(i))) {
+            i++;
+        }
+        if (i == 0) return null;
+        return p1.subpath(0, i);
+    }
+
+    private void insertPath(TreeItem<String> root, Path fullPath) {
+        TreeItem<String> current = root;
+
+        Path relativePath = fullPath;
+        Path rootPath = Paths.get(root.getValue());
+        if (fullPath.startsWith(rootPath)) {
+            relativePath = rootPath.relativize(fullPath);
+        }
+
+        for (Path part : relativePath) {
+            TreeItem<String> child = findChild(current, part.toString());
+            if (child == null) {
+                child = new TreeItem<>(part.toString());
+                child.setExpanded(true);
+                current.getChildren().add(child);
+            }
+            current = child;
+        }
+    }
+
+    private TreeItem<String> findChild(TreeItem<String> parent, String value) {
+        for (TreeItem<String> child : parent.getChildren()) {
+            if (child.getValue().equals(value)) {
+                return child;
+            }
+        }
+        return null;
     }
 
     private void clearComboBoxes(ComboBox<?>... comboBoxes){
@@ -185,15 +245,19 @@ public class AddFlightController implements DialogController {
 
     @Override
     public String jsonCallback(ButtonType buttonType) {
+        Path baseDirectory = Paths.get(ProjectCache.currentlyOpenedProject.getFile().getParent());
+
+        Flight flight = new Flight(this.date, this.location, this.aoi, this.pilot, this.coPilot,
+                this.uav, this.sensor, this.imageTypes, baseDirectory.toFile().getAbsolutePath(), this.flightsOrigins, this.calibOrigins, this.notes);
+
         if (buttonType == ButtonType.FINISH) {
-            return Flight.toJson(new Flight(this.date, this.location, this.aoi, this.pilot, this.coPilot,
-                    this.uav, this.sensor, this.imageTypes, this.baseDirectory, this.notes));
+            return Flight.toJson(flight);
         }else{
             return null;
         }
     }
 
-    private void addTreeViewDeleteBehavior(TreeView<String> treeView){
+    private void addTreeViewDeleteBehavior(TreeView<String> treeView, List<String> origins) {
         treeView.setCellFactory(tv -> {
             TreeCell<String> cell = new TreeCell<>() {
                 @Override
@@ -212,9 +276,12 @@ public class AddFlightController implements DialogController {
                         TreeItem<String> selectedItem = cell.getTreeItem();
                         TreeItem<String> parent = selectedItem.getParent();
 
+                        String fullPath = buildFullPath(selectedItem);
+                        origins.removeIf(path -> path.equals(fullPath));
+
                         if (parent != null) {
                             parent.getChildren().remove(selectedItem);
-                            if(parent.getChildren().isEmpty()){
+                            if (parent.getChildren().isEmpty() && parent.getParent() == null) {
                                 treeView.setRoot(null);
                             }
                         } else {
@@ -230,5 +297,17 @@ public class AddFlightController implements DialogController {
             return cell;
         });
     }
+
+    private String buildFullPath(TreeItem<String> item) {
+        List<String> parts = new ArrayList<>();
+        TreeItem<String> current = item;
+        while (current != null) {
+            parts.add(current.getValue());
+            current = current.getParent();
+        }
+        Collections.reverse(parts);
+        return Paths.get("", parts.toArray(new String[0])).toFile().getAbsolutePath();
+    }
+
 
 }

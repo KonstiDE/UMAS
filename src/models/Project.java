@@ -2,6 +2,7 @@ package models;
 
 import enums.ErrorType;
 import exception.UMASException;
+import loader.ProjectCache;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -106,7 +107,9 @@ public class Project implements Serializable {
         FileInputStream fis = new FileInputStream(path);
         ObjectInputStream ois = new ObjectInputStream(fis);
 
-        return (Project) ois.readObject();
+        ProjectCache.currentlyOpenedProject = (Project) ois.readObject();
+
+        return ProjectCache.currentlyOpenedProject;
     }
 
 }

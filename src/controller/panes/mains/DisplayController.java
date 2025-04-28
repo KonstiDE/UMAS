@@ -10,6 +10,8 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Window;
 import models.Flight;
 
+import java.util.Optional;
+
 public class DisplayController {
     
     public SplitPane rootControl;
@@ -56,9 +58,9 @@ public class DisplayController {
             e.printStackTrace();
         }
 
-        String json = dialog.showAndWait().toString();
+        Optional<String> json = dialog.showAndWait();
 
-        return Flight.factoryFromJson(json);
+        return json.map(Flight::factoryFromJson).orElse(null);
     }
 
     private void setLeft(Pane pane){

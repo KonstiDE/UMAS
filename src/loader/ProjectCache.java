@@ -2,6 +2,7 @@ package loader;
 
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
+import models.Project;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -17,6 +18,8 @@ public class ProjectCache {
     public static File cachePath;
 
     public static HashMap<String, Timestamp> cache = new HashMap<>();
+
+    public static Project currentlyOpenedProject;
 
     public static void initCache() throws IOException {
         File cacheFolder = Paths.get(

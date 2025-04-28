@@ -1,6 +1,18 @@
 package enums;
 
+import utils.ImageUtils;
+
+import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.function.Predicate;
 
 public enum UAV {
 
@@ -37,6 +49,33 @@ public enum UAV {
             }
         }
         throw new IllegalArgumentException("Invalid UAV name: " + name);
+    }
+
+    public static void copyM3M(List<ImageType> imageTypes, String flightDirectory, List<String> originFlightDirs, List<String> originCalibDirs) throws IOException {
+        List<File> filesToCopy = new ArrayList<>();
+
+        if(imageTypes.contains(ImageType.RGB)) {
+            copy(originFlightDirs, flightDirectory, ImageUtils::isJPG, "0_Images", "0_RGB");
+        }
+        if(imageTypes.contains(ImageType.MULTISPECTRAL)) {
+            copy(originFlightDirs, flightDirectory, ImageUtils::isTIF, "0_Images", "1_MS");
+            copy(originCalibDirs, flightDirectory, _ -> true, "0_Images", "2_CALIB");
+        }
+    }
+
+    private static void copy(List<String> origins, String flightDirectory, Predicate<String> filter, String... baseDest) throws IOException {
+        ArrayList<File> filesToCopy = new ArrayList<>();
+        for(String absPathString : origins){
+            File[] files = Paths.get(absPathString).toFile().listFiles((_, name) -> filter.test(name));
+            if(files != null){
+                filesToCopy.addAll(Arrays.asList(files));
+            }
+        }
+        String innerPath = String.join(File.separator, baseDest);
+
+        for(File file : filesToCopy){
+            Files.copy(Path.of(file.getAbsolutePath()), Paths.get(flightDirectory, innerPath, file.getName()));
+        }
     }
 
 }

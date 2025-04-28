@@ -66,13 +66,13 @@
                         </Label>
                         <DatePicker id="addflight.date" prefWidth="191.0" GridPane.columnIndex="1" />
                         <Label text="Location" GridPane.rowIndex="1" />
-                        <TextField id="addflight.location" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField id="addflight.location" text="Zugspitze" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label text="AOI" GridPane.rowIndex="2" />
-                        <TextField id="addflight.aoi" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <TextField id="addflight.aoi" text="West" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <Label text="Pilot" GridPane.rowIndex="3" />
-                        <TextField id="addflight.pilot" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <TextField id="addflight.pilot" text="ER" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <Label text="CoPilot" GridPane.rowIndex="4" />
-                        <TextField id="addflight.copilot" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <TextField id="addflight.copilot" text="KM" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         <Label text="UAV" GridPane.rowIndex="5" />
                         <ComboBox id="addflight.uav" prefWidth="150.0" promptText="Select UAV" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                         <Label text="Sensor" GridPane.rowIndex="6" />
@@ -102,7 +102,7 @@
                            </children>
                         </HBox>
                         <Label text="Notes" GridPane.rowIndex="10" />
-                        <TextArea id="addflight.notes" prefHeight="134.0" prefWidth="554.0" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                        <TextArea id="addflight.notes" prefHeight="134.0" prefWidth="554.0" text="Windigo" GridPane.columnIndex="1" GridPane.rowIndex="10" />
                      </children>
                   </GridPane>
                </children>
