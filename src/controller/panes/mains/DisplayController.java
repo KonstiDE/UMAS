@@ -47,13 +47,12 @@ public class DisplayController {
         Dialog<String> dialog = new Dialog<>();
         dialog.setDialogPane(pane);
         dialog.setTitle("Add a new flight");
-        dialog.setResultConverter(trigger::jsonCallback);
 
         Window window = dialog.getDialogPane().getScene().getWindow();
         window.setOnCloseRequest(_ -> window.hide());
 
         try{
-            trigger.init(pane, this);
+            trigger.init(pane, this, dialog);
         }catch (UMASException e){
             e.printStackTrace();
         }

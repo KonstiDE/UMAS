@@ -14,6 +14,7 @@ import java.nio.file.Paths;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
+import java.util.concurrent.Callable;
 
 public class Flight implements Serializable {
 
@@ -36,7 +37,7 @@ public class Flight implements Serializable {
 
     private HashMap<ImageType, Integer> numberOfImages;
 
-    public Flight(String date, String location, String aoi, String pilot, String coPilot, UAV uav, Sensor sensor, List<ImageType> imageTypes, String baseDirectory, List<String> originFlightDirs, List<String> originCalibDirs, String notes, CopyProgressListener copyProgressListener) {
+    public Flight(String date, String location, String aoi, String pilot, String coPilot, UAV uav, Sensor sensor, List<ImageType> imageTypes, String baseDirectory, List<String> originFlightDirs, List<String> originCalibDirs, String notes) {
         this.date = date;
         this.location = location;
         this.aoi = aoi;
@@ -53,20 +54,7 @@ public class Flight implements Serializable {
         this.flightDirectory = getFlightDirectory();
 
         boolean created = createFolders();
-        if (created) {
-            try {
-                copyFiles(copyProgressListener);
-            } catch (Exception e) {
-                UMASException.throwWindow(ErrorType.USER, "Could not copy files.");
-            }
-
-            /*try {
-                saveToProject();
-            }catch (Exception e){
-                UMASException.throwWindow(ErrorType.USER, "Could not automatically save the flight. Please save it manually now!");
-            }*/
-
-        } else {
+        if (!created){
             UMASException.throwWindow(ErrorType.USER, "Could not create the folder structure 0_RGB (and so on...). " +
                     "Please create it manually!");
         }
@@ -105,18 +93,6 @@ public class Flight implements Serializable {
         } else {
             UMASException.throwWindow(ErrorType.USER, "Could not create the flight folder \"" + flightDirectory + "\". Please create it manually!");
             return false;
-        }
-    }
-
-    private void copyFiles(CopyProgressListener copyProgressListener) throws IOException {
-        switch (uav) {
-            case MAVICM3M -> new Thread(() -> {
-                try {
-                    UAV.copyM3M(this.imageTypes, this.flightDirectory, this.originFlightDirs, copyProgressListener, this.originCalibDirs);
-                } catch (IOException e) {
-                    throw new RuntimeException(e);
-                }
-            });
         }
     }
 

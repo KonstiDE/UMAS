@@ -28,7 +28,7 @@ public class ShowFlightsController implements ViewController {
                     new AddFlightController()
             );
 
-
+            //Add flight to Table here
 
         });
 

@@ -6,6 +6,8 @@ import enums.ImageType;
 import enums.Sensor;
 import enums.UAV;
 import exception.UMASException;
+import futures.FileCopier;
+import javafx.application.Platform;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.*;
 import javafx.scene.control.Button;
@@ -24,6 +26,8 @@ import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Optional;
+import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
 public class AddFlightController implements DialogController, CopyProgressListener {
@@ -41,9 +45,14 @@ public class AddFlightController implements DialogController, CopyProgressListen
     private String notes;
 
     private ProgressBar progressBar;
+    private Label progressLabel;
+
+    private String flightJson;
+
+    private CompletableFuture<Void> copyJob;
 
     @Override
-    public void init(Pane pane, DisplayController display) throws UMASException {
+    public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
         DatePicker datePicker = ItemSearcher.getItemById("addflight.date", pane, DatePicker.class);
         TextField location = ItemSearcher.getItemById("addflight.location", pane, TextField.class);
         TextField aoi = ItemSearcher.getItemById("addflight.aoi", pane, TextField.class);
@@ -63,6 +72,9 @@ public class AddFlightController implements DialogController, CopyProgressListen
         TextArea notes =  ItemSearcher.getItemById("addflight.notes", pane, TextArea.class);
 
         this.progressBar = ItemSearcher.getItemById("addflight.progress", pane, ProgressBar.class);
+        this.progressLabel = ItemSearcher.getItemById("addflight.progressLabel", pane, Label.class);
+
+        Button finish = ItemSearcher.getItemById("addflight.finish", pane, Button.class);
 
         selectUAV.getItems().addAll(Stream.of(UAV.values()).map(UAV::getName).toList());
 
@@ -110,16 +122,17 @@ public class AddFlightController implements DialogController, CopyProgressListen
             this.sensor = Sensor.fromName(selectSensor.getValue());
         });
 
-        selectImageTypes.getCheckModel().getCheckedIndices().addListener((ListChangeListener<Integer>) change -> {
+        selectImageTypes.getCheckModel().getCheckedIndices().addListener((ListChangeListener<Integer>) _ -> {
             this.imageTypes = selectImageTypes.getCheckModel().getCheckedItems()
                     .stream()
                     .map(ImageType::valueOf)
                     .toList();
         });
 
-        browse.setOnAction(__ -> {
+        browse.setOnAction(_ -> {
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Choose an image directory");
+            directoryChooser.setInitialDirectory(new File("/home/caipi/Desktop/"));
             File path = directoryChooser.showDialog(display.rootControl.getScene().getWindow());
 
             addPath(flightDirs, path.getAbsolutePath());
@@ -128,9 +141,10 @@ public class AddFlightController implements DialogController, CopyProgressListen
             addTreeViewDeleteBehavior(flightDirs, this.flightsOrigins);
         });
 
-        browseCalib.setOnAction(__ -> {
+        browseCalib.setOnAction(_ -> {
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Choose an calibration directory");
+            directoryChooser.setInitialDirectory(new File("/home/caipi/Desktop/"));
             File path = directoryChooser.showDialog(display.rootControl.getScene().getWindow());
 
             addPath(calibDirs, path.getAbsolutePath());
@@ -139,15 +153,56 @@ public class AddFlightController implements DialogController, CopyProgressListen
             addTreeViewDeleteBehavior(calibDirs, this.calibOrigins);
         });
 
-        datePicker.setOnAction(__ -> {
-            this.date = datePicker.getEditor().getCharacters().toString();
+        datePicker.setOnAction(_ -> this.date = datePicker.getEditor().getCharacters().toString());
+
+        location.textProperty().addListener(_ -> this.location = location.getText());
+        this.location = location.getText();
+        aoi.textProperty().addListener(_ -> this.aoi = aoi.getText());
+        this.aoi = aoi.getText();
+        pilot.textProperty().addListener(_ -> this.pilot = pilot.getText());
+        this.pilot = pilot.getText();
+        coPilot.textProperty().addListener(_ -> this.coPilot = coPilot.getText());
+        this.coPilot = coPilot.getText();
+        notes.textProperty().addListener(_ -> this.notes = notes.textProperty().get());
+        this.notes = notes.textProperty().get();
+
+        finish.setOnAction(_ -> {
+            Path baseDirectory = Paths.get(ProjectCache.currentlyOpenedProject.getFile().getParent());
+
+            Flight flight = new Flight(this.date, this.location, this.aoi, this.pilot, this.coPilot,
+                    this.uav, this.sensor, this.imageTypes, baseDirectory.toFile().getAbsolutePath(), this.flightsOrigins, this.calibOrigins, this.notes);
+
+            FileCopier fileCopier = new FileCopier(this, flight);
+            fileCopier.getCopyTask().thenRun(() -> {
+                Platform.runLater(() -> {
+                    this.flightJson = Flight.toJson(flight);
+                    dialog.setResult(this.flightJson);
+                    dialog.close();
+                });
+            });
+            this.copyJob = fileCopier.getCopyTask();
         });
 
-        location.textProperty().addListener(__ -> this.location = location.getText());
-        aoi.textProperty().addListener(__ -> this.aoi = aoi.getText());
-        pilot.textProperty().addListener(__ -> this.pilot = pilot.getText());
-        coPilot.textProperty().addListener(__ -> this.coPilot = coPilot.getText());
-        notes.textProperty().addListener(__ -> this.notes = notes.textProperty().get());
+        dialog.getDialogPane().getScene().getWindow().setOnCloseRequest(windowEvent -> {
+            if(this.copyJob != null && !this.copyJob.isDone()){
+                Alert alert = new Alert(Alert.AlertType.WARNING,
+                                "Files are still being copied. Do you want to cancel this operation?",
+                                ButtonType.YES,
+                                ButtonType.NO);
+                alert.setTitle("Date format warning");
+                Optional<ButtonType> result = alert.showAndWait();
+
+                if(result.isPresent() && result.get() == ButtonType.YES){
+                    this.copyJob.cancel(true);
+                    dialog.setResult(null);
+                    dialog.close();
+                }else{
+                    windowEvent.consume();
+                }
+            }else{
+                dialog.close();
+            }
+        });
 
     }
 
@@ -248,20 +303,6 @@ public class AddFlightController implements DialogController, CopyProgressListen
         return true;
     }
 
-    @Override
-    public String jsonCallback(ButtonType buttonType) {
-        Path baseDirectory = Paths.get(ProjectCache.currentlyOpenedProject.getFile().getParent());
-
-        Flight flight = new Flight(this.date, this.location, this.aoi, this.pilot, this.coPilot,
-                this.uav, this.sensor, this.imageTypes, baseDirectory.toFile().getAbsolutePath(), this.flightsOrigins, this.calibOrigins, this.notes, this);
-
-        if (buttonType == ButtonType.FINISH) {
-            return Flight.toJson(flight);
-        }else{
-            return null;
-        }
-    }
-
     private void addTreeViewDeleteBehavior(TreeView<String> treeView, List<String> origins) {
         treeView.setCellFactory(tv -> {
             TreeCell<String> cell = new TreeCell<>() {
@@ -316,8 +357,14 @@ public class AddFlightController implements DialogController, CopyProgressListen
 
 
     @Override
+    public String jsonCallback(ButtonType buttonType) {
+        return this.flightJson;
+    }
+
+
+    @Override
     public void receivedProgress(double progress) {
-        this.progressBar.setProgress(progress);
-        System.out.println(progress);
+        this.progressBar.progressProperty().setValue(progress);
+        Platform.runLater(() -> this.progressLabel.setText(String.format("%d%%", (int) (progress * 100))));
     }
 }
