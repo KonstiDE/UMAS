@@ -7,9 +7,10 @@ import models.Project;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.time.Instant;
-import java.util.HashMap;
+import java.util.*;
 
 public class ProjectCache {
 
@@ -44,12 +45,23 @@ public class ProjectCache {
             }else{
                 BufferedReader reader = new BufferedReader(new FileReader(cacheFile));
                 String json = reader.readLine();
+                reader.close();
 
                 if(json != null && !json.isEmpty()){
                     cache = gson.fromJson(json, new TypeToken<HashMap<String, Timestamp>>(){}.getType());
                 }
             }
             cachePath = cacheFile;
+
+            Iterator<Map.Entry<String, Timestamp>> it = cache.entrySet().iterator();
+            while (it.hasNext()) {
+                Map.Entry<String, Timestamp> item = it.next();
+                if(!new File(item.getKey()).exists()){
+                    it.remove();
+                }
+            }
+            saveCache();
+
         }
 
     }
@@ -72,6 +84,10 @@ public class ProjectCache {
 
         cache.put(projectFile.getAbsolutePath(), new Timestamp(System.currentTimeMillis()));
 
+        saveCache();
+    }
+
+    private static void saveCache() throws IOException {
         BufferedWriter writer = new BufferedWriter(new FileWriter(cachePath));
         writer.write(gson.toJson(cache));
         writer.flush();

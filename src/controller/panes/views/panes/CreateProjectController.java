@@ -52,8 +52,7 @@ public class CreateProjectController implements ViewController {
                         projectName.getText(),
                         projectPilot.getText(),
                         projectLocation.getText(),
-                        new File(currentDirectory),
-                        List.of()
+                        new File(currentDirectory)
                 );
 
                 try {

@@ -26,6 +26,7 @@ public class Flight implements Serializable {
     private final String aoi;
     private final String pilot;
     private final String coPilot;
+    private final String height;
     private final UAV uav;
     private final Sensor sensor;
     private final List<ImageType> imageTypes;
@@ -37,12 +38,13 @@ public class Flight implements Serializable {
 
     private HashMap<ImageType, Integer> numberOfImages;
 
-    public Flight(String date, String location, String aoi, String pilot, String coPilot, UAV uav, Sensor sensor, List<ImageType> imageTypes, String baseDirectory, List<String> originFlightDirs, List<String> originCalibDirs, String notes) {
+    public Flight(String date, String location, String aoi, String pilot, String coPilot, String height, UAV uav, Sensor sensor, List<ImageType> imageTypes, String baseDirectory, List<String> originFlightDirs, List<String> originCalibDirs, String notes) {
         this.date = date;
         this.location = location;
         this.aoi = aoi;
         this.pilot = pilot;
         this.coPilot = coPilot;
+        this.height = height;
         this.uav = uav;
         this.sensor = sensor;
         this.imageTypes = imageTypes;
@@ -147,4 +149,59 @@ public class Flight implements Serializable {
         return gson.fromJson(json, Flight.class);
     }
 
+    public String getDate() {
+        return date;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public String getAoi() {
+        return aoi;
+    }
+
+    public String getPilot() {
+        return pilot;
+    }
+
+    public String getCoPilot() {
+        return coPilot;
+    }
+
+    public String getHeight(){
+        return height;
+    }
+
+    public UAV getUav() {
+        return uav;
+    }
+
+    public Sensor getSensor() {
+        return sensor;
+    }
+
+    public List<ImageType> getImageTypes() {
+        return imageTypes;
+    }
+
+    public String getBaseDirectory() {
+        return baseDirectory;
+    }
+
+    public List<String> getOriginFlightDirs() {
+        return originFlightDirs;
+    }
+
+    public List<String> getOriginCalibDirs() {
+        return originCalibDirs;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public HashMap<ImageType, Integer> getNumberOfImages() {
+        return numberOfImages;
+    }
 }

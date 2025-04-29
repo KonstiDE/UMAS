@@ -2,6 +2,7 @@ package controller.panes.views.dialogs;
 
 import controller.listeners.CopyProgressListener;
 import controller.panes.mains.DisplayController;
+import enums.ErrorType;
 import enums.ImageType;
 import enums.Sensor;
 import enums.UAV;
@@ -22,6 +23,7 @@ import org.controlsfx.control.CheckComboBox;
 import utils.ItemSearcher;
 
 import java.io.File;
+import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -37,6 +39,7 @@ public class AddFlightController implements DialogController, CopyProgressListen
     private String aoi;
     private String pilot;
     private String coPilot;
+    private String height;
     private UAV uav;
     private Sensor sensor;
     private List<ImageType> imageTypes;
@@ -58,6 +61,7 @@ public class AddFlightController implements DialogController, CopyProgressListen
         TextField aoi = ItemSearcher.getItemById("addflight.aoi", pane, TextField.class);
         TextField pilot = ItemSearcher.getItemById("addflight.pilot", pane, TextField.class);
         TextField coPilot = ItemSearcher.getItemById("addflight.copilot", pane, TextField.class);
+        TextField height = ItemSearcher.getItemById("addflight.height", pane, TextField.class);
 
         ComboBox<String> selectUAV = ItemSearcher.getGenericControlById("addflight.uav", pane, ComboBox.class, String.class);
         ComboBox<String> selectSensor = ItemSearcher.getGenericControlById("addflight.sensor", pane, ComboBox.class, String.class);
@@ -65,9 +69,11 @@ public class AddFlightController implements DialogController, CopyProgressListen
 
         Button browse = ItemSearcher.getItemById("addflight.browse", pane, Button.class);
         Button browseCalib = ItemSearcher.getItemById("addflight.browsecalib", pane, Button.class);
+        browseCalib.setDisable(true);
 
         TreeView<String> flightDirs = ItemSearcher.getGenericControlById("addflight.flightdirs", pane, TreeView.class, String.class);
         TreeView<String> calibDirs = ItemSearcher.getGenericControlById("addflight.calibdirs", pane, TreeView.class, String.class);
+        calibDirs.setDisable(true);
 
         TextArea notes =  ItemSearcher.getItemById("addflight.notes", pane, TextArea.class);
 
@@ -127,6 +133,13 @@ public class AddFlightController implements DialogController, CopyProgressListen
                     .stream()
                     .map(ImageType::valueOf)
                     .toList();
+            if(this.imageTypes.contains(ImageType.MULTISPECTRAL)){
+                browseCalib.setDisable(false);
+                calibDirs.setDisable(false);
+            }else{
+                browseCalib.setDisable(true);
+                calibDirs.setDisable(true);
+            }
         });
 
         browse.setOnAction(_ -> {
@@ -163,24 +176,36 @@ public class AddFlightController implements DialogController, CopyProgressListen
         this.pilot = pilot.getText();
         coPilot.textProperty().addListener(_ -> this.coPilot = coPilot.getText());
         this.coPilot = coPilot.getText();
+        height.textProperty().addListener(_ -> this.height = height.getText());
+        this.height = height.getText();
         notes.textProperty().addListener(_ -> this.notes = notes.textProperty().get());
         this.notes = notes.textProperty().get();
 
         finish.setOnAction(_ -> {
-            Path baseDirectory = Paths.get(ProjectCache.currentlyOpenedProject.getFile().getParent());
+            if(validate()){
+                Path baseDirectory = Paths.get(ProjectCache.currentlyOpenedProject.getFile().getParent());
 
-            Flight flight = new Flight(this.date, this.location, this.aoi, this.pilot, this.coPilot,
-                    this.uav, this.sensor, this.imageTypes, baseDirectory.toFile().getAbsolutePath(), this.flightsOrigins, this.calibOrigins, this.notes);
+                Flight flight = new Flight(this.date, this.location, this.aoi, this.pilot, this.coPilot, this.height,
+                        this.uav, this.sensor, this.imageTypes, baseDirectory.toFile().getAbsolutePath(), this.flightsOrigins, this.calibOrigins, this.notes);
 
-            FileCopier fileCopier = new FileCopier(this, flight);
-            fileCopier.getCopyTask().thenRun(() -> {
-                Platform.runLater(() -> {
+                FileCopier fileCopier = new FileCopier(this, flight);
+                fileCopier.getCopyTask().thenRun(() -> {
                     this.flightJson = Flight.toJson(flight);
-                    dialog.setResult(this.flightJson);
-                    dialog.close();
+
+                    try{
+                        ProjectCache.currentlyOpenedProject.addFlight(flight);
+                        ProjectCache.currentlyOpenedProject.save();
+                    } catch (IOException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    Platform.runLater(() -> {
+                        dialog.setResult(this.flightJson);
+                        dialog.close();
+                    });
                 });
-            });
-            this.copyJob = fileCopier.getCopyTask();
+                this.copyJob = fileCopier.getCopyTask();
+            }
         });
 
         dialog.getDialogPane().getScene().getWindow().setOnCloseRequest(windowEvent -> {
@@ -299,7 +324,35 @@ public class AddFlightController implements DialogController, CopyProgressListen
         }
     }
 
-    public boolean validate(){
+    public boolean validate(Control... controls){
+        for (Control control : controls) {
+            if(control instanceof DatePicker){
+                if(((DatePicker) control).getEditor().getCharacters().toString().trim().isEmpty()){
+                    UMASException.throwWindow(ErrorType.USER, "Please enter a valid date!");
+                    return false;
+                }
+            } else if(control instanceof TextField){
+                if(((TextField) control).getText().isEmpty()){
+                    UMASException.throwWindow(ErrorType.USER, "Please fill out the textfield \"" + control.getAccessibleText() + "\"");
+                    return false;
+                }
+            }else if(control instanceof ComboBox){
+                if(((ComboBox<?>) control).getSelectionModel().getSelectedItem() == null){
+                    UMASException.throwWindow(ErrorType.USER, "Please select a valid \"" +  control.getAccessibleText() + "\"");
+                    return false;
+                }
+            }else if(control instanceof CheckComboBox){
+                if(((CheckComboBox<?>) control).getCheckModel().getCheckedItems().isEmpty()){
+                    UMASException.throwWindow(ErrorType.USER, "Please select at least one valid option of \"" +  control.getAccessibleText() + "\"");
+                    return false;
+                }
+            }else if(control instanceof TreeView<?>){
+                if(control.getId().contains("flightdirs") && ((TreeView<?>) control).getRoot() != null && !((TreeView<?>) control).getRoot().getChildren().isEmpty()){
+                    UMASException.throwWindow(ErrorType.USER, "Please select at least one flight directory at \"" +  control.getAccessibleText() + "\"");
+                    return false;
+                }
+            }
+        }
         return true;
     }
 

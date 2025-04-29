@@ -7,8 +7,7 @@ import loader.ProjectCache;
 import java.io.*;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Project implements Serializable {
@@ -20,14 +19,14 @@ public class Project implements Serializable {
     private String pilot;
     private String location;
     private File directory;
-    private List<Flight> flights;
+    private ArrayList<Flight> flights;
 
-    public Project(String name, String pilot, String location, File directory, List<Flight> flights) {
+    public Project(String name, String pilot, String location, File directory) {
         this.name = name;
         this.pilot = pilot;
         this.location = location;
         this.directory = directory;
-        this.flights = flights;
+        this.flights = new ArrayList<>();
     }
 
     public String getName() {
@@ -58,8 +57,8 @@ public class Project implements Serializable {
         return flights;
     }
 
-    public void addFlight(Flight... flights) {
-        this.flights.addAll(Arrays.stream(flights).toList());
+    public void addFlight(Flight flight) {
+        this.flights.add(flight);
     }
 
     public File getFile(){
