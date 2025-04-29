@@ -30,7 +30,7 @@ public class Main extends Application {
 
         Scene scene = new Scene(root);
 
-        scene.getStylesheets().add("resources/dark-mode.css");
+        // scene.getStylesheets().add("resources/dark-mode.css");
 
         primaryStage.setScene(scene);
         primaryStage.show();
