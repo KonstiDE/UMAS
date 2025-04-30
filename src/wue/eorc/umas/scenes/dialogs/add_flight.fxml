@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.TreeView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.CheckComboBox?>
+
+<DialogPane expanded="true" prefHeight="811.0" prefWidth="772.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <content>
+      <AnchorPane prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <VBox prefHeight="762.0" prefWidth="750.0" spacing="8.0">
+               <children>
+                  <HBox alignment="CENTER_LEFT" prefWidth="200.0" spacing="12.0">
+                     <children>
+                        <Label text="Add Flight">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <ProgressBar id="addflight.progress" prefWidth="200.0" progress="0.0" />
+                        <Label id="addflight.progressLabel" text="0%" />
+                     </children>
+                  </HBox>
+                  <Separator prefWidth="200.0">
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                  </Separator>
+                  <GridPane prefHeight="688.0" prefWidth="726.0">
+                     <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="476.0" minWidth="10.0" prefWidth="172.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="559.0" minWidth="10.0" prefWidth="554.0" />
+                     </columnConstraints>
+                     <rowConstraints>
+                        <RowConstraints maxHeight="-Infinity" minHeight="0.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="0.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="0.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="10.0" prefHeight="100.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="-Infinity" minHeight="4.0" prefHeight="100.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="55.0" minHeight="0.0" prefHeight="34.0" vgrow="SOMETIMES" />
+                     </rowConstraints>
+                     <children>
+                        <Label alignment="CENTER" text="Flight Date" textAlignment="CENTER">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Label>
+                        <DatePicker id="addflight.date" prefWidth="191.0" GridPane.columnIndex="1" />
+                        <Label text="Location" GridPane.rowIndex="1" />
+                        <TextField id="addflight.location" accessibleText="Location" text="Zugspitze" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label text="AOI" GridPane.rowIndex="2" />
+                        <TextField id="addflight.aoi" accessibleText="AOI" text="West" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label text="Pilot" GridPane.rowIndex="3" />
+                        <TextField id="addflight.pilot" accessibleText="Pilot" text="ER" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <Label text="CoPilot" GridPane.rowIndex="4" />
+                        <TextField id="addflight.copilot" accessibleText="CoPilot" text="KM" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <Label text="UAV" GridPane.rowIndex="5" />
+                        <ComboBox id="addflight.uav" accessibleText="UAV" prefWidth="150.0" promptText="Select UAV" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <Label text="Sensor" GridPane.rowIndex="6" />
+                        <ComboBox id="addflight.sensor" accessibleText="Sensor" prefWidth="150.0" promptText="Select Sensor" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <Label text="Image types captured" GridPane.rowIndex="7" />
+                        <CheckComboBox id="addflight.imagetypes" accessibleText="ImageTypes" prefHeight="26.0" prefWidth="152.0" showCheckedCount="true" title="Select" GridPane.columnIndex="1" GridPane.rowIndex="7" />
+                        <Label text="Flight Height" GridPane.rowIndex="8" />
+                        <TextField id="addflight.height" accessibleText="Flight Height" text="80m" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                        <Label text="Image folder paths" GridPane.rowIndex="10" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="554.0" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="10">
+                           <children>
+                              <Button id="addflight.browse" mnemonicParsing="false" text="Browse" />
+                              <TreeView id="addflight.flightdirs" accessibleText="Image folder paths" prefHeight="92.0" prefWidth="468.0">
+                                 <HBox.margin>
+                                    <Insets top="4.0" />
+                                 </HBox.margin>
+                              </TreeView>
+                           </children>
+                        </HBox>
+                        <Label text="Calibration folder paths" GridPane.rowIndex="11" />
+                        <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="11">
+                           <children>
+                              <Button id="addflight.browsecalib" mnemonicParsing="false" text="Browse" />
+                              <TreeView id="addflight.calibdirs" prefHeight="92.0" prefWidth="468.0">
+                                 <HBox.margin>
+                                    <Insets bottom="4.0" top="4.0" />
+                                 </HBox.margin>
+                              </TreeView>
+                           </children>
+                        </HBox>
+                        <Label text="Notes" GridPane.rowIndex="12" />
+                        <TextArea id="addflight.notes" prefHeight="134.0" prefWidth="554.0" text="Windigo" GridPane.columnIndex="1" GridPane.rowIndex="12" />
+                        <Label text="Processing Chain" GridPane.rowIndex="9" />
+                        <ComboBox id="addflight.chain" prefWidth="150.0" promptText="Select Chain" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                     </children>
+                  </GridPane>
+                  <HBox alignment="BOTTOM_RIGHT" prefWidth="726.0">
+                     <children>
+                        <Button id="addflight.finish" defaultButton="true" mnemonicParsing="false" prefWidth="70.0" text="Finish" textAlignment="CENTER" />
+                     </children>
+                  </HBox>
+               </children>
+               <padding>
+                  <Insets bottom="12.0" left="12.0" right="12.0" top="12.0" />
+               </padding>
+            </VBox>
+         </children>
+      </AnchorPane>
+   </content>
+</DialogPane>
