@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="metashape-java-api">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/metashape/libs/metashape-java-api.jar!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

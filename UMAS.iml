@@ -11,13 +11,18 @@
     <orderEntry type="library" name="openjfx.javafx.fxml" level="project" />
     <orderEntry type="library" name="google.code.gson" level="project" />
     <orderEntry type="library" name="controlsfx" level="project" />
+    <orderEntry type="library" name="microsoft.onnxruntime" level="project" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
-          <root url="jar://$MODULE_DIR$/lib/metashape-java-api.jar!/" />
+          <root url="jar://$MODULE_DIR$/metashape-java-api-2.2.1/libs/metashape-java-api.jar!/" />
         </CLASSES>
-        <JAVADOC />
-        <SOURCES />
+        <JAVADOC>
+          <root url="jar://$MODULE_DIR$/metashape-java-api-2.2.1/libs/metashape-java-api-javadoc.jar!/" />
+        </JAVADOC>
+        <SOURCES>
+          <root url="jar://$MODULE_DIR$/metashape-java-api-2.2.1/libs/metashape-java-api-sources.jar!/" />
+        </SOURCES>
       </library>
     </orderEntry>
   </component>

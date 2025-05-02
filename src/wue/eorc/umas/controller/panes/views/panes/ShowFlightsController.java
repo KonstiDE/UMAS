@@ -103,7 +103,7 @@ public class ShowFlightsController implements ViewController {
                 ArrayList<ImageView> imageViewList = new ArrayList<>();
 
                 for(ImageType imageType : flight.getImageTypes()) {
-                    String iconpath = "assets/imgicons/" + switch(imageType) {
+                    String iconpath = "wue/eorc/umas/assets/imgicons/" + switch(imageType) {
                         case RGB -> "rgb.png";
                         case MULTISPECTRAL -> "ms.png";
                         case HYPERSPECTRAL -> "hyper.png";
@@ -147,8 +147,8 @@ public class ShowFlightsController implements ViewController {
                 File flightDir = new File(flight.getFlightDirectory());
 
                 String iconPath = flightDir.exists()
-                        ? "/assets/icons8-folder-144.png"
-                        : "/assets/icons8-warning-100.png";
+                        ? "wue/eorc/umas/assets/icons8-folder-144.png"
+                        : "wue/eorc/umas/assets/icons8-warning-100.png";
                 imageView.setImage(new Image(iconPath));
 
                 imageView.setOnMouseClicked(_ -> {
@@ -189,7 +189,7 @@ public class ShowFlightsController implements ViewController {
 
                 Flight flight = getTableView().getItems().get(getIndex());
 
-                imageView.setImage(new Image("assets/icons8-gear-144.png"));
+                imageView.setImage(new Image("wue/eorc/umas/assets/icons8-gear-144.png"));
 
                 imageView.setOnMouseClicked(_ -> {
                     display.switchSceneTo(

@@ -1,5 +1,6 @@
 package wue.eorc.umas;
 
+import com.agisoft.metashape.*;
 import wue.eorc.umas.controller.RootController;
 import wue.eorc.umas.exception.UMASException;
 import javafx.application.Application;
@@ -24,6 +25,15 @@ public class Main extends Application {
         primaryStage.setTitle("UAS Mission Application");
 
         ProjectCache.initCache();
+        System.loadLibrary("metashape");
+
+
+
+        System.out.println("Metashape version: " +
+                Metashape.getVersion().getMajor() +
+                "." +  Metashape.getVersion().getMinor() +
+                "." + Metashape.getVersion().getMicro() +
+                ", Build: " + Metashape.getVersion().getBuild());
 
         SceneLoader loader = new SceneLoader(this.getClass(), "scenes/");
 
