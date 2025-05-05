@@ -1,0 +1,3 @@
+import Metashape
+
+print("Hello")

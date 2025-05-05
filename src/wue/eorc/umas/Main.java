@@ -12,7 +12,12 @@ import javafx.stage.Stage;
 import wue.eorc.umas.loader.ProjectCache;
 import wue.eorc.umas.loader.SceneLoader;
 
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.nio.file.FileSystems;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class Main extends Application {
 
@@ -21,19 +26,36 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws IOException, UMASException {
+    public void start(Stage primaryStage) throws IOException, UMASException, InterruptedException {
         primaryStage.setTitle("UAS Mission Application");
 
         ProjectCache.initCache();
-        System.loadLibrary("metashape");
 
+        Path rootPath = FileSystems.getDefault().getPath("").toAbsolutePath();
+        Path pythonPath = Paths.get("/opt/metashape-pro/metashape");
+        Path filePath = Paths.get(rootPath.toString(),"src", "wue", "eorc", "umas", "agisoft", "test.py");
 
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r", filePath.toFile().getAbsolutePath());
+        pb.redirectErrorStream(true);
+        Process p = pb.start();
 
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println("[Python] " + line); // or log it
+            }
+        }
+        int exitCode = p.waitFor();
+
+        System.out.println(exitCode);
+
+        /*
         System.out.println("Metashape version: " +
                 Metashape.getVersion().getMajor() +
                 "." +  Metashape.getVersion().getMinor() +
                 "." + Metashape.getVersion().getMicro() +
                 ", Build: " + Metashape.getVersion().getBuild());
+        */
 
         SceneLoader loader = new SceneLoader(this.getClass(), "scenes/");
 
