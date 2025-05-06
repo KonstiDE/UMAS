@@ -1,9 +1,13 @@
 package wue.eorc.umas.controller.panes.views.panes;
 
-import com.agisoft.metashape.Document;
 import javafx.scene.control.Button;
-import wue.eorc.umas.agisoft.ConsoleProgress;
+import javafx.scene.control.Label;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
+import javafx.scene.paint.Paint;
+import javafx.scene.shape.Circle;
 import wue.eorc.umas.controller.panes.mains.DisplayController;
+import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.ProcessingChain;
 import wue.eorc.umas.exception.UMASException;
 import javafx.scene.layout.Pane;
@@ -22,18 +26,71 @@ public class ShowProcessingController implements ViewController {
 
     @Override
     public void init(Pane pane, DisplayController display) throws UMASException {
-        Button create = ItemSearcher.getItemById("showprocess.createproject", pane, Button.class);
-
-        create.setOnAction(e -> {
-            Document document = new Document();
-            document.save(Paths.get(flight.getFlightDirectory(), "1_Agisoft", "agisoft.psx").toFile().getAbsolutePath(), new ConsoleProgress());
+        Button refresh = ItemSearcher.getItemById("showprocess.refresh", pane, Button.class);
+        refresh.setOnAction(_ -> {
+            try {
+                init(pane, display);
+            } catch (UMASException ex) {
+                UMASException.throwWindow(ErrorType.INTERNAL, "Could not refresh the processing display. Please restart the application!");
+            }
         });
+
+        checkProcessingChain(pane, display);
+
 
     }
 
-    private boolean processingExists(){
+    private void checkProcessingChain(Pane pane, DisplayController display) throws UMASException {
+        Button createAgisoft = ItemSearcher.getItemById("showprocess.createagisoft", pane, Button.class);
+        Button createTerra =  ItemSearcher.getItemById("showprocess.createterra", pane, Button.class);
+        Circle statusAigsoft = ItemSearcher.getItemById("showprocess.statusagisoft", pane, Circle.class);
+        Circle statusTerra = ItemSearcher.getItemById("showprocess.statusterra", pane, Circle.class);
+
+        TabPane tabPane = ItemSearcher.getItemById("showprocess.tabpane", pane, TabPane.class);
+        Tab tabAgisoft = tabPane.getTabs().getFirst();
+        Tab tabTerra = tabPane.getTabs().get(1);
+
+        if (projectExistsAgisoft(this.flight)){
+            createAgisoft.setDisable(true);
+            statusAigsoft.setFill(Paint.valueOf("GREEN"));
+            tabAgisoft.setDisable(false);
+        }else{
+            createAgisoft.setDisable(false);
+            createAgisoft.setOnAction(_ -> {
+
+            });
+            statusAigsoft.setFill(Paint.valueOf("RED"));
+            tabAgisoft.setDisable(true);
+        }
+
+        if (projectExistsTerra(this.flight)){
+            createTerra.setDisable(true);
+            statusTerra.setFill(Paint.valueOf("GREEN"));
+            tabTerra.setDisable(false);
+        }else{
+            createTerra.setDisable(false);
+            statusTerra.setFill(Paint.valueOf("RED"));
+            tabTerra.setDisable(true);
+        }
+
+    }
+
+    private boolean projectExistsAgisoft(Flight flight){
+        String fileName = flight.getProjectFileNameAgisoft();
+
         if(flight.getProcessingChain() == ProcessingChain.AGISOFT){
-            return Paths.get(flight.getFlightDirectory(), "1_Agisoft", "agisoft.psx").toFile().exists();
+            return Paths.get(flight.getFlightDirectory(), "1_Agisoft", fileName).toFile().exists();
+        }else if(flight.getProcessingChain() == ProcessingChain.BOTH){
+            return Paths.get(flight.getFlightDirectory(), "1_Agisoft", fileName).toFile().exists();
+        }
+        return false;
+    }
+
+    private boolean projectExistsTerra(Flight flight) {
+        String fileName = flight.getProjectFileNameTerra();
+
+        if(flight.getProcessingChain() == ProcessingChain.TERRA || flight.getProcessingChain() == ProcessingChain.BOTH){
+            return Paths.get(flight.getFlightDirectory(), "1_TerraFiles", fileName).toFile().exists();
         }
         return false;
     }

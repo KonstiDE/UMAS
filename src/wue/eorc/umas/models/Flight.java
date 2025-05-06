@@ -62,6 +62,20 @@ public class Flight implements Serializable {
         return Paths.get(baseDirectory, "0_Flights", dtf_new.format(dtf_old.parse(date)) + "_" + this.location + "_" + this.aoi + "_" + this.uav + this.sensor).toFile().getAbsolutePath();
     }
 
+    public String getProjectFileNameAgisoft(){
+        DateTimeFormatter dtf_old = DateTimeFormatter.ofPattern("M/d/yyyy");
+        DateTimeFormatter dtf_new = DateTimeFormatter.ofPattern("ddMMyyyy");
+
+        return dtf_new.format(dtf_old.parse(date)) + "_" + this.location + "_" + this.aoi + "_" + this.uav + this.sensor + "_Agisoft.psx";
+    }
+
+    public String getProjectFileNameTerra(){
+        DateTimeFormatter dtf_old = DateTimeFormatter.ofPattern("M/d/yyyy");
+        DateTimeFormatter dtf_new = DateTimeFormatter.ofPattern("ddMMyyyy");
+
+        return dtf_new.format(dtf_old.parse(date)) + "_" + this.location + "_" + this.aoi + "_" + this.uav + this.sensor + "_Terra.symlink";
+    }
+
     private HashMap<ImageType, Integer> countImages(List<ImageType> imageTypes) {
         switch (uav) {
             case MAVICM3M -> new HashMap<>();

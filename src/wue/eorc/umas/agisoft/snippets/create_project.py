@@ -20,7 +20,3 @@ if __name__ == '__main__':
     name = get_arg(args, "-name")
 
     create_project(path, name)
-
-
-
-

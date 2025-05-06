@@ -26,7 +26,7 @@
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <Button mnemonicParsing="false" text="Refresh" />
+                  <Button id="showprocess.refresh" mnemonicParsing="false" text="Refresh" />
                </children>
             </HBox>
             <Separator prefWidth="200.0" />
@@ -42,37 +42,37 @@
                <children>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                      <children>
-                        <Circle fill="#24ff25" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Circle id="showprocess.statusagisoft" fill="#24ff25" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefWidth="298.0" spacing="12.0" GridPane.columnIndex="1">
                      <children>
-                        <Label text="Project exists (Agisoft)" />
-                        <Button id="showprocess.createproject" mnemonicParsing="false" text="Create Project" />
+                        <Label id="showprocess.labelagisoft" text="Project exists (Agisoft)" />
+                        <Button id="showprocess.createagisoft" mnemonicParsing="false" text="Create Project" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" GridPane.rowIndex="1">
                      <children>
-                        <Circle fill="DODGERBLUE" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
+                        <Circle id="showprocess.statusterra" fill="DODGERBLUE" radius="7.0" stroke="BLACK" strokeType="INSIDE" />
                      </children>
                   </HBox>
                   <HBox alignment="CENTER_LEFT" prefWidth="298.0" spacing="12.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
-                        <Label text="Project exists (Terra)   " />
-                        <Button id="showprocess.createproject" mnemonicParsing="false" text="Create Project" />
+                        <Label id="showprocess.labelterra" text="Project exists (Terra)   " />
+                        <Button id="showprocess.createterra" mnemonicParsing="false" text="Create Project" />
                      </children>
                   </HBox>
                </children>
             </GridPane>
             <Separator prefWidth="200.0" />
-            <TabPane prefHeight="490.0" prefWidth="518.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane id="showprocess.tabpane" prefHeight="490.0" prefWidth="518.0" tabClosingPolicy="UNAVAILABLE">
               <tabs>
-                <Tab text="Agisoft">
+                <Tab id="showprocess.tabagisoft" closable="false" text="Agisoft">
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="518.0" />
                   </content>
                 </Tab>
-                <Tab text="Terra">
+                <Tab id="showprocess.tabterra" closable="false" text="Terra">
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0" />
                   </content>

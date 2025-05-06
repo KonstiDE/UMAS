@@ -1,6 +1,5 @@
 package wue.eorc.umas;
 
-import com.agisoft.metashape.*;
 import wue.eorc.umas.controller.RootController;
 import wue.eorc.umas.exception.UMASException;
 import javafx.application.Application;
@@ -11,6 +10,7 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import wue.eorc.umas.loader.ProjectCache;
 import wue.eorc.umas.loader.SceneLoader;
+import wue.eorc.umas.settings.Settings;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -30,32 +30,7 @@ public class Main extends Application {
         primaryStage.setTitle("UAS Mission Application");
 
         ProjectCache.initCache();
-
-        Path rootPath = FileSystems.getDefault().getPath("").toAbsolutePath();
-        Path pythonPath = Paths.get("/opt/metashape-pro/metashape");
-        Path filePath = Paths.get(rootPath.toString(),"src", "wue", "eorc", "umas", "agisoft", "test.py");
-
-        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r", filePath.toFile().getAbsolutePath());
-        pb.redirectErrorStream(true);
-        Process p = pb.start();
-
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println("[Python] " + line); // or log it
-            }
-        }
-        int exitCode = p.waitFor();
-
-        System.out.println(exitCode);
-
-        /*
-        System.out.println("Metashape version: " +
-                Metashape.getVersion().getMajor() +
-                "." +  Metashape.getVersion().getMinor() +
-                "." + Metashape.getVersion().getMicro() +
-                ", Build: " + Metashape.getVersion().getBuild());
-        */
+        Settings.initSettings();
 
         SceneLoader loader = new SceneLoader(this.getClass(), "scenes/");
 
@@ -64,7 +39,7 @@ public class Main extends Application {
 
         Scene scene = new Scene(root, 1024, 720);
 
-        // scene.getStylesheets().add("wue.eorc.umas.resources/dark-mode.css");
+        scene.getStylesheets().add("wue.eorc.umas.resources/dark-mode.css");
 
         primaryStage.setScene(scene);
         primaryStage.setWidth(1440);
