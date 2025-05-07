@@ -1,10 +1,7 @@
 package wue.eorc.umas.controller.panes.views.dialogs;
 
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
@@ -22,7 +19,6 @@ import java.io.File;
 import java.io.IOException;
 
 public class SettingsController implements DialogController {
-
 
     @Override
     public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
