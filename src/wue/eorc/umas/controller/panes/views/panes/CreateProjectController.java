@@ -33,7 +33,7 @@ public class CreateProjectController implements ViewController {
 
         Button create = ItemSearcher.getItemById("newproject.create", pane, Button.class);
 
-        button.setOnAction(_ -> {
+        button.setOnAction(_ignored -> {
             DirectoryChooser chooser = new DirectoryChooser();
             chooser.setTitle("Select a new folder for a new mission");
             File file = chooser.showDialog(pane.getScene().getWindow());
@@ -44,7 +44,7 @@ public class CreateProjectController implements ViewController {
             }
         });
 
-        create.setOnAction(_ -> {
+        create.setOnAction(_ignored -> {
             List<String> texts = FormValidator.validateTextFields(projectName, projectPilot);
 
             if (texts != null) {

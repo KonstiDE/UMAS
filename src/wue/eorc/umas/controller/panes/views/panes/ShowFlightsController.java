@@ -39,10 +39,10 @@ public class ShowFlightsController implements ViewController {
 
         Button add = ItemSearcher.getItemById("showflights.add", pane, Button.class);
 
-        add.setOnAction(_ -> {
+        add.setOnAction(_ignored -> {
             Flight flight;
             try {
-                flight = display.openDialog(
+                flight = display.openFlightDialog(
                         (DialogPane) SceneLoader.getDialogSceneReset("add_flight"),
                         new AddFlightController()
                 );
@@ -56,7 +56,7 @@ public class ShowFlightsController implements ViewController {
 
     @SuppressWarnings("unchecked")
     private void initTableViewCellFactories(TableView<Flight> tableView, DisplayController display) {
-        TableColumn<Flight, String> dateCol = (TableColumn<Flight, String>) tableView.getColumns().getFirst();
+        TableColumn<Flight, String> dateCol = (TableColumn<Flight, String>) tableView.getColumns().get(0);
         dateCol.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getDate()));
 
         TableColumn<Flight, String> locationCol = (TableColumn<Flight, String>) tableView.getColumns().get(1);
@@ -78,7 +78,7 @@ public class ShowFlightsController implements ViewController {
         coPilotCol.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getCoPilot()));
 
         TableColumn<Flight, Void> imageCol = (TableColumn<Flight, Void>) tableView.getColumns().get(7);
-        imageCol.setCellFactory(_ -> new TableCell<>() {
+        imageCol.setCellFactory(_ignored -> new TableCell<>() {
             private final HBox hbox = new HBox(2);
 
             @Override
@@ -124,7 +124,7 @@ public class ShowFlightsController implements ViewController {
         heightCol.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getHeight()));
 
         TableColumn<Flight, Void> folderCol = (TableColumn<Flight, Void>) tableView.getColumns().get(9);
-        folderCol.setCellFactory(_ -> new TableCell<>() {
+        folderCol.setCellFactory(_ignored -> new TableCell<>() {
             private final ImageView imageView = new ImageView();
             private final StackPane container = new StackPane();
 
@@ -151,7 +151,7 @@ public class ShowFlightsController implements ViewController {
                         : "wue/eorc/umas/assets/icons8-warning-100.png";
                 imageView.setImage(new Image(iconPath));
 
-                imageView.setOnMouseClicked(_ -> {
+                imageView.setOnMouseClicked(_ignored -> {
                     if (flightDir.exists()) {
                         new Thread(() -> {
                             try {
@@ -162,14 +162,14 @@ public class ShowFlightsController implements ViewController {
                         }).start();
                     }
                 });
-                imageView.setOnMouseEntered(_ -> imageView.setCursor(Cursor.HAND));
-                imageView.setOnMouseExited(_ -> imageView.setCursor(Cursor.DEFAULT));
+                imageView.setOnMouseEntered(_ignored -> imageView.setCursor(Cursor.HAND));
+                imageView.setOnMouseExited(_ignored -> imageView.setCursor(Cursor.DEFAULT));
                 setGraphic(container);
             }
         });
 
         TableColumn<Flight, Void> processedCol = (TableColumn<Flight, Void>) tableView.getColumns().get(10);
-        processedCol.setCellFactory(_ -> new TableCell<>() {
+        processedCol.setCellFactory(_ignored -> new TableCell<>() {
             private final ImageView imageView = new ImageView();
             private final StackPane container = new StackPane();
             {
@@ -191,15 +191,15 @@ public class ShowFlightsController implements ViewController {
 
                 imageView.setImage(new Image("wue/eorc/umas/assets/icons8-gear-144.png"));
 
-                imageView.setOnMouseClicked(_ -> {
+                imageView.setOnMouseClicked(_ignored -> {
                     display.switchSceneTo(
                             SplitPanePosition.RIGHT,
                             SceneLoader.getAvailableScenes().get("show_processing"),
                             new ShowProcessingController(flight)
                     );
                 });
-                imageView.setOnMouseEntered(_ -> imageView.setCursor(Cursor.HAND));
-                imageView.setOnMouseExited(_ -> imageView.setCursor(Cursor.DEFAULT));
+                imageView.setOnMouseEntered(_ignored -> imageView.setCursor(Cursor.HAND));
+                imageView.setOnMouseExited(_ignored -> imageView.setCursor(Cursor.DEFAULT));
                 setGraphic(container);
             }
 

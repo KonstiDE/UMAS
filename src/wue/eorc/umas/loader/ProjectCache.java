@@ -3,6 +3,7 @@ package wue.eorc.umas.loader;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import wue.eorc.umas.models.Project;
+import wue.eorc.umas.utils.DirectoryUtils;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -10,6 +11,8 @@ import java.nio.file.Paths;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.util.*;
+
+import static wue.eorc.umas.utils.DirectoryUtils.getCacheFolder;
 
 public class ProjectCache {
 
@@ -21,18 +24,8 @@ public class ProjectCache {
 
     public static Project currentlyOpenedProject;
 
-    public static void initCache() throws IOException {
-        File cacheFolder = Paths.get(
-                getCacheFolder(System.getProperty("os.name")).toFile().getAbsolutePath(),
-                "UMAS"
-        ).toFile();
-
-        if(!cacheFolder.exists()){
-            boolean success = cacheFolder.mkdir();
-            if(!success){
-                throw new IOException("Unable to create cache dir under \"" + cacheFolder.getAbsolutePath() + "\"");
-            }
-        }
+    public static void createRecentProjectsFile() throws IOException {
+        File cacheFolder = DirectoryUtils.initCache();
 
         if(cacheFolder.exists()){
             File cacheFile = Paths.get(cacheFolder.getAbsolutePath(), "recent_projects").toFile();
@@ -91,22 +84,6 @@ public class ProjectCache {
         writer.write(gson.toJson(cache));
         writer.flush();
         writer.close();
-    }
-
-    private static Path getCacheFolder(final String osName) {
-        if (osName.toLowerCase().contains("mac")) {
-            return Paths.get(System.getProperty("user.home"), "Library", "Caches");
-        }
-
-        if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
-            return Paths.get(System.getProperty("user.home"), ".cache");
-        }
-
-        if (osName.contains("indows")) {
-            return Paths.get(System.getenv("LOCALAPPDATA"));
-        }
-
-        return Paths.get(System.getProperty("user.home"), "caches");
     }
 
 }

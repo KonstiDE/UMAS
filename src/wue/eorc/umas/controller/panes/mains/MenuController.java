@@ -1,6 +1,8 @@
 package wue.eorc.umas.controller.panes.mains;
 
+import javafx.scene.control.DialogPane;
 import wue.eorc.umas.controller.RootController;
+import wue.eorc.umas.controller.panes.views.dialogs.SettingsController;
 import wue.eorc.umas.controller.panes.views.panes.CreateProjectController;
 import wue.eorc.umas.controller.panes.views.panes.ShowFlightsController;
 import wue.eorc.umas.controller.panes.views.panes.ShowProjectController;
@@ -36,7 +38,7 @@ public class MenuController {
 
     private MenuItem getMenuItem(ObservableList<MenuItem> menu, String id) throws UMASException {
         Optional<MenuItem> menuItem = menu.stream()
-                .filter(m -> m.getId().equals(id))
+                .filter(m -> m.getId() != null && m.getId().equals(id))
                 .findFirst();
 
         if(menuItem.isPresent()){
@@ -49,9 +51,9 @@ public class MenuController {
     private void init(RootController rootController) throws UMASException {
         ObservableList<Menu> menus = this.menuBar.getMenus();
 
-        ObservableList<MenuItem> mainMenu = menus.getFirst().getItems();
+        ObservableList<MenuItem> mainMenu = menus.get(0).getItems();
 
-        getMenuItem(mainMenu, "newmission").setOnAction(_ -> {
+        getMenuItem(mainMenu, "newmission").setOnAction(_ignored -> {
 
                 rootController.getDisplayController().switchSceneTo(
                         SplitPanePosition.LEFT,
@@ -60,7 +62,7 @@ public class MenuController {
                 );
         });
 
-        getMenuItem(mainMenu, "openmission").setOnAction(_ -> {
+        getMenuItem(mainMenu, "openmission").setOnAction(_ignored -> {
             FileChooser fileChooser = new FileChooser();
             fileChooser.setTitle("Open Mission Directory");
             fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
@@ -89,12 +91,12 @@ public class MenuController {
             }
         });
 
-        Menu recentMenu = (Menu) menus.getFirst().getItems().get(2);
+        Menu recentMenu = (Menu) menus.get(0).getItems().get(2);
         for(Map.Entry<String, Timestamp> entry : ProjectCache.cache.entrySet()){
             File projectFile = new File(entry.getKey());
 
             recentMenu.getItems().add(new MenuItem(projectFile.getName()));
-            recentMenu.getItems().getLast().setOnAction(_ -> {
+            recentMenu.getItems().get(recentMenu.getItems().size() - 1).setOnAction(_ignored -> {
                 try {
                     Project project = Project.read(projectFile.getAbsolutePath());
 
@@ -116,8 +118,19 @@ public class MenuController {
             });
         }
 
+        getMenuItem(mainMenu, "settings").setOnAction(_ignored -> {
+            try {
+                rootController.getDisplayController().openSettingsDialog(
+                        (DialogPane) SceneLoader.getDialogSceneReset("settings"),
+                        new SettingsController()
+                );
+            } catch (UMASException e) {
+                throw new RuntimeException(e);
+            }
+        });
 
-        mainMenu.getLast().setOnAction(ignored -> System.exit(0));
+
+        mainMenu.get(mainMenu.size() - 1).setOnAction(ignored -> System.exit(0));
 
 
     }

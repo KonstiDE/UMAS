@@ -8,6 +8,7 @@ import javafx.scene.layout.Pane;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -56,7 +57,7 @@ public class SceneLoader {
         URL url = clazz.getResource(sceneBasePath + "panes");
 
         if(url != null){
-            try(Stream<Path> lines = Files.walk(Path.of(url.getPath()))) {
+            try(Stream<Path> lines = Files.walk(Paths.get(url.toURI()))) {
                 lines.forEach(f -> {
                     if(f.getFileName().toString().endsWith(".fxml")) {
                         try {
@@ -66,6 +67,8 @@ public class SceneLoader {
                         }
                     }
                 });
+            } catch (URISyntaxException e) {
+                throw new RuntimeException(e);
             }
         }else{
             throw new UMASException(ErrorType.INTERNAL, "Could not preload wue.eorc.umas.scenes. Incorrect path!");

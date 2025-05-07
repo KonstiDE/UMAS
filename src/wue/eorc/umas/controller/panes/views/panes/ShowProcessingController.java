@@ -27,7 +27,7 @@ public class ShowProcessingController implements ViewController {
     @Override
     public void init(Pane pane, DisplayController display) throws UMASException {
         Button refresh = ItemSearcher.getItemById("showprocess.refresh", pane, Button.class);
-        refresh.setOnAction(_ -> {
+        refresh.setOnAction(_ignored -> {
             try {
                 init(pane, display);
             } catch (UMASException ex) {
@@ -47,7 +47,7 @@ public class ShowProcessingController implements ViewController {
         Circle statusTerra = ItemSearcher.getItemById("showprocess.statusterra", pane, Circle.class);
 
         TabPane tabPane = ItemSearcher.getItemById("showprocess.tabpane", pane, TabPane.class);
-        Tab tabAgisoft = tabPane.getTabs().getFirst();
+        Tab tabAgisoft = tabPane.getTabs().get(0);
         Tab tabTerra = tabPane.getTabs().get(1);
 
         if (projectExistsAgisoft(this.flight)){
@@ -56,7 +56,7 @@ public class ShowProcessingController implements ViewController {
             tabAgisoft.setDisable(false);
         }else{
             createAgisoft.setDisable(false);
-            createAgisoft.setOnAction(_ -> {
+            createAgisoft.setOnAction(_ignored -> {
 
             });
             statusAigsoft.setFill(Paint.valueOf("RED"));

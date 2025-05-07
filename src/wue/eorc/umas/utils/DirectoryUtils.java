@@ -6,6 +6,8 @@ import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.models.Flight;
 
 import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
 
@@ -325,6 +327,37 @@ public class DirectoryUtils {
 
     private static File createDeepFolder(File baseDir, String... toThePeterCopter){
         return Paths.get(baseDir.getAbsolutePath(), toThePeterCopter).toFile();
+    }
+
+    public static Path getCacheFolder(final String osName) {
+        if (osName.toLowerCase().contains("mac")) {
+            return Paths.get(System.getProperty("user.home"), "Library", "Caches");
+        }
+
+        if (osName.contains("nix") || osName.contains("nux") || osName.contains("aix")) {
+            return Paths.get(System.getProperty("user.home"), ".cache");
+        }
+
+        if (osName.contains("indows")) {
+            return Paths.get(System.getenv("LOCALAPPDATA"));
+        }
+
+        return Paths.get(System.getProperty("user.home"), "caches");
+    }
+
+    public static File initCache() throws IOException {
+        File cacheFolder = Paths.get(
+                getCacheFolder(System.getProperty("os.name")).toFile().getAbsolutePath(),
+                "UMAS"
+        ).toFile();
+
+        if (!cacheFolder.exists()) {
+            boolean success = cacheFolder.mkdir();
+            if (!success) {
+                throw new IOException("Unable to create cache dir under \"" + cacheFolder.getAbsolutePath() + "\"");
+            }
+        }
+        return cacheFolder;
     }
 
 }

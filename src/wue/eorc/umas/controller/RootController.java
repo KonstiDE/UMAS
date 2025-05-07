@@ -17,9 +17,9 @@ public class RootController {
     private final StatusController statusController;
 
     public RootController(SceneLoader sceneLoader, VBox vBox) throws UMASException {
-        this.menuController = new MenuController(this, (MenuBar) vBox.getChildren().getFirst());
+        this.menuController = new MenuController(this, (MenuBar) vBox.getChildren().get(0));
         this.splitPaneController = new DisplayController((SplitPane) vBox.getChildren().get(1));
-        this.statusController = new StatusController((HBox) vBox.getChildren().getLast());
+        this.statusController = new StatusController((HBox) vBox.getChildren().get(2));
 
     }
 

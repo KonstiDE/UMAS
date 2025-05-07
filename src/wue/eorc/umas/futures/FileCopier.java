@@ -50,14 +50,14 @@ public class FileCopier {
         }
         if(imageTypes.contains(ImageType.MULTISPECTRAL)) {
             copy(originFlightDirs, flightDirectory, ImageUtils::isTIF,"0_Images", "1_MS");
-            copy(originCalibDirs, flightDirectory, _ -> true,"0_Images", "2_CALIB");
+            copy(originCalibDirs, flightDirectory, _ignored -> true,"0_Images", "2_CALIB");
         }
     }
 
     private static void copy(List<String> origins, String flightDirectory, Predicate<String> filter, String... baseDest) throws IOException, InterruptedException {
         ArrayList<File> filesToCopy = new ArrayList<>();
         for(String absPathString : origins){
-            File[] files = Paths.get(absPathString).toFile().listFiles((_, name) -> filter.test(name));
+            File[] files = Paths.get(absPathString).toFile().listFiles((_ignored, name) -> filter.test(name));
             if(files != null){
                 filesToCopy.addAll(Arrays.asList(files));
             }

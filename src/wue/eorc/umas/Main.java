@@ -10,14 +10,9 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import wue.eorc.umas.loader.ProjectCache;
 import wue.eorc.umas.loader.SceneLoader;
-import wue.eorc.umas.settings.Settings;
+import wue.eorc.umas.loader.Settings;
 
-import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStreamReader;
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 public class Main extends Application {
 
@@ -29,8 +24,8 @@ public class Main extends Application {
     public void start(Stage primaryStage) throws IOException, UMASException, InterruptedException {
         primaryStage.setTitle("UAS Mission Application");
 
-        ProjectCache.initCache();
-        Settings.initSettings();
+        ProjectCache.createRecentProjectsFile();
+        Settings.createSettingsFile();
 
         SceneLoader loader = new SceneLoader(this.getClass(), "scenes/");
 

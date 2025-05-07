@@ -83,7 +83,7 @@ public class AddFlightController implements DialogController, CopyProgressListen
 
         selectUAV.getItems().addAll(Stream.of(UAV.values()).map(UAV::getName).toList());
 
-        selectUAV.setOnAction(__ -> {
+        selectUAV.setOnAction(__ignored -> {
             clearComboBoxes(selectSensor);
             clearCheckComboBoxes(selectImageTypes);
 
@@ -103,7 +103,7 @@ public class AddFlightController implements DialogController, CopyProgressListen
             this.uav = UAV.fromName(selectUAV.getValue());
         });
 
-        selectSensor.setOnAction(_ -> {
+        selectSensor.setOnAction(_ignored -> {
             clearCheckComboBoxes(selectImageTypes);
 
             List<ImageType> imageTypes = switch (Sensor.fromName(selectSensor.getValue())){
@@ -128,11 +128,11 @@ public class AddFlightController implements DialogController, CopyProgressListen
 
         selectChain.getItems().addAll(Stream.of(ProcessingChain.values()).map(ProcessingChain::getName).toList());
 
-        selectChain.setOnAction(_ -> {
+        selectChain.setOnAction(_ignored -> {
             this.processingChain = ProcessingChain.fromName(selectChain.getValue());
         });
 
-        selectImageTypes.getCheckModel().getCheckedIndices().addListener((ListChangeListener<Integer>) _ -> {
+        selectImageTypes.getCheckModel().getCheckedIndices().addListener((ListChangeListener<Integer>) _ignored -> {
             this.imageTypes = selectImageTypes.getCheckModel().getCheckedItems()
                     .stream()
                     .map(ImageType::valueOf)
@@ -146,7 +146,7 @@ public class AddFlightController implements DialogController, CopyProgressListen
             }
         });
 
-        browse.setOnAction(_ -> {
+        browse.setOnAction(_ignored -> {
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Choose an image directory");
             directoryChooser.setInitialDirectory(new File("/home/caipi/Desktop/"));
@@ -158,7 +158,7 @@ public class AddFlightController implements DialogController, CopyProgressListen
             addTreeViewDeleteBehavior(flightDirs, this.flightsOrigins);
         });
 
-        browseCalib.setOnAction(_ -> {
+        browseCalib.setOnAction(_ignored -> {
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Choose an calibration directory");
             directoryChooser.setInitialDirectory(new File("/home/caipi/Desktop/"));
@@ -170,22 +170,22 @@ public class AddFlightController implements DialogController, CopyProgressListen
             addTreeViewDeleteBehavior(calibDirs, this.calibOrigins);
         });
 
-        datePicker.setOnAction(_ -> this.date = datePicker.getEditor().getCharacters().toString());
+        datePicker.setOnAction(_ignored -> this.date = datePicker.getEditor().getCharacters().toString());
 
-        location.textProperty().addListener(_ -> this.location = location.getText());
+        location.textProperty().addListener(_ignored -> this.location = location.getText());
         this.location = location.getText();
-        aoi.textProperty().addListener(_ -> this.aoi = aoi.getText());
+        aoi.textProperty().addListener(_ignored -> this.aoi = aoi.getText());
         this.aoi = aoi.getText();
-        pilot.textProperty().addListener(_ -> this.pilot = pilot.getText());
+        pilot.textProperty().addListener(_ignored -> this.pilot = pilot.getText());
         this.pilot = pilot.getText();
-        coPilot.textProperty().addListener(_ -> this.coPilot = coPilot.getText());
+        coPilot.textProperty().addListener(_ignored -> this.coPilot = coPilot.getText());
         this.coPilot = coPilot.getText();
-        height.textProperty().addListener(_ -> this.height = height.getText());
+        height.textProperty().addListener(_ignored -> this.height = height.getText());
         this.height = height.getText();
-        notes.textProperty().addListener(_ -> this.notes = notes.textProperty().get());
+        notes.textProperty().addListener(_ignored -> this.notes = notes.textProperty().get());
         this.notes = notes.textProperty().get();
 
-        finish.setOnAction(_ -> {
+        finish.setOnAction(_ignored -> {
             if(validate()){
                 Path baseDirectory = Paths.get(ProjectCache.currentlyOpenedProject.getFile().getParent());
 

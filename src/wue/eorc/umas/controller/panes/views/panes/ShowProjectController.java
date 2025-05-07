@@ -38,7 +38,7 @@ public class ShowProjectController implements ViewController {
         projectPilot.setEditable(false);
         projectLocation.setEditable(false);
 
-        editor.setOnAction(_ -> {
+        editor.setOnAction(_ignored -> {
             projectName.setEditable(editor.isSelected());
             projectPilot.setEditable(editor.isSelected());
             projectLocation.setEditable(editor.isSelected());

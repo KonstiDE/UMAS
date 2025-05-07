@@ -61,13 +61,13 @@ public class ItemSearcher {
                 if (genericType != null) {
                     boolean valid;
                     if (casted instanceof ComboBox<?> combo) {
-                        valid = combo.getItems().isEmpty() || genericType.isInstance(combo.getItems().getFirst());
+                        valid = combo.getItems().isEmpty() || genericType.isInstance(combo.getItems().get(0));
                     } else if (casted instanceof TableView<?> table) {
-                        valid = table.getItems().isEmpty() || genericType.isInstance(table.getItems().getFirst());
+                        valid = table.getItems().isEmpty() || genericType.isInstance(table.getItems().get(0));
                     } else if (casted instanceof CheckComboBox<?> checkcombo) {
-                        valid = checkcombo.getItems().isEmpty() || genericType.isInstance(checkcombo.getItems().getFirst());
+                        valid = checkcombo.getItems().isEmpty() || genericType.isInstance(checkcombo.getItems().get(0));
                     } else if (casted instanceof TreeView<?> treeView) {
-                        valid = treeView.getRoot() == null || genericType.isInstance(treeView.getRoot().getChildren().getFirst());
+                        valid = treeView.getRoot() == null || genericType.isInstance(treeView.getRoot().getChildren().get(0));
                     } else {
                         throw new UMASException(ErrorType.INTERNAL, "Generic check not supported for type: " + type.getSimpleName());
                     }

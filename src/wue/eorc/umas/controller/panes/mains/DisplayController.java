@@ -22,9 +22,9 @@ public class DisplayController {
     public DisplayController(SplitPane rootControl){
         this.rootControl = rootControl;
 
-        this.left = (AnchorPane) rootControl.getItems().getFirst();
+        this.left = (AnchorPane) rootControl.getItems().get(0);
         this.center = (ScrollPane) rootControl.getItems().get(1);
-        this.right = (AnchorPane) rootControl.getItems().getLast();
+        this.right = (AnchorPane) rootControl.getItems().get(2);
     }
 
     public void switchSceneTo(SplitPanePosition key, Pane pane, ViewController trigger) {
@@ -42,7 +42,7 @@ public class DisplayController {
 
     }
 
-    public Flight openDialog(DialogPane pane, DialogController trigger) {
+    public Flight openFlightDialog(DialogPane pane, DialogController trigger) {
         Dialog<String> dialog = new Dialog<>();
         dialog.setDialogPane(pane);
         dialog.setTitle("Add a new flight");
@@ -58,6 +58,22 @@ public class DisplayController {
         dialog.close();
 
         return json.map(Flight::factoryFromJson).orElse(null);
+    }
+
+    public void openSettingsDialog(DialogPane pane, DialogController trigger) {
+        Dialog<String> dialog = new Dialog<>();
+        dialog.setDialogPane(pane);
+        dialog.setTitle("Settings");
+
+        try{
+            trigger.init(pane, this, dialog);
+        }catch (UMASException e){
+            e.printStackTrace();
+        }
+
+        dialog.showAndWait();
+        dialog.hide();
+        dialog.close();
     }
 
     private void setLeft(Pane pane){
