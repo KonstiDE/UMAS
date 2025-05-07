@@ -15,6 +15,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import wue.eorc.umas.loader.ProjectCache;
+import wue.eorc.umas.loader.Settings;
 import wue.eorc.umas.models.Flight;
 import org.controlsfx.control.CheckComboBox;
 import wue.eorc.umas.utils.ItemSearcher;
@@ -54,6 +55,10 @@ public class AddFlightController implements DialogController, CopyProgressListen
 
     @Override
     public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
+        if(Settings.useDarkLayout()){
+            pane.getScene().getStylesheets().add(Settings.darkMode);
+        }
+
         DatePicker datePicker = ItemSearcher.getItemById("addflight.date", pane, DatePicker.class);
         TextField location = ItemSearcher.getItemById("addflight.location", pane, TextField.class);
         TextField aoi = ItemSearcher.getItemById("addflight.aoi", pane, TextField.class);

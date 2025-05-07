@@ -65,17 +65,19 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
                               <Label text="Agisoft Executable Path" />
-                              <Label text="Terra Executable Path" GridPane.rowIndex="2" />
+                              <Label text="Terra Executable Path" GridPane.rowIndex="3" />
                               <HBox prefHeight="100.0" prefWidth="256.0" spacing="12.0" GridPane.columnIndex="1">
                                  <children>
                                     <Button id="settings.agisoftexecpathbrowse" mnemonicParsing="false" text="Browse" />
                                     <TextField id="settings.agisoftexecpath" prefHeight="26.0" prefWidth="247.0" />
                                  </children>
                               </HBox>
-                              <HBox prefHeight="100.0" prefWidth="256.0" spacing="12.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                              <HBox prefHeight="100.0" prefWidth="256.0" spacing="12.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
                                  <children>
                                     <Button id="settings.terraexecpathbrowse" mnemonicParsing="false" text="Browse" />
                                     <TextField id="settings.terraexecpath" prefHeight="26.0" prefWidth="247.0" />
@@ -87,7 +89,7 @@
                                     <Label id="settings.agisoftversion" />
                                  </children>
                               </HBox>
-                              <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                              <HBox prefHeight="100.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
                                  <children>
                                     <ImageView id="settings.terraindicator" fitHeight="24.0" fitWidth="24.0" pickOnBounds="true" preserveRatio="true" />
                                     <Label id="settings.terraversion" />

@@ -1,6 +1,7 @@
 package wue.eorc.umas;
 
 import wue.eorc.umas.controller.RootController;
+import wue.eorc.umas.enums.Setting;
 import wue.eorc.umas.exception.UMASException;
 import javafx.application.Application;
 import javafx.geometry.Rectangle2D;
@@ -25,6 +26,7 @@ public class Main extends Application {
         primaryStage.setTitle("UAS Mission Application");
 
         ProjectCache.createRecentProjectsFile();
+
         Settings.createSettingsFile();
 
         SceneLoader loader = new SceneLoader(this.getClass(), "scenes/");
@@ -34,17 +36,26 @@ public class Main extends Application {
 
         Scene scene = new Scene(root, 1024, 720);
 
-        scene.getStylesheets().add("wue.eorc.umas.resources/dark-mode.css");
 
-        primaryStage.setScene(scene);
-        primaryStage.setWidth(1440);
-        primaryStage.setHeight(900);
-
-        primaryStage.show();
+        // Check settings
+        if(Settings.getSetting(Setting.UITHEME).equals("Dark")){
+            scene.getStylesheets().add(Settings.darkMode);
+        }
 
         Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-        primaryStage.setX((primScreenBounds.getWidth() - primaryStage.getWidth()) / 2);
-        primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
+
+        if(Boolean.parseBoolean(Settings.getSetting(Setting.FULLSCREENATSTARTUP))){
+            primaryStage.setMaximized(true);
+        }else{
+            primaryStage.setWidth(1440);
+            primaryStage.setHeight(900);
+
+            primaryStage.setX((primScreenBounds.getWidth() - primaryStage.getWidth()) / 2);
+            primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
+        }
+
+        primaryStage.setScene(scene);
+        primaryStage.show();
 
     }
 }

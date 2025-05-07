@@ -12,6 +12,8 @@ import java.util.Map;
 
 public class Settings {
 
+    public static final String darkMode = "wue/eorc/umas/resources/dark-mode.css";
+
     private static final Gson gson = new Gson();
 
     public static File settingsPath;
@@ -62,6 +64,10 @@ public class Settings {
 
     public static void modifySettings(Setting key, String value){
         settings.put(key, value);
+    }
+
+    public static boolean useDarkLayout(){
+        return settings.get(Setting.UITHEME).equals("Dark");
     }
 
 }

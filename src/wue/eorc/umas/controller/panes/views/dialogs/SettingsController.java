@@ -1,5 +1,8 @@
 package wue.eorc.umas.controller.panes.views.dialogs;
 
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
@@ -8,6 +11,7 @@ import javafx.stage.FileChooser;
 import org.controlsfx.control.ToggleSwitch;
 import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.panes.mains.DisplayController;
+import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.Setting;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.Settings;
@@ -22,6 +26,10 @@ public class SettingsController implements DialogController {
 
     @Override
     public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
+        if(Settings.useDarkLayout()){
+            pane.getScene().getStylesheets().add(Settings.darkMode);
+        }
+
         ComboBox<String> uiTheme = ItemSearcher.getGenericControlById("settings.uitheme", pane, ComboBox.class, String.class);
         ToggleSwitch fullScreenAtStartup = ItemSearcher.getItemById("settings.fullscreenatstartup", pane, ToggleSwitch.class);
 
@@ -42,6 +50,17 @@ public class SettingsController implements DialogController {
         uiTheme.getItems().clear();
         uiTheme.getItems().addAll("Light", "Dark");
         uiTheme.getSelectionModel().select(Settings.getSetting(Setting.UITHEME));
+        uiTheme.setOnAction(_ignored -> {
+            if (uiTheme.getSelectionModel().getSelectedItem().equals("Dark")) {
+                display.rootControl.getScene().getStylesheets().clear();
+                display.rootControl.getScene().getStylesheets().add(Settings.darkMode);
+
+                dialog.getDialogPane().getScene().getStylesheets().add(Settings.darkMode);
+            }else{
+                display.rootControl.getScene().getStylesheets().clear();
+                dialog.getDialogPane().getScene().getStylesheets().clear();
+            }
+        });
 
         fullScreenAtStartup.setSelected(Boolean.parseBoolean(Settings.getSetting(Setting.FULLSCREENATSTARTUP)));
 
@@ -70,6 +89,31 @@ public class SettingsController implements DialogController {
                 throw new RuntimeException(e);
             }
 
+        });
+
+        save.setOnAction(_ignored -> {
+            try {
+                Settings.modifySettings(Setting.UITHEME, uiTheme.getValue());
+                Settings.modifySettings(Setting.FULLSCREENATSTARTUP, "" + fullScreenAtStartup.isSelected());
+                Settings.modifySettings(Setting.AGISOFTEXECPATH, agisoftExecPath.getText());
+                Settings.modifySettings(Setting.TERRAEXECPATH, terraExecPath.getText());
+
+                Settings.saveSettings();
+            } catch (IOException e) {
+                UMASException.throwWindow(ErrorType.INTERNAL, "Could not save settings. Please restart the application!");
+            }
+
+            Platform.runLater(() -> {
+                dialog.setResult("");
+                dialog.close();
+            });
+        });
+
+        cancel.setOnAction(_ignored -> {
+            Platform.runLater(() -> {
+                dialog.setResult("");
+                dialog.close();
+            });
         });
 
     }
