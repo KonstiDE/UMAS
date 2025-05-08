@@ -106,6 +106,11 @@ public class SettingsController implements DialogController {
         });
 
         cancel.setOnAction(_ignored -> {
+            if(Settings.getSetting(Setting.UITHEME).equals("Light")){
+                dialog.getDialogPane().getScene().getStylesheets().clear();
+                display.rootControl.getScene().getStylesheets().clear();
+            }
+
             Platform.runLater(() -> {
                 dialog.setResult("");
                 dialog.close();
