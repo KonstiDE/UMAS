@@ -24,14 +24,14 @@ public class Flight implements Serializable {
     private final String height;
     private final UAV uav;
     private final Sensor sensor;
-    private final List<ImageType> imageTypes;
+    private final Map<ImageType, String> imageTypes;
     private final ProcessingChain processingChain;
     private final String baseDirectory;
     private final List<String> originFlightDirs;
     private final List<String> originCalibDirs;
     private final String notes;
 
-    public Flight(String date, String location, String aoi, String pilot, String coPilot, String height, UAV uav, Sensor sensor, List<ImageType> imageTypes, ProcessingChain processingChain, String baseDirectory, List<String> originFlightDirs, List<String> originCalibDirs, String notes) throws UMASException {
+    public Flight(String date, String location, String aoi, String pilot, String coPilot, String height, UAV uav, Sensor sensor, Map<ImageType, String> imageTypes, ProcessingChain processingChain, String baseDirectory, List<String> originFlightDirs, List<String> originCalibDirs, String notes) throws UMASException {
         this.date = date;
         this.location = location;
         this.aoi = aoi;
@@ -48,9 +48,12 @@ public class Flight implements Serializable {
         this.notes = notes;
 
         boolean created = DirectoryUtils.createFolderStructure(this);
+
         if (!created){
             UMASException.throwWindow(ErrorType.USER, "Could not create the folder structure 0_RGB (and so on...). " +
-                    "Please create it manually!");
+                    "Please restart the application. Do not created it manually.");
+        }else{
+            DirectoryUtils.fillImageTypeDirs(this);
         }
 
     }
@@ -126,7 +129,7 @@ public class Flight implements Serializable {
         return sensor;
     }
 
-    public List<ImageType> getImageTypes() {
+    public Map<ImageType, String> getImageTypes() {
         return imageTypes;
     }
 

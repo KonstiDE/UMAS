@@ -23,10 +23,7 @@ import wue.eorc.umas.utils.ItemSearcher;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.stream.Stream;
 
@@ -40,7 +37,7 @@ public class AddFlightController implements DialogController, CopyProgressListen
     private String height;
     private UAV uav;
     private Sensor sensor;
-    private List<ImageType> imageTypes;
+    private final Map<ImageType, String> imageTypes = new HashMap<>();
     private ProcessingChain processingChain;
     private final List<String> flightsOrigins = new ArrayList<>();
     private final List<String> calibOrigins = new ArrayList<>();
@@ -138,11 +135,16 @@ public class AddFlightController implements DialogController, CopyProgressListen
         });
 
         selectImageTypes.getCheckModel().getCheckedIndices().addListener((ListChangeListener<Integer>) _ignored -> {
-            this.imageTypes = selectImageTypes.getCheckModel().getCheckedItems()
+            for(ImageType imageType : selectImageTypes.getCheckModel().getCheckedItems()
                     .stream()
                     .map(ImageType::valueOf)
-                    .toList();
-            if(this.imageTypes.contains(ImageType.MULTISPECTRAL)){
+                    .toList()){
+
+                this.imageTypes.put(imageType, null);
+
+            }
+
+            if(this.imageTypes.containsKey(ImageType.MULTISPECTRAL)){
                 browseCalib.setDisable(false);
                 calibDirs.setDisable(false);
             }else{

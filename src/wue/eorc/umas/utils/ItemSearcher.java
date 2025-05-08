@@ -1,5 +1,6 @@
 package wue.eorc.umas.utils;
 
+import javafx.scene.layout.GridPane;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.exception.UMASException;
 import javafx.scene.Node;

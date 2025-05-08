@@ -1,6 +1,8 @@
 package wue.eorc.umas.utils;
 
 import wue.eorc.umas.enums.ErrorType;
+import wue.eorc.umas.enums.ImageType;
+import wue.eorc.umas.enums.ProcessingChain;
 import wue.eorc.umas.enums.Sensor;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.models.Flight;
@@ -61,7 +63,8 @@ public class DirectoryUtils {
                     );
                     case M300 -> switch (flight.getSensor()){
                         case ALTUM, MXDUAL -> List.of(
-                                createDeepFolder(baseDir, "0_Images"),
+                                createDeepFolder(baseDir, "0_Images", "0_RGB"),
+                                createDeepFolder(baseDir, "0_Images", "1_MS"),
                                 createDeepFolder(baseDir, "1_Agisoft"),
                                 createDeepFolder(baseDir, "2_Reports"),
                                 createDeepFolder(baseDir, "3_FlightFiles", "0_Log"),
@@ -329,6 +332,27 @@ public class DirectoryUtils {
         return Paths.get(baseDir.getAbsolutePath(), toThePeterCopter).toFile();
     }
 
+    public static void fillImageTypeDirs(Flight flight){
+        for (ImageType type : flight.getImageTypes().keySet()) {
+            switch (type) {
+                case RGB -> {
+                    File rgbDir = Paths.get(flight.getFlightDirectory(), "0_Images", "0_RGB").toFile();
+                    if(rgbDir.exists()) flight.getImageTypes().put(type, rgbDir.getAbsolutePath());
+                }
+                case MULTISPECTRAL -> {
+                    File msDir = Paths.get(flight.getFlightDirectory(), "0_Images", "1_MS").toFile();
+                    if(msDir.exists()) flight.getImageTypes().put(type, msDir.getAbsolutePath());
+                }
+                case IR -> {
+                    File irDir1 = Paths.get(flight.getFlightDirectory(), "0_Images", "1_T").toFile();
+                    File irDir2 = Paths.get(flight.getFlightDirectory(), "0_Images", "1_TCal").toFile();
+                    if(irDir1.exists() && irDir2.exists()) flight.getImageTypes().put(type, irDir2.getAbsolutePath());
+                }
+            }
+        }
+
+    }
+
     public static Path getCacheFolder(final String osName) {
         if (osName.toLowerCase().contains("mac")) {
             return Paths.get(System.getProperty("user.home"), "Library", "Caches");
@@ -358,6 +382,12 @@ public class DirectoryUtils {
             }
         }
         return cacheFolder;
+    }
+
+    public static String figureAgisoftFilePath(Flight flight) {
+        return Paths.get(flight.getFlightDirectory(), flight.getProcessingChain() == ProcessingChain.AGISOFT ?
+                        "1_Agisoft/" + flight.getProjectFileNameAgisoft() :
+                        "2_Agisoft/" + flight.getProjectFileNameAgisoft()).toFile().getAbsolutePath();
     }
 
 }

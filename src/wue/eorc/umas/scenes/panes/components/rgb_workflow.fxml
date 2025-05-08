@@ -7,13 +7,11 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
-
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -31,10 +29,9 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <StackPane prefHeight="150.0" prefWidth="200.0">
+            <StackPane id="processing.addphotos" prefHeight="150.0" prefWidth="200.0">
                <children>
-                  <HBox alignment="CENTER" prefHeight="96.0" prefWidth="96.0" />
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#30d365" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
+                  <Rectangle id="processing.rectangle.addphotos" arcHeight="5.0" arcWidth="5.0" fill="#f55c75" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <VBox prefHeight="106.0" prefWidth="100.0">
                      <children>
                         <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
@@ -59,7 +56,6 @@
             </StackPane>
             <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1">
                <children>
-                  <HBox alignment="CENTER" prefHeight="96.0" prefWidth="96.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#30d365" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <VBox prefHeight="106.0" prefWidth="100.0">
                      <children>
@@ -85,7 +81,6 @@
             </StackPane>
             <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="2">
                <children>
-                  <HBox alignment="CENTER" prefHeight="96.0" prefWidth="96.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#30d365" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <VBox prefHeight="106.0" prefWidth="100.0">
                      <children>
@@ -111,7 +106,6 @@
             </StackPane>
             <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="3">
                <children>
-                  <HBox alignment="CENTER" prefHeight="96.0" prefWidth="96.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#30d365" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <VBox prefHeight="106.0" prefWidth="100.0">
                      <children>
@@ -137,7 +131,6 @@
             </StackPane>
             <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.rowIndex="1">
                <children>
-                  <HBox alignment="CENTER" prefHeight="96.0" prefWidth="96.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#30d365" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <VBox prefHeight="106.0" prefWidth="100.0">
                      <children>
@@ -163,7 +156,6 @@
             </StackPane>
             <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
-                  <HBox alignment="CENTER" prefHeight="96.0" prefWidth="96.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#30d365" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <VBox prefHeight="106.0" prefWidth="100.0">
                      <children>
@@ -189,7 +181,6 @@
             </StackPane>
             <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <children>
-                  <HBox alignment="CENTER" prefHeight="96.0" prefWidth="96.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#30d365" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <VBox prefHeight="106.0" prefWidth="100.0">
                      <children>
@@ -215,7 +206,6 @@
             </StackPane>
             <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
                <children>
-                  <HBox alignment="CENTER" prefHeight="96.0" prefWidth="96.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#30d365" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <VBox prefHeight="106.0" prefWidth="100.0">
                      <children>
@@ -241,7 +231,6 @@
             </StackPane>
             <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.rowIndex="2">
                <children>
-                  <HBox alignment="CENTER" prefHeight="96.0" prefWidth="96.0" />
                   <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#30d365" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <VBox prefHeight="106.0" prefWidth="100.0">
                      <children>

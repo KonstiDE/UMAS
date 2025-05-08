@@ -102,7 +102,7 @@ public class ShowFlightsController implements ViewController {
             private static ArrayList<ImageView> getImageViews(Flight flight) {
                 ArrayList<ImageView> imageViewList = new ArrayList<>();
 
-                for(ImageType imageType : flight.getImageTypes()) {
+                for(ImageType imageType : flight.getImageTypes().keySet()) {
                     String iconpath = "wue/eorc/umas/assets/imgicons/" + switch(imageType) {
                         case RGB -> "rgb.png";
                         case MULTISPECTRAL -> "ms.png";

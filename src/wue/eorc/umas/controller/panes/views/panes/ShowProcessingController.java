@@ -1,13 +1,14 @@
 package wue.eorc.umas.controller.panes.views.panes;
 
-import javafx.fxml.FXMLLoader;
+import javafx.scene.Cursor;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.panes.mains.DisplayController;
 import wue.eorc.umas.enums.ErrorType;
@@ -17,6 +18,8 @@ import wue.eorc.umas.exception.UMASException;
 import javafx.scene.layout.Pane;
 import wue.eorc.umas.loader.SceneLoader;
 import wue.eorc.umas.models.Flight;
+import wue.eorc.umas.utils.Colors;
+import wue.eorc.umas.utils.DirectoryUtils;
 import wue.eorc.umas.utils.ItemSearcher;
 
 import java.io.IOException;
@@ -41,10 +44,7 @@ public class ShowProcessingController implements ViewController {
         Button createAgisoft = ItemSearcher.getItemById("showprocess.createagisoft", pane, Button.class);
         createAgisoft.setOnAction(_ignored -> {
             try {
-                boolean success = AgisoftCaller.createProject(this.flight.getFlightDirectory(),
-                        this.flight.getProcessingChain() == ProcessingChain.AGISOFT ?
-                                "1_Agisoft/" + this.flight.getProjectFileNameAgisoft() :
-                                "2_Agisoft/" + this.flight.getProjectFileNameAgisoft());
+                boolean success = AgisoftCaller.createProject(DirectoryUtils.figureAgisoftFilePath(this.flight));
 
                 if(!success) {
                     UMASException.throwWindow(ErrorType.INTERNAL, "Could not create Agisoft project! Please restart the application!");
@@ -58,11 +58,14 @@ public class ShowProcessingController implements ViewController {
         });
 
         TabPane processingAgisoft = ItemSearcher.getItemById("showprocess.imagetypepaneagisoft", (AnchorPane) tabPane.getTabs().get(0).getContent(), TabPane.class);
-        for(ImageType imageType : this.flight.getImageTypes()){
+        processingAgisoft.getTabs().clear();
+        for(ImageType imageType : this.flight.getImageTypes().keySet()){
             Tab tab = new Tab();
             tab.setText(imageType.getName());
 
             AnchorPane workflow = (AnchorPane) SceneLoader.getAvailableScenes().get("rgb_workflow");
+
+            setupWorkflowActions(workflow);
 
             AnchorPane anchorPane = new AnchorPane();
             anchorPane.getChildren().add(workflow);
@@ -73,8 +76,24 @@ public class ShowProcessingController implements ViewController {
             processingAgisoft.getTabs().add(tab);
         }
 
+    }
 
+    private void setupWorkflowActions(AnchorPane workflow) throws UMASException {
+        StackPane addPhotos = ItemSearcher.getItemById("processing.addphotos", workflow, StackPane.class);
+        Rectangle addPhotosRectangle = ItemSearcher.getItemById("processing.rectangle.addphotos", addPhotos, Rectangle.class);
 
+        if (!AgisoftCaller.addPhotosCheck(DirectoryUtils.figureAgisoftFilePath(this.flight))) {
+            addPhotosRectangle.setFill(Colors.PROC_RED);
+            addPhotos.setCursor(Cursor.HAND);
+            addPhotos.setOnMouseClicked(_ignored -> {
+                boolean success = AgisoftCaller.addPhotos(DirectoryUtils.figureAgisoftFilePath(this.flight), this.flight.getImageTypes().values().stream().toList());
+                if(!success) {
+                    UMASException.throwWindow(ErrorType.INTERNAL, "Could not add photos!");
+                }
+            });
+        } else {
+            addPhotosRectangle.setFill(Colors.PROC_GREEN);
+        }
     }
 
     private void refresh(Pane pane, DisplayController display) {
@@ -88,7 +107,7 @@ public class ShowProcessingController implements ViewController {
     private void checkProcessingChain(Pane pane, DisplayController display, TabPane tabPane) throws UMASException {
         Button createAgisoft = ItemSearcher.getItemById("showprocess.createagisoft", pane, Button.class);
         Button createTerra =  ItemSearcher.getItemById("showprocess.createterra", pane, Button.class);
-        Circle statusAigsoft = ItemSearcher.getItemById("showprocess.statusagisoft", pane, Circle.class);
+        Circle statusAgisoft = ItemSearcher.getItemById("showprocess.statusagisoft", pane, Circle.class);
         Circle statusTerra = ItemSearcher.getItemById("showprocess.statusterra", pane, Circle.class);
 
         Tab tabAgisoft = tabPane.getTabs().get(0);
@@ -96,14 +115,11 @@ public class ShowProcessingController implements ViewController {
 
         if (projectExistsAgisoft(this.flight)){
             createAgisoft.setDisable(true);
-            statusAigsoft.setFill(Paint.valueOf("GREEN"));
+            statusAgisoft.setFill(Paint.valueOf("GREEN"));
             tabAgisoft.setDisable(false);
         }else{
             createAgisoft.setDisable(false);
-            createAgisoft.setOnAction(_ignored -> {
-
-            });
-            statusAigsoft.setFill(Paint.valueOf("RED"));
+            statusAgisoft.setFill(Paint.valueOf("RED"));
             tabAgisoft.setDisable(true);
         }
 

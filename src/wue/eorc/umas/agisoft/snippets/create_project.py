@@ -6,9 +6,9 @@ import Metashape as ms
 from utils import get_arg
 
 
-def create_project(p, n):
+def create_project(psx):
     doc = ms.Document()
-    doc.save(path=os.path.join(p, n),
+    doc.save(path=psx,
              archive=True)
     del doc
 
@@ -18,7 +18,6 @@ def create_project(p, n):
 if __name__ == '__main__':
     args = sys.argv[1:]
 
-    name = get_arg(args, "-psxname")
-    path = get_arg(args, "-path")
+    psx = get_arg(args, "-psxFile")
 
-    create_project(path, name)
+    create_project(psx)

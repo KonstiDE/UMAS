@@ -32,12 +32,13 @@ def add_photos(file, folders):
 
     del doc
 
+    print("vn: true")
 
 
 if __name__ == '__main__':
     args = sys.argv[1:]
 
-    project_file = get_arg(args, "-project_file")
+    project_file = get_arg(args, "-psxFile")
     photo_folder_list = get_arg(args, "-photo_folder")
 
     try:
