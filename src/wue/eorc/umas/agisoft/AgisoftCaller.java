@@ -1,5 +1,8 @@
 package wue.eorc.umas.agisoft;
 
+import wue.eorc.umas.enums.Setting;
+import wue.eorc.umas.loader.Settings;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -17,36 +20,36 @@ public class AgisoftCaller {
 
     public static Queue<CompletableFuture<Boolean>> queue = new ConcurrentLinkedQueue<>();
 
-    public AgisoftCaller(String metashape, String executableScripts) {
+    private static final String snippetsPath =
+            Paths.get("src", "wue", "eorc", "umas", "agisoft", "snippets").toFile().getAbsolutePath();
 
-    }
+    public static boolean createProject(String path, String psxName) throws IOException, InterruptedException {
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "create_project.py");
 
-    public static boolean createProject() throws IOException, InterruptedException {
-        Path rootPath = FileSystems.getDefault().getPath("").toAbsolutePath();
-        Path pythonPath = Paths.get("/opt/metashape-pro/metashape");
-        Path filePath = Paths.get(rootPath.toString(),"src", "wue", "eorc", "umas", "agisoft", "test.py");
-
-        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r", filePath.toFile().getAbsolutePath());
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-path", path, "-psxname", psxName);
         pb.redirectErrorStream(true);
         Process p = pb.start();
+
+        boolean success = false;
 
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
             String line;
             while ((line = reader.readLine()) != null) {
-                System.out.println("[Python] " + line);
+                if(line.startsWith("vn: ")){
+                    success = Boolean.parseBoolean(line.substring(4));
+                }
             }
         }
         int exitCode = p.waitFor();
 
-        System.out.println(exitCode);
-
-        return false;
+        return exitCode == 0 && success;
     }
 
     public static String checkAgisoftVersion(String path) throws InterruptedException {
-        Path rootPath = FileSystems.getDefault().getPath("").toAbsolutePath();
         Path pythonPath = Paths.get(path);
-        Path filePath = Paths.get(rootPath.toString(),"src", "wue", "eorc", "umas", "agisoft", "snippets", "version_number.py");
+        Path filePath = Paths.get(snippetsPath, "version_number.py");
 
         try{
             ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r", filePath.toFile().getAbsolutePath());
@@ -58,8 +61,7 @@ public class AgisoftCaller {
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(p.getInputStream()))) {
                 String line;
                 while ((line = reader.readLine()) != null) {
-                    System.out.println(line);
-                    if(line.contains("vn:")){
+                    if(line.startsWith("vn: ")){
                         versionNumber = line.substring(4);
                     }
                 }

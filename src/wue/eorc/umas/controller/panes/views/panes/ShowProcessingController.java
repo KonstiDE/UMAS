@@ -1,19 +1,25 @@
 package wue.eorc.umas.controller.panes.views.panes;
 
+import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.panes.mains.DisplayController;
 import wue.eorc.umas.enums.ErrorType;
+import wue.eorc.umas.enums.ImageType;
 import wue.eorc.umas.enums.ProcessingChain;
 import wue.eorc.umas.exception.UMASException;
 import javafx.scene.layout.Pane;
+import wue.eorc.umas.loader.SceneLoader;
 import wue.eorc.umas.models.Flight;
 import wue.eorc.umas.utils.ItemSearcher;
 
+import java.io.IOException;
 import java.nio.file.Paths;
 
 public class ShowProcessingController implements ViewController {
@@ -27,26 +33,64 @@ public class ShowProcessingController implements ViewController {
     @Override
     public void init(Pane pane, DisplayController display) throws UMASException {
         Button refresh = ItemSearcher.getItemById("showprocess.refresh", pane, Button.class);
-        refresh.setOnAction(_ignored -> {
+        refresh.setOnAction(_ignored -> refresh(pane, display));
+
+        TabPane tabPane = ItemSearcher.getItemById("showprocess.tabpane", pane, TabPane.class);
+        checkProcessingChain(pane, display, tabPane);
+
+        Button createAgisoft = ItemSearcher.getItemById("showprocess.createagisoft", pane, Button.class);
+        createAgisoft.setOnAction(_ignored -> {
             try {
-                init(pane, display);
-            } catch (UMASException ex) {
-                UMASException.throwWindow(ErrorType.INTERNAL, "Could not refresh the processing display. Please restart the application!");
+                boolean success = AgisoftCaller.createProject(this.flight.getFlightDirectory(),
+                        this.flight.getProcessingChain() == ProcessingChain.AGISOFT ?
+                                "1_Agisoft/" + this.flight.getProjectFileNameAgisoft() :
+                                "2_Agisoft/" + this.flight.getProjectFileNameAgisoft());
+
+                if(!success) {
+                    UMASException.throwWindow(ErrorType.INTERNAL, "Could not create Agisoft project! Please restart the application!");
+                }else{
+                    refresh(pane, display);
+                }
+
+            } catch (IOException | InterruptedException e) {
+                UMASException.throwWindow(ErrorType.INTERNAL, "Could not create Agisoft project! Did you set the Agisoft path in the Settings?");
             }
         });
 
-        checkProcessingChain(pane, display);
+        TabPane processingAgisoft = ItemSearcher.getItemById("showprocess.imagetypepaneagisoft", (AnchorPane) tabPane.getTabs().get(0).getContent(), TabPane.class);
+        for(ImageType imageType : this.flight.getImageTypes()){
+            Tab tab = new Tab();
+            tab.setText(imageType.getName());
+
+            AnchorPane workflow = (AnchorPane) SceneLoader.getAvailableScenes().get("rgb_workflow");
+
+            AnchorPane anchorPane = new AnchorPane();
+            anchorPane.getChildren().add(workflow);
+
+            tab.setClosable(false);
+            tab.setContent(anchorPane);
+
+            processingAgisoft.getTabs().add(tab);
+        }
+
 
 
     }
 
-    private void checkProcessingChain(Pane pane, DisplayController display) throws UMASException {
+    private void refresh(Pane pane, DisplayController display) {
+        try {
+            init(pane, display);
+        } catch (UMASException ex) {
+            UMASException.throwWindow(ErrorType.INTERNAL, "Could not refresh the processing display. Please restart the application!");
+        }
+    }
+
+    private void checkProcessingChain(Pane pane, DisplayController display, TabPane tabPane) throws UMASException {
         Button createAgisoft = ItemSearcher.getItemById("showprocess.createagisoft", pane, Button.class);
         Button createTerra =  ItemSearcher.getItemById("showprocess.createterra", pane, Button.class);
         Circle statusAigsoft = ItemSearcher.getItemById("showprocess.statusagisoft", pane, Circle.class);
         Circle statusTerra = ItemSearcher.getItemById("showprocess.statusterra", pane, Circle.class);
 
-        TabPane tabPane = ItemSearcher.getItemById("showprocess.tabpane", pane, TabPane.class);
         Tab tabAgisoft = tabPane.getTabs().get(0);
         Tab tabTerra = tabPane.getTabs().get(1);
 

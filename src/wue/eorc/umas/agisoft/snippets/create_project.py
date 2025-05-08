@@ -12,11 +12,13 @@ def create_project(p, n):
              archive=True)
     del doc
 
+    print("vn: true")
+
 
 if __name__ == '__main__':
     args = sys.argv[1:]
 
+    name = get_arg(args, "-psxname")
     path = get_arg(args, "-path")
-    name = get_arg(args, "-name")
 
     create_project(path, name)
