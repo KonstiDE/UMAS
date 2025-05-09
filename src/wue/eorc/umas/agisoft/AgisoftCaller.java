@@ -1,24 +1,25 @@
 package wue.eorc.umas.agisoft;
 
+import javafx.scene.layout.StackPane;
+import wue.eorc.umas.controller.listeners.AgisoftCallbackListener;
+import wue.eorc.umas.enums.AgisoftTask;
 import wue.eorc.umas.enums.Setting;
+import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.Settings;
 
 import java.io.*;
-import java.nio.file.FileSystems;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
-import java.util.Set;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentLinkedQueue;
 
 public class AgisoftCaller {
 
-    public String metashapePath;
-    public String executableScriptsFolder;
+    public static Queue<Runnable> queue = new LinkedList<>();
 
-    public static Queue<CompletableFuture<Boolean>> queue = new ConcurrentLinkedQueue<>();
+    private static boolean isRunning = false;
 
     private static final String snippetsPath =
             Paths.get("src", "wue", "eorc", "umas", "agisoft", "snippets").toFile().getAbsolutePath();
@@ -58,45 +59,60 @@ public class AgisoftCaller {
         }
     }
 
-    public static boolean addPhotos(String psxFile, List<String> folders) {
+    public static void addPhotos(StackPane stackPane, String psxFile, List<String> folders, AgisoftCallbackListener listener){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "add_photos.py");
 
-        try{
-            ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r", filePath.toFile().getAbsolutePath(),
-                    "-psxFile", psxFile, "-photo_folder", folders.size() > 1 ? String.join(",", folders) : folders.get(0));
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r", filePath.toFile().getAbsolutePath(),
+                "-psxFile", psxFile, "-photo_folder", folders.size() > 1 ? String.join(",", folders) : folders.get(0));
 
-            pb.redirectErrorStream(true);
-            Process p = pb.start();
-
-            boolean success = Boolean.parseBoolean(watchForSignal("vn: ", p.getInputStream()));
-
-            int exitCode = p.waitFor();
-
-            return exitCode == 0 && success;
-        }catch (IOException | InterruptedException e){
-            return false;
-        }
+        enqueue(AgisoftTask.ADD_PHOTOS, stackPane, pb, false, listener);
     }
 
-    public static boolean addPhotosCheck(String psxFile){
+    public static void addPhotosCheck(StackPane stackPane, String psxFile, AgisoftCallbackListener listener){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "add_photos_check.py");
 
-        try{
-            ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                    filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
 
-            pb.redirectErrorStream(true);
-            Process p = pb.start();
+        enqueue(AgisoftTask.ADD_PHOTOS_CHECK, stackPane, pb, true, listener);
+    }
 
-            boolean success = Boolean.parseBoolean(watchForSignal("vn: ", p.getInputStream()));
+    private static void enqueue(AgisoftTask task, StackPane stackPane, ProcessBuilder pb, boolean nextIfFailed, AgisoftCallbackListener listener){
+        queue.add(() -> {
+            CompletableFuture.supplyAsync(() -> {
+                try{
+                   pb.redirectErrorStream(true);
+                   Process p = pb.start();
 
-            int exitCode = p.waitFor();
+                   boolean success = Boolean.parseBoolean(watchForSignal("vn: ", p.getInputStream()));
 
-            return exitCode == 0 && success;
-        }catch (IOException | InterruptedException e){
-            return false;
+                   int exitCode = p.waitFor();
+
+                   return exitCode == 0 && success;
+                }catch (IOException | InterruptedException e){
+                   return false;
+                }
+            }) .thenAcceptAsync(result -> {
+                if(result) {
+                    isRunning = true;
+                    processNext();
+                }else{
+                    if(nextIfFailed) processNext();
+                }
+                try {
+                    listener.callback(stackPane, task, result);
+                } catch (UMASException e) {
+                    throw new RuntimeException(e);
+                }
+
+            });
+        });
+
+        if (!isRunning) {
+            isRunning = true;
+            processNext();
         }
     }
 
@@ -114,5 +130,13 @@ public class AgisoftCaller {
         return null;
     }
 
+    private static synchronized void processNext() {
+        Runnable nextTask = queue.poll();
+        if (nextTask != null) {
+            nextTask.run();
+        } else {
+            isRunning = false;
+        }
+    }
 
 }

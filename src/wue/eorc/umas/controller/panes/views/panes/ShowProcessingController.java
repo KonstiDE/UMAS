@@ -1,24 +1,20 @@
 package wue.eorc.umas.controller.panes.views.panes;
 
-import javafx.scene.Cursor;
 import javafx.scene.control.Button;
 import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
-import javafx.scene.shape.Rectangle;
 import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.panes.mains.DisplayController;
+import wue.eorc.umas.controller.panes.views.panes.components.ProcessActionsPreparer;
 import wue.eorc.umas.enums.ErrorType;
-import wue.eorc.umas.enums.ImageType;
 import wue.eorc.umas.enums.ProcessingChain;
+import wue.eorc.umas.enums.WorkflowType;
 import wue.eorc.umas.exception.UMASException;
 import javafx.scene.layout.Pane;
-import wue.eorc.umas.loader.SceneLoader;
 import wue.eorc.umas.models.Flight;
-import wue.eorc.umas.utils.Colors;
 import wue.eorc.umas.utils.DirectoryUtils;
 import wue.eorc.umas.utils.ItemSearcher;
 
@@ -60,14 +56,15 @@ public class ShowProcessingController implements ViewController {
 
         TabPane processingAgisoft = ItemSearcher.getItemById("showprocess.imagetypepaneagisoft", (AnchorPane) tabPane.getTabs().get(0).getContent(), TabPane.class);
         processingAgisoft.getTabs().clear();
-        for(ImageType imageType : this.flight.getImageTypes().keySet()){
+        for(WorkflowType workflowType : WorkflowType.getWorkflowTypesFromImageTypes(this.flight.getImageTypes().keySet())){
             Tab tab = new Tab();
-            tab.setText(imageType.getName());
+            tab.setText(workflowType.getName());
 
-            setupWorkflowActions(workflow);
+            ProcessActionsPreparer preparer = new ProcessActionsPreparer(flight, workflowType);
+            preparer.setupWorkflowActions();
 
             AnchorPane anchorPane = new AnchorPane();
-            anchorPane.getChildren().add(workflow);
+            anchorPane.getChildren().add(preparer.getWorkflowPane());
 
             tab.setClosable(false);
             tab.setContent(anchorPane);
