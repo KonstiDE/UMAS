@@ -39,7 +39,7 @@ public class ShowProcessingController implements ViewController {
         refresh.setOnAction(_ignored -> refresh(pane, display));
 
         TabPane tabPane = ItemSearcher.getItemById("showprocess.tabpane", pane, TabPane.class);
-        checkProcessingChain(pane, display, tabPane);
+        checkProcessingChain(pane, tabPane);
 
         Button createAgisoft = ItemSearcher.getItemById("showprocess.createagisoft", pane, Button.class);
         createAgisoft.setOnAction(_ignored -> {
@@ -57,13 +57,12 @@ public class ShowProcessingController implements ViewController {
             }
         });
 
+
         TabPane processingAgisoft = ItemSearcher.getItemById("showprocess.imagetypepaneagisoft", (AnchorPane) tabPane.getTabs().get(0).getContent(), TabPane.class);
         processingAgisoft.getTabs().clear();
         for(ImageType imageType : this.flight.getImageTypes().keySet()){
             Tab tab = new Tab();
             tab.setText(imageType.getName());
-
-            AnchorPane workflow = (AnchorPane) SceneLoader.getAvailableScenes().get("rgb_workflow");
 
             setupWorkflowActions(workflow);
 
@@ -78,24 +77,6 @@ public class ShowProcessingController implements ViewController {
 
     }
 
-    private void setupWorkflowActions(AnchorPane workflow) throws UMASException {
-        StackPane addPhotos = ItemSearcher.getItemById("processing.addphotos", workflow, StackPane.class);
-        Rectangle addPhotosRectangle = ItemSearcher.getItemById("processing.rectangle.addphotos", addPhotos, Rectangle.class);
-
-        if (!AgisoftCaller.addPhotosCheck(DirectoryUtils.figureAgisoftFilePath(this.flight))) {
-            addPhotosRectangle.setFill(Colors.PROC_RED);
-            addPhotos.setCursor(Cursor.HAND);
-            addPhotos.setOnMouseClicked(_ignored -> {
-                boolean success = AgisoftCaller.addPhotos(DirectoryUtils.figureAgisoftFilePath(this.flight), this.flight.getImageTypes().values().stream().toList());
-                if(!success) {
-                    UMASException.throwWindow(ErrorType.INTERNAL, "Could not add photos!");
-                }
-            });
-        } else {
-            addPhotosRectangle.setFill(Colors.PROC_GREEN);
-        }
-    }
-
     private void refresh(Pane pane, DisplayController display) {
         try {
             init(pane, display);
@@ -104,7 +85,7 @@ public class ShowProcessingController implements ViewController {
         }
     }
 
-    private void checkProcessingChain(Pane pane, DisplayController display, TabPane tabPane) throws UMASException {
+    private void checkProcessingChain(Pane pane, TabPane tabPane) throws UMASException {
         Button createAgisoft = ItemSearcher.getItemById("showprocess.createagisoft", pane, Button.class);
         Button createTerra =  ItemSearcher.getItemById("showprocess.createterra", pane, Button.class);
         Circle statusAgisoft = ItemSearcher.getItemById("showprocess.statusagisoft", pane, Circle.class);

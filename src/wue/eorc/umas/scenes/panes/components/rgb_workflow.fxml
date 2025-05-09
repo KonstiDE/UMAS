@@ -54,9 +54,9 @@
                   </VBox>
                </children>
             </StackPane>
-            <StackPane prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1">
+            <StackPane id="processing.setbrightness" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1">
                <children>
-                  <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#30d365" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
+                  <Rectangle id="processing.rectangle.setbrightness" arcHeight="5.0" arcWidth="5.0" fill="#30d365" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <VBox prefHeight="106.0" prefWidth="100.0">
                      <children>
                         <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
