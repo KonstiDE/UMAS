@@ -18,7 +18,7 @@ public class StatusController {
     }
 
     public void updateStatus(float progress){
-        this.progressLabel.setText(Math.round(progress) + "%  ");
+        this.progressLabel.setText(Math.round(progress * 100) / 100 + "%  ");
         this.progressBar.setProgress(progress / 100);
     }
 

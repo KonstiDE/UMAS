@@ -69,7 +69,8 @@ public class SettingsController implements DialogController {
 
             File file = fileChooser.showOpenDialog(display.rootControl.getScene().getWindow());
             try {
-                String version = AgisoftCaller.checkAgisoftVersion(file.getAbsolutePath());
+                String version = new AgisoftCaller(null, null)
+                        .checkAgisoftVersion(file.getAbsolutePath());
 
                 if(version != null){
                     agisoftIndicator.setImage(ImageUtils.getImage("settings/check", ".png"));

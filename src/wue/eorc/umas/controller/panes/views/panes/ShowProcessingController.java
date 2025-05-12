@@ -1,39 +1,54 @@
 package wue.eorc.umas.controller.panes.views.panes;
 
-import javafx.scene.control.Button;
-import javafx.scene.control.Tab;
-import javafx.scene.control.TabPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import wue.eorc.umas.agisoft.AgisoftCaller;
+import wue.eorc.umas.controller.listeners.AgisoftCallbackListener;
+import wue.eorc.umas.controller.listeners.AgisoftQueueListener;
 import wue.eorc.umas.controller.panes.mains.DisplayController;
 import wue.eorc.umas.controller.panes.views.panes.components.ProcessActionsPreparer;
+import wue.eorc.umas.enums.AgisoftTask;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.ProcessingChain;
 import wue.eorc.umas.enums.WorkflowType;
 import wue.eorc.umas.exception.UMASException;
 import javafx.scene.layout.Pane;
 import wue.eorc.umas.models.Flight;
+import wue.eorc.umas.utils.Colors;
 import wue.eorc.umas.utils.DirectoryUtils;
 import wue.eorc.umas.utils.ItemSearcher;
 
 import java.io.IOException;
 import java.nio.file.Paths;
 
-public class ShowProcessingController implements ViewController {
+public class ShowProcessingController implements ViewController, AgisoftQueueListener, AgisoftCallbackListener {
 
+    private final AgisoftCaller agisoftCaller;
     private final Flight flight;
 
     public ShowProcessingController(Flight flight) {
         this.flight = flight;
+        this.agisoftCaller = new AgisoftCaller(this, this);
     }
 
     public Pane processingPaneRoot;
 
+    public Label currentlyProcessing;
+    public ListView<String> processingListView;
+
+    public DisplayController displayController;
+
     @Override
     public void init(Pane pane, DisplayController display) throws UMASException {
+        displayController = display;
         processingPaneRoot = pane;
+
+        currentlyProcessing = ItemSearcher.getItemById("showprocess.queue.current", pane, Label.class);
+        processingListView = ItemSearcher.getGenericControlById("showprocess.queue.listview", pane, ListView.class, String.class);
 
         Button refresh = ItemSearcher.getItemById("showprocess.refresh", pane, Button.class);
         refresh.setOnAction(_ignored -> refresh(pane, display));
@@ -44,7 +59,7 @@ public class ShowProcessingController implements ViewController {
         Button createAgisoft = ItemSearcher.getItemById("showprocess.createagisoft", pane, Button.class);
         createAgisoft.setOnAction(_ignored -> {
             try {
-                boolean success = AgisoftCaller.createProject(DirectoryUtils.figureAgisoftFilePath(this.flight));
+                boolean success = agisoftCaller.createProject(DirectoryUtils.figureAgisoftFilePath(this.flight));
 
                 if(!success) {
                     UMASException.throwWindow(ErrorType.INTERNAL, "Could not create Agisoft project! Please restart the application!");
@@ -65,7 +80,9 @@ public class ShowProcessingController implements ViewController {
                 Tab tab = new Tab();
                 tab.setText(workflowType.getName());
 
-                ProcessActionsPreparer preparer = new ProcessActionsPreparer(flight, workflowType, display, this);
+                ProcessActionsPreparer preparer = new ProcessActionsPreparer(
+                        flight, workflowType, display, this, agisoftCaller);
+
                 preparer.setupWorkflowActions();
 
                 AnchorPane anchorPane = new AnchorPane();
@@ -142,4 +159,38 @@ public class ShowProcessingController implements ViewController {
     public Pane getProcessingPaneRoot() {
         return processingPaneRoot;
     }
+
+    @Override
+    public void enqueue() {
+
+    }
+
+    @Override
+    public void finish() {
+
+    }
+
+    @Override
+    public void callback(StackPane source, AgisoftTask task, boolean result) throws UMASException {
+        switch (task){
+            case ADD_PHOTOS_CHECK, SET_BRIGHTNESS_CHECK, ALIGN_IMAGES_CHECK, OPTIMIZE_CAMERAS_CHECK -> {
+                Rectangle rectangle = ItemSearcher.getItemById("processing.rectangle", source, Rectangle.class);
+                ProgressIndicator indicator = ItemSearcher.getItemById("processing.indicator", source, ProgressIndicator.class);
+
+                indicator.setVisible(false);
+                if(result){
+                    rectangle.setFill(Colors.PROC_GREEN);
+                    //this.showProcessingController.refresh(this.showProcessingController.getProcessingPaneRoot(), display);
+                }else{
+                    rectangle.setFill(Colors.PROC_RED);
+                }
+            }
+        }
+    }
+
+    @Override
+    public void progress(float f) {
+        this.displayController.getRootController().getStatusController().updateStatus(f);
+    }
+
 }

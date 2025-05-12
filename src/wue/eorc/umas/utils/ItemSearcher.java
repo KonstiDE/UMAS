@@ -69,6 +69,8 @@ public class ItemSearcher {
                         valid = checkcombo.getItems().isEmpty() || genericType.isInstance(checkcombo.getItems().get(0));
                     } else if (casted instanceof TreeView<?> treeView) {
                         valid = treeView.getRoot() == null || genericType.isInstance(treeView.getRoot().getChildren().get(0));
+                    } else if (casted instanceof ListView<?> listView) {
+                        valid = listView.getItems().isEmpty() || genericType.isInstance(listView.getItems().get(0));
                     } else {
                         throw new UMASException(ErrorType.INTERNAL, "Generic check not supported for type: " + type.getSimpleName());
                     }

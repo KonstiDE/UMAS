@@ -25,7 +25,9 @@ import wue.eorc.umas.utils.ItemSearcher;
 
 import java.util.Optional;
 
-public class ProcessActionsPreparer implements AgisoftCallbackListener {
+public class ProcessActionsPreparer {
+
+    private final AgisoftCaller agisoftCaller;
 
     private final Flight flight;
     private final AnchorPane workflowPane;
@@ -34,7 +36,7 @@ public class ProcessActionsPreparer implements AgisoftCallbackListener {
     private final DisplayController display;
     private final ShowProcessingController showProcessingController;
 
-    public ProcessActionsPreparer(Flight flight, WorkflowType workflowType, DisplayController display, ShowProcessingController showProcessingController) {
+    public ProcessActionsPreparer(Flight flight, WorkflowType workflowType, DisplayController display, ShowProcessingController showProcessingController, AgisoftCaller agisoftCaller) {
         this.flight = flight;
         this.workflowPane = switch (workflowType){
             case RGB -> (AnchorPane) SceneLoader.getAvailableScenes().get("rgb_workflow");
@@ -49,6 +51,7 @@ public class ProcessActionsPreparer implements AgisoftCallbackListener {
         this.workflowType = workflowType;
         this.display = display;
         this.showProcessingController = showProcessingController;
+        this.agisoftCaller = agisoftCaller;
     }
 
     public void setupWorkflowActions() throws UMASException {
@@ -68,21 +71,21 @@ public class ProcessActionsPreparer implements AgisoftCallbackListener {
 
     private void setupAddPhotos() throws UMASException {
         StackPane addPhotos = ItemSearcher.getItemById("processing.addphotos", this.workflowPane, StackPane.class);
-        AgisoftCaller.addPhotosCheck(addPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight), this);
+        agisoftCaller.addPhotosCheck(addPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight));
 
         addPhotos.setCursor(Cursor.HAND);
         addPhotos.setOnMouseClicked(_ignored -> {
-            AgisoftCaller.addPhotos(addPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
+            agisoftCaller.addPhotos(addPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
                     this.flight.getImageTypes().keySet().stream()
                             .filter(i -> this.workflowType.getImageTypes().contains(i))
-                            .map(i -> this.flight.getImageTypes().get(i)).toList(), this);
+                            .map(i -> this.flight.getImageTypes().get(i)).toList());
         });
 
     }
 
     private void setupSetBrightness() throws UMASException {
         StackPane setBrightness = ItemSearcher.getItemById("processing.setbrightness", this.workflowPane, StackPane.class);
-        AgisoftCaller.setBrightnessCheck(setBrightness, DirectoryUtils.figureAgisoftFilePath(this.flight), this);
+        agisoftCaller.setBrightnessCheck(setBrightness, DirectoryUtils.figureAgisoftFilePath(this.flight));
 
         setBrightness.setCursor(Cursor.HAND);
         setBrightness.setOnMouseClicked(_ignored -> {
@@ -126,7 +129,7 @@ public class ProcessActionsPreparer implements AgisoftCallbackListener {
                     int brightness = Integer.parseInt(result.get().getKey());
                     int contrast = Integer.parseInt(result.get().getValue());
 
-                    AgisoftCaller.setBrightness(setBrightness, DirectoryUtils.figureAgisoftFilePath(this.flight), brightness, contrast, this);
+                    agisoftCaller.setBrightness(setBrightness, DirectoryUtils.figureAgisoftFilePath(this.flight), brightness, contrast);
                 } catch (NumberFormatException e) {
                     UMASException.throwWindow(ErrorType.USER, "Please provide non-decimal numbers!");
                 }
@@ -137,35 +140,12 @@ public class ProcessActionsPreparer implements AgisoftCallbackListener {
 
     private void setupAlignPhotos() throws UMASException {
         StackPane alignPhotos = ItemSearcher.getItemById("processing.alignimages", this.workflowPane, StackPane.class);
-        AgisoftCaller.alignPhotosCheck(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight), this);
+        agisoftCaller.alignPhotosCheck(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight));
 
         alignPhotos.setCursor(Cursor.HAND);
         alignPhotos.setOnMouseClicked(_ignored -> {
-            AgisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight), this);
+            agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight));
         });
-    }
-
-    @Override
-    public void callback(StackPane source, AgisoftTask task, boolean result) throws UMASException {
-        switch (task){
-            case ADD_PHOTOS_CHECK, SET_BRIGHTNESS_CHECK, ALIGN_IMAGES_CHECK -> {
-                Rectangle rectangle = ItemSearcher.getItemById("processing.rectangle", source, Rectangle.class);
-                ProgressIndicator indicator = ItemSearcher.getItemById("processing.indicator", source, ProgressIndicator.class);
-
-                indicator.setVisible(false);
-                if(result){
-                    rectangle.setFill(Colors.PROC_GREEN);
-                    //this.showProcessingController.refresh(this.showProcessingController.getProcessingPaneRoot(), display);
-                }else{
-                    rectangle.setFill(Colors.PROC_RED);
-                }
-            }
-        }
-    }
-
-    @Override
-    public void progress(float f) {
-        this.display.getRootController().getStatusController().updateStatus(f);
     }
 
     public Flight getFlight() {
