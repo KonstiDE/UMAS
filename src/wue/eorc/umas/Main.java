@@ -32,7 +32,7 @@ public class Main extends Application {
         SceneLoader loader = new SceneLoader(this.getClass(), "scenes/");
 
         VBox root = (VBox) loader.loadSceneFromFXML("main.fxml");
-        new RootController(loader, root);
+        new RootController(root);
 
         Scene scene = new Scene(root, 1024, 720);
 

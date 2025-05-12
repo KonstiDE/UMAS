@@ -1,5 +1,6 @@
 package wue.eorc.umas.controller.panes.mains;
 
+import wue.eorc.umas.controller.RootController;
 import wue.eorc.umas.controller.panes.views.dialogs.DialogController;
 import wue.eorc.umas.controller.panes.views.panes.ViewController;
 import wue.eorc.umas.enums.SplitPanePosition;
@@ -14,12 +15,14 @@ import java.util.Optional;
 public class DisplayController {
     
     public SplitPane rootControl;
+    public RootController rootController;
 
     private final AnchorPane left;
     private final ScrollPane center;
     private final AnchorPane right;
 
-    public DisplayController(SplitPane rootControl){
+    public DisplayController(RootController rootController, SplitPane rootControl){
+        this.rootController = rootController;
         this.rootControl = rootControl;
 
         this.left = (AnchorPane) rootControl.getItems().get(0);
@@ -91,4 +94,7 @@ public class DisplayController {
         this.right.getChildren().add(pane);
     }
 
+    public RootController getRootController() {
+        return rootController;
+    }
 }

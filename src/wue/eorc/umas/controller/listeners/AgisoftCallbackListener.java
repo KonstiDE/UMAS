@@ -8,4 +8,6 @@ public interface AgisoftCallbackListener {
 
     void callback(StackPane source, AgisoftTask task, boolean result) throws UMASException;
 
+    void progress(float f);
+
 }

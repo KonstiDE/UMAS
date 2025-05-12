@@ -1,5 +1,6 @@
 package wue.eorc.umas.agisoft;
 
+import javafx.application.Platform;
 import javafx.scene.layout.StackPane;
 import wue.eorc.umas.controller.listeners.AgisoftCallbackListener;
 import wue.eorc.umas.enums.AgisoftTask;
@@ -33,7 +34,7 @@ public class AgisoftCaller {
         pb.redirectErrorStream(true);
         Process p = pb.start();
 
-        boolean success = Boolean.parseBoolean(watchForSignal("vn: ", p.getInputStream()));
+        boolean success = Boolean.parseBoolean(watchForSignal("vn: ", p.getInputStream(), null));
 
         int exitCode = p.waitFor();
 
@@ -49,7 +50,7 @@ public class AgisoftCaller {
             pb.redirectErrorStream(true);
             Process p = pb.start();
 
-            String versionNumber = watchForSignal("vn: ", p.getInputStream());
+            String versionNumber = watchForSignal("vn: ", p.getInputStream(), null);
 
             int exitCode = p.waitFor();
 
@@ -57,16 +58,6 @@ public class AgisoftCaller {
         }catch (IOException e){
             return null;
         }
-    }
-
-    public static void addPhotos(StackPane stackPane, String psxFile, List<String> folders, AgisoftCallbackListener listener){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
-        Path filePath = Paths.get(snippetsPath, "add_photos.py");
-
-        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r", filePath.toFile().getAbsolutePath(),
-                "-psxFile", psxFile, "-photo_folder", folders.size() > 1 ? String.join(",", folders) : folders.get(0));
-
-        enqueue(AgisoftTask.ADD_PHOTOS, stackPane, pb, false, listener);
     }
 
     public static void addPhotosCheck(StackPane stackPane, String psxFile, AgisoftCallbackListener listener){
@@ -79,6 +70,56 @@ public class AgisoftCaller {
         enqueue(AgisoftTask.ADD_PHOTOS_CHECK, stackPane, pb, true, listener);
     }
 
+    public static void addPhotos(StackPane stackPane, String psxFile, List<String> folders, AgisoftCallbackListener listener){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "add_photos.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r", filePath.toFile().getAbsolutePath(),
+                "-psxFile", psxFile, "-photo_folder", folders.size() > 1 ? String.join(",", folders) : folders.get(0));
+
+        enqueue(AgisoftTask.ADD_PHOTOS, stackPane, pb, false, listener);
+    }
+
+    public static void setBrightnessCheck(StackPane stackPane, String psxFile, AgisoftCallbackListener listener){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "set_brightness_check.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+
+        enqueue(AgisoftTask.SET_BRIGHTNESS_CHECK, stackPane, pb, true, listener);
+    }
+
+    public static void setBrightness(StackPane stackPane, String psxFile, int brightness, int contrast, AgisoftCallbackListener listener){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "set_brightness.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-brightness", String.valueOf(brightness), "-contrast", String.valueOf(contrast));
+
+        enqueue(AgisoftTask.SET_BRIGHTNESS, stackPane, pb, false, listener);
+    }
+
+    public static void alignPhotosCheck(StackPane stackPane, String psxFile, AgisoftCallbackListener listener){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "align_photos_check.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+
+        enqueue(AgisoftTask.ALIGN_IMAGES_CHECK, stackPane, pb, true, listener);
+    }
+
+    public static void alignPhotos(StackPane stackPane, String psxFile, AgisoftCallbackListener listener){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "align_photos.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+
+        enqueue(AgisoftTask.ALIGN_IMAGES, stackPane, pb, false, listener);
+    }
+
     private static void enqueue(AgisoftTask task, StackPane stackPane, ProcessBuilder pb, boolean nextIfFailed, AgisoftCallbackListener listener){
         queue.add(() -> {
             CompletableFuture.supplyAsync(() -> {
@@ -86,7 +127,7 @@ public class AgisoftCaller {
                    pb.redirectErrorStream(true);
                    Process p = pb.start();
 
-                   boolean success = Boolean.parseBoolean(watchForSignal("vn: ", p.getInputStream()));
+                   boolean success = Boolean.parseBoolean(watchForSignal("vn: ", p.getInputStream(), listener));
 
                    int exitCode = p.waitFor();
 
@@ -99,7 +140,12 @@ public class AgisoftCaller {
                     isRunning = true;
                     processNext();
                 }else{
-                    if(nextIfFailed) processNext();
+                    if(nextIfFailed) {
+                        isRunning = true;
+                        processNext();
+                    }else{
+                        isRunning = false;
+                    }
                 }
                 try {
                     listener.callback(stackPane, task, result);
@@ -117,12 +163,17 @@ public class AgisoftCaller {
     }
 
     // !!!Signal key must be 4 chars long!!!
-    public static String watchForSignal(String signalKey, InputStream inputStream) throws IOException {
+    public static String watchForSignal(String signalKey, InputStream inputStream, AgisoftCallbackListener listener) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
+                if(listener != null && line.contains("vp: ")) {
+                    String finalLine = line;
+                    Platform.runLater(() -> listener.progress(Float.parseFloat(finalLine.substring(4))));
+                }
                 if(line.startsWith(signalKey)){
+                    if(listener != null) Platform.runLater(() -> listener.progress(0));
                     return line.substring(4);
                 }
             }

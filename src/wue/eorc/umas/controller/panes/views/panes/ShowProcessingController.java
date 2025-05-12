@@ -29,8 +29,12 @@ public class ShowProcessingController implements ViewController {
         this.flight = flight;
     }
 
+    public Pane processingPaneRoot;
+
     @Override
     public void init(Pane pane, DisplayController display) throws UMASException {
+        processingPaneRoot = pane;
+
         Button refresh = ItemSearcher.getItemById("showprocess.refresh", pane, Button.class);
         refresh.setOnAction(_ignored -> refresh(pane, display));
 
@@ -56,25 +60,27 @@ public class ShowProcessingController implements ViewController {
 
         TabPane processingAgisoft = ItemSearcher.getItemById("showprocess.imagetypepaneagisoft", (AnchorPane) tabPane.getTabs().get(0).getContent(), TabPane.class);
         processingAgisoft.getTabs().clear();
-        for(WorkflowType workflowType : WorkflowType.getWorkflowTypesFromImageTypes(this.flight.getImageTypes().keySet())){
-            Tab tab = new Tab();
-            tab.setText(workflowType.getName());
+        if(projectExistsAgisoft(this.flight)) {
+            for(WorkflowType workflowType : WorkflowType.getWorkflowTypesFromImageTypes(this.flight.getImageTypes().keySet())){
+                Tab tab = new Tab();
+                tab.setText(workflowType.getName());
 
-            ProcessActionsPreparer preparer = new ProcessActionsPreparer(flight, workflowType);
-            preparer.setupWorkflowActions();
+                ProcessActionsPreparer preparer = new ProcessActionsPreparer(flight, workflowType, display, this);
+                preparer.setupWorkflowActions();
 
-            AnchorPane anchorPane = new AnchorPane();
-            anchorPane.getChildren().add(preparer.getWorkflowPane());
+                AnchorPane anchorPane = new AnchorPane();
+                anchorPane.getChildren().add(preparer.getWorkflowPane());
 
-            tab.setClosable(false);
-            tab.setContent(anchorPane);
+                tab.setClosable(false);
+                tab.setContent(anchorPane);
 
-            processingAgisoft.getTabs().add(tab);
+                processingAgisoft.getTabs().add(tab);
+            }
         }
 
     }
 
-    private void refresh(Pane pane, DisplayController display) {
+    public void refresh(Pane pane, DisplayController display) {
         try {
             init(pane, display);
         } catch (UMASException ex) {
@@ -133,4 +139,7 @@ public class ShowProcessingController implements ViewController {
         return false;
     }
 
+    public Pane getProcessingPaneRoot() {
+        return processingPaneRoot;
+    }
 }

@@ -25,7 +25,8 @@ def add_photos(file, folders):
             load_xmp_orientation=True,
             load_xmp_accuracy=False,
             load_xmp_antenna=True,
-            load_rpc_txt=False
+            load_rpc_txt=False,
+            progress=report_progress
         )
 
     doc.save(file)
@@ -33,6 +34,10 @@ def add_photos(file, folders):
     del doc
 
     print("vn: true")
+
+
+def report_progress(f):
+    print("vp: {}".format(str(f)))
 
 
 if __name__ == '__main__':
