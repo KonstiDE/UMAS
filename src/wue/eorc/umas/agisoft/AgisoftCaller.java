@@ -128,6 +128,46 @@ public class AgisoftCaller {
         enqueue(AgisoftTask.ALIGN_IMAGES, stackPane, pb, false);
     }
 
+    public void optimizeCamerasCheck(StackPane stackPane, String psxFile){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "optimize_cameras_check.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+
+        enqueue(AgisoftTask.OPTIMIZE_CAMERAS_CHECK, stackPane, pb, true);
+    }
+
+    public void optimizeCameras(StackPane stackPane, String psxFile){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "optimize_cameras.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+
+        enqueue(AgisoftTask.OPTIMIZE_CAMERAS, stackPane, pb, false);
+    }
+
+    public void buildPointCloudCheck(StackPane stackPane, String psxFile){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "build_point_cloud_check.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+
+        enqueue(AgisoftTask.OPTIMIZE_CAMERAS_CHECK, stackPane, pb, true);
+    }
+
+    public void buildPointCloud(StackPane stackPane, String psxFile){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "build_point_cloud.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+
+        enqueue(AgisoftTask.OPTIMIZE_CAMERAS_CHECK, stackPane, pb, false);
+    }
+
     private void enqueue(AgisoftTask task, StackPane stackPane, ProcessBuilder pb, boolean nextIfFailed){
         queue.add(() -> {
             CompletableFuture.supplyAsync(() -> {

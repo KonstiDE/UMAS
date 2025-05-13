@@ -60,6 +60,8 @@ public class ProcessActionsPreparer {
                 setupAddPhotos();
                 setupSetBrightness();
                 setupAlignPhotos();
+                setupOptimizeCameras();
+                setupBuildPointCloud();
                 // ...
             }
             case IR -> {}
@@ -145,6 +147,26 @@ public class ProcessActionsPreparer {
         alignPhotos.setCursor(Cursor.HAND);
         alignPhotos.setOnMouseClicked(_ignored -> {
             agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight));
+        });
+    }
+
+    private void setupOptimizeCameras() throws UMASException {
+        StackPane optimizeCameras = ItemSearcher.getItemById("processing.optimizecameras", this.workflowPane, StackPane.class);
+        agisoftCaller.optimizeCamerasCheck(optimizeCameras, DirectoryUtils.figureAgisoftFilePath(this.flight));
+
+        optimizeCameras.setCursor(Cursor.HAND);
+        optimizeCameras.setOnMouseClicked(_ignored -> {
+            agisoftCaller.optimizeCameras(optimizeCameras, DirectoryUtils.figureAgisoftFilePath(this.flight));
+        });
+    }
+
+    private void setupBuildPointCloud() throws UMASException {
+        StackPane buildPointCloud = ItemSearcher.getItemById("processing.buildpointcloud", this.workflowPane, StackPane.class);
+        agisoftCaller.buildPointCloudCheck(buildPointCloud, DirectoryUtils.figureAgisoftFilePath(this.flight));
+
+        buildPointCloud.setCursor(Cursor.HAND);
+        buildPointCloud.setOnMouseClicked(_ignored -> {
+            agisoftCaller.buildPointCloud(buildPointCloud, DirectoryUtils.figureAgisoftFilePath(this.flight));
         });
     }
 

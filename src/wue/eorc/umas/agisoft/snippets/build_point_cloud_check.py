@@ -12,16 +12,15 @@ def align_photos_check(file):
     doc.open(path=file, read_only=True)
 
     if len(doc.chunks) > 0:
-        all_chunks_optimized = True
+        all_aligned_already = True
 
         for chunk in doc.chunks:
-            for sensor in chunk.sensors:
-                if sensor.calibration.k4 == 0 or sensor.calibration.b1 == 0 or sensor.calibration.b2 == 0:
-                    all_chunks_optimized = False
-                    break
+            if chunk.point_cloud is None:
+                all_aligned_already = False
+                break
 
         del doc
-        if all_chunks_optimized:
+        if all_aligned_already:
             print("vn: true")
         else:
             print("vn: false")
