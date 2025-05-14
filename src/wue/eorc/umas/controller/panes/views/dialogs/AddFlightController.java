@@ -156,7 +156,6 @@ public class AddFlightController implements DialogController, CopyProgressListen
         browse.setOnAction(_ignored -> {
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Choose an image directory");
-            directoryChooser.setInitialDirectory(new File("/home/caipi/Desktop/"));
             File path = directoryChooser.showDialog(display.rootControl.getScene().getWindow());
 
             addPath(flightDirs, path.getAbsolutePath());

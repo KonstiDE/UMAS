@@ -7,7 +7,7 @@ import Metashape as ms
 from utils import get_arg
 
 
-def align_photos(file):
+def build_point_cloud(file):
     doc = ms.Document()
 
     doc.open(path=file, read_only=False)
@@ -52,4 +52,4 @@ if __name__ == '__main__':
 
     project_file = get_arg(args, "-psxFile")
 
-    align_photos(project_file)
+    build_point_cloud(project_file)

@@ -16,7 +16,7 @@ def align_photos_check(file):
 
         for chunk in doc.chunks:
             for sensor in chunk.sensors:
-                if sensor.calibration.k4 == 0 or sensor.calibration.b1 == 0 or sensor.calibration.b2 == 0:
+                if sensor.calibration.k4 == 0 and sensor.calibration.b1 == 0 and sensor.calibration.b2 == 0:
                     all_chunks_optimized = False
                     break
 
