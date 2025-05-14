@@ -1,5 +1,9 @@
 package wue.eorc.umas.controller.panes.views.dialogs;
 
+import javafx.scene.input.DragEvent;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
+import javafx.scene.layout.StackPane;
 import wue.eorc.umas.controller.listeners.CopyProgressListener;
 import wue.eorc.umas.controller.panes.mains.DisplayController;
 import wue.eorc.umas.enums.*;
@@ -61,7 +65,9 @@ public class AddFlightController implements DialogController, CopyProgressListen
         TextField aoi = ItemSearcher.getItemById("addflight.aoi", pane, TextField.class);
         TextField pilot = ItemSearcher.getItemById("addflight.pilot", pane, TextField.class);
         TextField coPilot = ItemSearcher.getItemById("addflight.copilot", pane, TextField.class);
-        TextField height = ItemSearcher.getItemById("addflight.height", pane, TextField.class);
+
+        StackPane flightFileDrop = ItemSearcher.getItemById("addflight.flightfile", pane, StackPane.class);
+        Label flightFileLabel = ItemSearcher.getItemById("addflight.flightfilelabel", pane, Label.class);
 
         ComboBox<String> selectUAV = ItemSearcher.getGenericControlById("addflight.uav", pane, ComboBox.class, String.class);
         ComboBox<String> selectSensor = ItemSearcher.getGenericControlById("addflight.sensor", pane, ComboBox.class, String.class);
@@ -167,7 +173,6 @@ public class AddFlightController implements DialogController, CopyProgressListen
         browseCalib.setOnAction(_ignored -> {
             DirectoryChooser directoryChooser = new DirectoryChooser();
             directoryChooser.setTitle("Choose an calibration directory");
-            directoryChooser.setInitialDirectory(new File("/home/caipi/Desktop/"));
             File path = directoryChooser.showDialog(display.rootControl.getScene().getWindow());
 
             addPath(calibDirs, path.getAbsolutePath());
@@ -186,8 +191,6 @@ public class AddFlightController implements DialogController, CopyProgressListen
         this.pilot = pilot.getText();
         coPilot.textProperty().addListener(_ignored -> this.coPilot = coPilot.getText());
         this.coPilot = coPilot.getText();
-        height.textProperty().addListener(_ignored -> this.height = height.getText());
-        this.height = height.getText();
         notes.textProperty().addListener(_ignored -> this.notes = notes.textProperty().get());
         this.notes = notes.textProperty().get();
 
@@ -241,6 +244,54 @@ public class AddFlightController implements DialogController, CopyProgressListen
             }else{
                 dialog.close();
             }
+        });
+
+        flightFileDrop.setStyle("-fx-border-color: #999; -fx-border-width: 3; -fx-border-style: dashed;" +
+                "-fx-background-color: transparent;");
+        flightFileDrop.setPrefSize(400, 300);
+
+        // Drag over
+        flightFileDrop.setOnDragOver(event -> {
+            if (event.getGestureSource() != flightFileDrop &&
+                    event.getDragboard().hasFiles()) {
+                event.acceptTransferModes(TransferMode.COPY);
+            }
+            event.consume();
+        });
+
+        // Drag entered
+        flightFileDrop.setOnDragEntered(event -> {
+            if (event.getGestureSource() != flightFileDrop &&
+                    event.getDragboard().hasFiles()) {
+                flightFileDrop.setStyle("-fx-border-color: #666; -fx-border-width: 3; -fx-border-style: solid;" +
+                        "-fx-background-color: transparent;");
+            }
+            event.consume();
+        });
+
+        // Drag exited
+        flightFileDrop.setOnDragExited(event -> {
+            flightFileDrop.setStyle("-fx-border-color: #999; -fx-border-width: 3; -fx-border-style: dashed;" +
+                    "-fx-background-color: transparent;");
+            event.consume();
+        });
+
+        // Drop
+        flightFileDrop.setOnDragDropped((DragEvent event) -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+
+            if (db.hasFiles()) {
+                List<File> files = db.getFiles();
+                for (File file : files) {
+                    flightFileLabel.setText(file.getName());
+                    // TODO: Process .kmz/.kml here, extract parameters
+                }
+                success = true;
+            }
+
+            event.setDropCompleted(success);
+            event.consume();
         });
 
     }

@@ -168,6 +168,48 @@ public class AgisoftCaller {
         enqueue(AgisoftTask.OPTIMIZE_CAMERAS_CHECK, stackPane, pb, false);
     }
 
+    public void buildDemCheck(StackPane stackPane, String psxFile){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "build_dem_check.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+
+        enqueue(AgisoftTask.BUILD_DEM_CHECK, stackPane, pb, true);
+    }
+
+    public void buildDem(StackPane stackPane, String psxFile){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "build_dem.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+
+        enqueue(AgisoftTask.BUILD_DEM, stackPane, pb, false);
+    }
+
+    public void buildOrthomosaicCheck(StackPane stackPane, String psxFile){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "build_orthomosaic_check.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+
+        enqueue(AgisoftTask.BUILD_DEM_CHECK, stackPane, pb, true);
+    }
+
+    public void buildOrthomosaic(StackPane stackPane, String psxFile){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "build_orthomosaic.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+
+        enqueue(AgisoftTask.BUILD_DEM, stackPane, pb, false);
+    }
+
+
+
     private void enqueue(AgisoftTask task, StackPane stackPane, ProcessBuilder pb, boolean nextIfFailed){
         queue.add(() -> {
             CompletableFuture.supplyAsync(() -> {

@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.CheckComboBox?>
@@ -83,8 +84,16 @@
                         <ComboBox id="addflight.sensor" accessibleText="Sensor" prefWidth="150.0" promptText="Select Sensor" GridPane.columnIndex="1" GridPane.rowIndex="6" />
                         <Label text="Image types captured" GridPane.rowIndex="7" />
                         <CheckComboBox id="addflight.imagetypes" accessibleText="ImageTypes" prefHeight="26.0" prefWidth="152.0" showCheckedCount="true" title="Select" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                        <Label text="Flight Height" GridPane.rowIndex="8" />
-                        <TextField id="addflight.height" accessibleText="Flight Height" text="80m" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                        <Label text="Flight file" GridPane.rowIndex="8" />
+                        <StackPane id="addflight.flightfile" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="8">
+                           <children>
+                              <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
+                                 <children>
+                                    <Label id="addflight.flightfilelabel" text="Drag .kmz / .kml here" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </StackPane>
                         <Label text="Image folder paths" GridPane.rowIndex="10" />
                         <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="554.0" spacing="8.0" GridPane.columnIndex="1" GridPane.rowIndex="10">
                            <children>

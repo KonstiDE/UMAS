@@ -19,7 +19,7 @@ def build_point_cloud(file):
             all_aligned_already = False
 
     if all_aligned_already:
-        print("vd: All chunks are already aligned!")
+        print("vd: All chunks already have point cloud!")
         del doc
 
     else:
@@ -32,6 +32,21 @@ def build_point_cloud(file):
                     # [, cameras],
                     reuse_depth=False,
                     max_neighbors=16,
+                    subdivide_task=True,
+                    workitem_size_cameras=20,
+                    max_workgroup_size=100,
+                    progress=report_progress
+                )
+
+                chunk.buildPointCloud(
+                    source_data=Metashape.DepthMapsData, # options: TiePointsData, PointCloudData, DepthMapsData, ModelData, TiledModelData, ElevationData, OrthomosaicData, ImagesData
+                    point_colors=True,
+                    point_confidence=True,  # default False
+                    keep_depth=True,
+                    max_neighbors=100,
+                    uniform_sampling=True,
+                    points_spacing=0.1,
+                    # [,asset],
                     subdivide_task=True,
                     workitem_size_cameras=20,
                     max_workgroup_size=100,

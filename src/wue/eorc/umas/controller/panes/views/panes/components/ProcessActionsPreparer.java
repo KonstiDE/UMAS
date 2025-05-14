@@ -62,6 +62,8 @@ public class ProcessActionsPreparer {
                 setupAlignPhotos();
                 setupOptimizeCameras();
                 setupBuildPointCloud();
+                setupBuildDem();
+                setupBuildOrthomosaic();
                 // ...
             }
             case IR -> {}
@@ -170,6 +172,25 @@ public class ProcessActionsPreparer {
         });
     }
 
+    private void setupBuildDem() throws UMASException {
+        StackPane buildDem = ItemSearcher.getItemById("processing.builddem", this.workflowPane, StackPane.class);
+        agisoftCaller.buildDemCheck(buildDem, DirectoryUtils.figureAgisoftFilePath(this.flight));
+
+        buildDem.setCursor(Cursor.HAND);
+        buildDem.setOnMouseClicked(_ignored -> {
+            agisoftCaller.buildDem(buildDem, DirectoryUtils.figureAgisoftFilePath(this.flight));
+        });
+    }
+
+    private void setupBuildOrthomosaic() throws UMASException {
+        StackPane buildOrthomosaic = ItemSearcher.getItemById("processing.buildorthomosaic", this.workflowPane, StackPane.class);
+        agisoftCaller.buildOrthomosaicCheck(buildOrthomosaic, DirectoryUtils.figureAgisoftFilePath(this.flight));
+
+        buildOrthomosaic.setCursor(Cursor.HAND);
+        buildOrthomosaic.setOnMouseClicked(_ignored -> {
+            agisoftCaller.buildOrthomosaic(buildOrthomosaic, DirectoryUtils.figureAgisoftFilePath(this.flight));
+        });
+    }
 
 
     public Flight getFlight() {

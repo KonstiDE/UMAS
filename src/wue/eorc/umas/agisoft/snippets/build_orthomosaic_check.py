@@ -6,21 +6,21 @@ import Metashape as ms
 from utils import get_arg
 
 
-def build_dem_check(file):
+def build_ortho_check(file):
     doc = ms.Document()
 
     doc.open(path=file, read_only=True)
 
     if len(doc.chunks) > 0:
-        all_aligned_already = True
+        all_have_ortho = True
 
         for chunk in doc.chunks:
-            if chunk.depth_maps is None:
-                all_aligned_already = False
+            if chunk.orthomosaic is None:
+                all_have_ortho = False
                 break
 
         del doc
-        if all_aligned_already:
+        if all_have_ortho:
             print("vn: true")
         else:
             print("vn: false")
@@ -35,4 +35,4 @@ if __name__ == '__main__':
 
     project_file = get_arg(args, "-psxFile")
 
-    build_dem_check(project_file)
+    build_ortho_check(project_file)
