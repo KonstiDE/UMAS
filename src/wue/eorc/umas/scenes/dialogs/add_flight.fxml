@@ -89,7 +89,7 @@
                            <children>
                               <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0">
                                  <children>
-                                    <Label id="addflight.flightfilelabel" text="Drag .kmz / .kml here" />
+                                    <Label id="addflight.flightfilelabel" text="Drag DJI Controller .kmz  here" />
                                  </children>
                               </HBox>
                            </children>

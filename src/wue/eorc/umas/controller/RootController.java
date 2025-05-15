@@ -1,5 +1,6 @@
 package wue.eorc.umas.controller;
 
+import wue.eorc.umas.controller.panes.mains.MapController;
 import wue.eorc.umas.controller.panes.mains.MenuController;
 import wue.eorc.umas.controller.panes.mains.DisplayController;
 import wue.eorc.umas.controller.panes.mains.StatusController;
@@ -20,7 +21,6 @@ public class RootController {
         this.menuController = new MenuController(this, (MenuBar) vBox.getChildren().get(0));
         this.splitPaneController = new DisplayController(this, (SplitPane) vBox.getChildren().get(1));
         this.statusController = new StatusController((HBox) vBox.getChildren().get(2));
-
     }
 
     public MenuController getMenuController() {

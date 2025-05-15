@@ -1,5 +1,6 @@
 package wue.eorc.umas.controller.panes.mains;
 
+import javafx.scene.layout.StackPane;
 import wue.eorc.umas.controller.RootController;
 import wue.eorc.umas.controller.panes.views.dialogs.DialogController;
 import wue.eorc.umas.controller.panes.views.panes.ViewController;
@@ -16,8 +17,11 @@ public class DisplayController {
     
     public SplitPane rootControl;
     public RootController rootController;
+    public MapController mapController;
 
     private final AnchorPane left;
+    private final StackPane map;
+
     private final ScrollPane center;
     private final AnchorPane right;
 
@@ -25,9 +29,12 @@ public class DisplayController {
         this.rootController = rootController;
         this.rootControl = rootControl;
 
-        this.left = (AnchorPane) rootControl.getItems().get(0);
+        this.left = (AnchorPane) ((SplitPane) rootControl.getItems().get(0)).getItems().get(0);
+        this.map = (StackPane) ((SplitPane) rootControl.getItems().get(0)).getItems().get(1);
         this.center = (ScrollPane) rootControl.getItems().get(1);
         this.right = (AnchorPane) rootControl.getItems().get(2);
+
+        this.mapController = new MapController(map);
     }
 
     public void switchSceneTo(SplitPanePosition key, Pane pane, ViewController trigger) {
@@ -84,6 +91,11 @@ public class DisplayController {
         this.left.getChildren().add(pane);
     }
 
+    private void setMap(Pane pane){
+        this.map.getChildren().clear();
+        this.map.getChildren().add(pane);
+    }
+
     private void setCenter(Pane pane){
         ((AnchorPane) this.center.getContent()).getChildren().clear();
         ((AnchorPane) this.center.getContent()).getChildren().add(pane);
@@ -96,5 +108,9 @@ public class DisplayController {
 
     public RootController getRootController() {
         return rootController;
+    }
+
+    public MapController getMapController() {
+        return mapController;
     }
 }

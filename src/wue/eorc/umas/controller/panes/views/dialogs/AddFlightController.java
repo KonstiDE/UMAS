@@ -22,7 +22,9 @@ import wue.eorc.umas.loader.ProjectCache;
 import wue.eorc.umas.loader.Settings;
 import wue.eorc.umas.models.Flight;
 import org.controlsfx.control.CheckComboBox;
+import wue.eorc.umas.models.FlightParameters;
 import wue.eorc.umas.utils.ItemSearcher;
+import wue.eorc.umas.utils.KMZProcessor;
 
 import java.io.File;
 import java.io.IOException;
@@ -38,7 +40,7 @@ public class AddFlightController implements DialogController, CopyProgressListen
     private String aoi;
     private String pilot;
     private String coPilot;
-    private String height;
+    private FlightParameters flightParameters;
     private UAV uav;
     private Sensor sensor;
     private final Map<ImageType, String> imageTypes = new HashMap<>();
@@ -199,8 +201,9 @@ public class AddFlightController implements DialogController, CopyProgressListen
                 Path baseDirectory = Paths.get(ProjectCache.currentlyOpenedProject.getFile().getParent());
 
                 try {
-                    Flight flight = new Flight(this.date, this.location, this.aoi, this.pilot, this.coPilot, this.height,
-                            this.uav, this.sensor, this.imageTypes, this.processingChain, baseDirectory.toFile().getAbsolutePath(), this.flightsOrigins, this.calibOrigins, this.notes);
+                    Flight flight = new Flight(this.date, this.location, this.aoi, this.pilot, this.coPilot,
+                            this.flightParameters, this.uav, this.sensor, this.imageTypes, this.processingChain,
+                            baseDirectory.toFile().getAbsolutePath(), this.flightsOrigins, this.calibOrigins, this.notes);
 
                     FileCopier fileCopier = new FileCopier(this, flight);
                     fileCopier.getCopyTask().thenRun(() -> {
@@ -215,6 +218,8 @@ public class AddFlightController implements DialogController, CopyProgressListen
 
                         Platform.runLater(() -> {
                             dialog.setResult(this.flightJson);
+                            dialog.hide();
+                            dialog.close();
                         });
                     });
                     this.copyJob = fileCopier.getCopyTask();
@@ -259,7 +264,6 @@ public class AddFlightController implements DialogController, CopyProgressListen
             event.consume();
         });
 
-        // Drag entered
         flightFileDrop.setOnDragEntered(event -> {
             if (event.getGestureSource() != flightFileDrop &&
                     event.getDragboard().hasFiles()) {
@@ -269,14 +273,12 @@ public class AddFlightController implements DialogController, CopyProgressListen
             event.consume();
         });
 
-        // Drag exited
         flightFileDrop.setOnDragExited(event -> {
             flightFileDrop.setStyle("-fx-border-color: #999; -fx-border-width: 3; -fx-border-style: dashed;" +
                     "-fx-background-color: transparent;");
             event.consume();
         });
 
-        // Drop
         flightFileDrop.setOnDragDropped((DragEvent event) -> {
             Dragboard db = event.getDragboard();
             boolean success = false;
@@ -285,7 +287,7 @@ public class AddFlightController implements DialogController, CopyProgressListen
                 List<File> files = db.getFiles();
                 for (File file : files) {
                     flightFileLabel.setText(file.getName());
-                    // TODO: Process .kmz/.kml here, extract parameters
+                    this.flightParameters = KMZProcessor.processKmz(file);
                 }
                 success = true;
             }

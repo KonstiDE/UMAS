@@ -78,7 +78,7 @@ public class FileCopier {
 
 
     public void testCopyJob() throws InterruptedException {
-        double max = 1000;
+        double max = 100;
         for (int i = 0; i < max; i++) {
             Thread.sleep(10);
             this.copyProgressListener.receivedProgress((double) i / max);

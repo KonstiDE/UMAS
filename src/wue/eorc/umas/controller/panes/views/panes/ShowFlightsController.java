@@ -1,6 +1,11 @@
 package wue.eorc.umas.controller.panes.views.panes;
 
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.util.Callback;
 import wue.eorc.umas.controller.panes.mains.DisplayController;
+import wue.eorc.umas.controller.panes.mains.MapController;
 import wue.eorc.umas.controller.panes.views.dialogs.AddFlightController;
 import wue.eorc.umas.enums.ImageType;
 import wue.eorc.umas.enums.SplitPanePosition;
@@ -50,14 +55,26 @@ public class ShowFlightsController implements ViewController {
                 throw new RuntimeException(e);
             }
             tableView.getItems().add(flight);
+
+            display.getMapController().showFlightArea(flight.getFlightParameters().getCoordinates());
         });
+
+        tableView.getSelectionModel().selectedItemProperty().addListener(
+                (_ignored, oldT, newT) -> {
+                    display.getMapController().showFlightArea(newT.getFlightParameters().getCoordinates());
+                });
 
     }
 
     @SuppressWarnings("unchecked")
     private void initTableViewCellFactories(TableView<Flight> tableView, DisplayController display) {
         TableColumn<Flight, String> dateCol = (TableColumn<Flight, String>) tableView.getColumns().get(0);
-        dateCol.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getDate()));
+        dateCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Flight, String>, ObservableValue<String>>() {
+            @Override
+            public ObservableValue<String> call(TableColumn.CellDataFeatures<Flight, String> flightStringCellDataFeatures) {
+                return new ReadOnlyObjectWrapper<>(flightStringCellDataFeatures.getValue().getDate());
+            }
+        });
 
         TableColumn<Flight, String> locationCol = (TableColumn<Flight, String>) tableView.getColumns().get(1);
         locationCol.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getLocation()));
@@ -121,9 +138,18 @@ public class ShowFlightsController implements ViewController {
         });
 
         TableColumn<Flight, String> heightCol = (TableColumn<Flight, String>) tableView.getColumns().get(8);
-        heightCol.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getHeight()));
+        heightCol.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getFlightParameters().getHeight())));
 
-        TableColumn<Flight, Void> folderCol = (TableColumn<Flight, Void>) tableView.getColumns().get(9);
+        TableColumn<Flight, String> speedCol = (TableColumn<Flight, String>) tableView.getColumns().get(9);
+        speedCol.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getFlightParameters().getSpeed())));
+
+        TableColumn<Flight, String> fontOvCol = (TableColumn<Flight, String>) tableView.getColumns().get(10);
+        fontOvCol.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getFlightParameters().getFrontOverlap())));
+
+        TableColumn<Flight, String> SideOvCol = (TableColumn<Flight, String>) tableView.getColumns().get(11);
+        SideOvCol.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getFlightParameters().getSideOverlap())));
+
+        TableColumn<Flight, Void> folderCol = (TableColumn<Flight, Void>) tableView.getColumns().get(12);
         folderCol.setCellFactory(_ignored -> new TableCell<>() {
             private final ImageView imageView = new ImageView();
             private final StackPane container = new StackPane();
@@ -168,7 +194,7 @@ public class ShowFlightsController implements ViewController {
             }
         });
 
-        TableColumn<Flight, Void> processedCol = (TableColumn<Flight, Void>) tableView.getColumns().get(10);
+        TableColumn<Flight, Void> processedCol = (TableColumn<Flight, Void>) tableView.getColumns().get(13);
         processedCol.setCellFactory(_ignored -> new TableCell<>() {
             private final ImageView imageView = new ImageView();
             private final StackPane container = new StackPane();

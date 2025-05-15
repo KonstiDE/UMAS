@@ -44,6 +44,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.paint.Color?>
 <?import javafx.scene.text.Font?>
@@ -77,10 +78,15 @@
     </MenuBar>
     <SplitPane dividerPositions="0.2309197651663405, 0.8414872798434442" focusTraversable="true" prefHeight="-1.0" prefWidth="-1.0" VBox.vgrow="ALWAYS">
       <items>
-        <AnchorPane fx:id="left_anchor" />
+            <SplitPane dividerPositions="0.5" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0">
+              <items>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" />
+                  <StackPane prefHeight="150.0" prefWidth="200.0" />
+              </items>
+            </SplitPane>
         <ScrollPane prefHeight="-1.0" prefWidth="-1.0">
           <content>
-            <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="545.0" prefWidth="430.0" />
+            <AnchorPane id="Content" minHeight="-1.0" minWidth="-1.0" prefHeight="663.0" prefWidth="615.0" />
           </content>
         </ScrollPane>
         <AnchorPane />

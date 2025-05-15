@@ -12,7 +12,9 @@ import javafx.stage.Stage;
 import wue.eorc.umas.loader.ProjectCache;
 import wue.eorc.umas.loader.SceneLoader;
 import wue.eorc.umas.loader.Settings;
+import wue.eorc.umas.utils.KMZProcessor;
 
+import java.io.File;
 import java.io.IOException;
 
 public class Main extends Application {
@@ -36,7 +38,6 @@ public class Main extends Application {
 
         Scene scene = new Scene(root, 1024, 720);
 
-
         // Check settings
         if(Settings.getSetting(Setting.UITHEME).equals("Dark")){
             scene.getStylesheets().add(Settings.darkMode);
@@ -56,6 +57,8 @@ public class Main extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        KMZProcessor.processKmz(new File("/home/caipi/Desktop/Stolsnek1.kmz"));
 
     }
 }

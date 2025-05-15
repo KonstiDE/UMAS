@@ -21,7 +21,7 @@ public class Flight implements Serializable {
     private final String aoi;
     private final String pilot;
     private final String coPilot;
-    private final String height;
+    private final FlightParameters flightParameters;
     private final UAV uav;
     private final Sensor sensor;
     private final Map<ImageType, String> imageTypes;
@@ -31,13 +31,13 @@ public class Flight implements Serializable {
     private final List<String> originCalibDirs;
     private final String notes;
 
-    public Flight(String date, String location, String aoi, String pilot, String coPilot, String height, UAV uav, Sensor sensor, Map<ImageType, String> imageTypes, ProcessingChain processingChain, String baseDirectory, List<String> originFlightDirs, List<String> originCalibDirs, String notes) throws UMASException {
+    public Flight(String date, String location, String aoi, String pilot, String coPilot, FlightParameters flightParameters, UAV uav, Sensor sensor, Map<ImageType, String> imageTypes, ProcessingChain processingChain, String baseDirectory, List<String> originFlightDirs, List<String> originCalibDirs, String notes) throws UMASException {
         this.date = date;
         this.location = location;
         this.aoi = aoi;
         this.pilot = pilot;
         this.coPilot = coPilot;
-        this.height = height;
+        this.flightParameters = flightParameters;
         this.uav = uav;
         this.sensor = sensor;
         this.imageTypes = imageTypes;
@@ -117,8 +117,8 @@ public class Flight implements Serializable {
         return coPilot;
     }
 
-    public String getHeight(){
-        return height;
+    public FlightParameters getFlightParameters(){
+        return flightParameters;
     }
 
     public UAV getUav() {
