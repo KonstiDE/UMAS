@@ -1,3 +1,0 @@
-import Metashape
-
-print("Hello")

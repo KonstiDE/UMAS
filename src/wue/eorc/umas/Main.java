@@ -24,11 +24,10 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws IOException, UMASException, InterruptedException {
-        primaryStage.setTitle("UAS Mission Application");
+    public void start(Stage primaryStage) throws IOException, UMASException {
+        primaryStage.setTitle("EORC - UAS Management Application System");
 
         ProjectCache.createRecentProjectsFile();
-
         Settings.createSettingsFile();
 
         SceneLoader loader = new SceneLoader(this.getClass(), "scenes/");

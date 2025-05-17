@@ -3,7 +3,7 @@ import sys
 
 import Metashape as ms
 
-from utils import get_arg
+from utils import get_arg, report_progress
 
 
 def add_photos(file, folders):
@@ -34,10 +34,6 @@ def add_photos(file, folders):
     del doc
 
     print("vn: true")
-
-
-def report_progress(f):
-    print("vp: {}".format(str(f)))
 
 
 if __name__ == '__main__':

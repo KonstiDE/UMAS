@@ -4,7 +4,7 @@ import sys
 import Metashape
 import Metashape as ms
 
-from utils import get_arg
+from utils import get_arg, report_progress
 
 
 def build_point_cloud(file):
@@ -56,10 +56,6 @@ def build_point_cloud(file):
         doc.save()
 
         del doc
-
-
-def report_progress(f):
-    print("vp: {}".format(str(f)))
 
 
 if __name__ == '__main__':

@@ -3,7 +3,7 @@ import sys
 
 import Metashape as ms
 
-from utils import get_arg
+from utils import get_arg, report_progress
 
 
 def align_photos(file):
@@ -61,10 +61,6 @@ def align_photos(file):
         doc.save()
 
         del doc
-
-
-def report_progress(f):
-    print("vp: {}".format(str(f)))
 
 
 if __name__ == '__main__':
