@@ -18,6 +18,7 @@ public class FlightParameters implements Serializable {
     private int sideOverlap;
     private double speed;
     private List<String[]> coordinates;
+    private List<String[]> waypoints;
 
     public FlightParameters(int height, int frontOverlap, int sideOverlap, double speed, List<String[]> coordinates) {
         this.height = height;
@@ -65,6 +66,14 @@ public class FlightParameters implements Serializable {
 
     public void setCoordinates(List<String[]> coordinates) {
         this.coordinates = coordinates;
+    }
+
+    private List<String[]> getWaypoints() {
+        return waypoints;
+    }
+
+    public void setWaypoints(List<String[]> waypoints) {
+        this.waypoints = waypoints;
     }
 
     @Override
