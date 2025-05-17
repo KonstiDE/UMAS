@@ -73,10 +73,10 @@ public class ShowFlightsController implements ViewController {
                             ProjectCache.currentlyOpenedProject.save();
                             tableView1.getItems().remove(row.getItem());
                         }else{
-                            UMASException.throwWindow(ErrorType.INTERNAL, "Could nto remove flight. Please remove it manually!");
+                            UMASException.throwWindow(ErrorType.INTERNAL, "Could not remove flight. Please remove it manually!");
                         }
                     } catch (IOException e) {
-                        UMASException.throwWindow(ErrorType.INTERNAL, "Could nto remove flight. Please remove it manually!");
+                        UMASException.throwWindow(ErrorType.INTERNAL, "Could not remove flight. Please remove it manually!");
                     }
                     initTableViewCellFactories(tableView, display);
                 }
