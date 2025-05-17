@@ -1,12 +1,19 @@
 package wue.eorc.umas.models;
 
 import com.google.gson.Gson;
+import javafx.beans.property.ReadOnlyObjectWrapper;
 import wue.eorc.umas.enums.*;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.utils.DirectoryUtils;
 
 import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.List;
@@ -21,6 +28,8 @@ public class Flight implements Serializable {
     private final String aoi;
     private final String pilot;
     private final String coPilot;
+    private String startTime = ""; // format HH:mm
+    private String endTime = "";
     private final FlightParameters flightParameters;
     private final UAV uav;
     private final Sensor sensor;
@@ -31,7 +40,11 @@ public class Flight implements Serializable {
     private final List<String> originCalibDirs;
     private final String notes;
 
-    public Flight(String date, String location, String aoi, String pilot, String coPilot, FlightParameters flightParameters, UAV uav, Sensor sensor, Map<ImageType, String> imageTypes, ProcessingChain processingChain, String baseDirectory, List<String> originFlightDirs, List<String> originCalibDirs, String notes) throws UMASException {
+    public Flight(String date, String location, String aoi, String pilot, String coPilot,
+                  FlightParameters flightParameters, UAV uav, Sensor sensor,
+                  Map<ImageType, String> imageTypes, ProcessingChain processingChain, String baseDirectory,
+                  List<String> originFlightDirs, List<String> originCalibDirs, String notes) throws UMASException {
+
         this.date = date;
         this.location = location;
         this.aoi = aoi;
@@ -84,6 +97,37 @@ public class Flight implements Serializable {
             case MAVICM3M -> new HashMap<>();
         }
 
+        return null;
+    }
+
+    public LocalDateTime[] computeFlightStartAndEnd(){
+        File[] files = new File(this.originFlightDirs.get(0)).listFiles();
+
+        if(files != null && files.length > 0) {
+            Arrays.sort(files, (f1, f2) -> {
+                try {
+                    Path path1 = f1.toPath();
+                    Path path2 = f2.toPath();
+                    BasicFileAttributes attr1 = Files.readAttributes(path1, BasicFileAttributes.class);
+                    BasicFileAttributes attr2 = Files.readAttributes(path2, BasicFileAttributes.class);
+                    return attr1.creationTime().compareTo(attr2.creationTime());
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            });
+            try {
+                FileTime startTime = Files.readAttributes(files[0].toPath(), BasicFileAttributes.class).creationTime();
+                FileTime endTime = Files.readAttributes(files[files.length - 1].toPath(), BasicFileAttributes.class).creationTime();
+
+                // # TODO check for time zone accordingly!
+                LocalDateTime localStartTime = LocalDateTime.ofInstant(startTime.toInstant(), ZoneId.systemDefault());
+                LocalDateTime localEndTime = LocalDateTime.ofInstant(endTime.toInstant(), ZoneId.systemDefault());
+
+                return new LocalDateTime[]{localStartTime, localEndTime};
+            } catch (IOException e) {
+                return null;
+            }
+        }
         return null;
     }
 
@@ -151,5 +195,39 @@ public class Flight implements Serializable {
 
     public ProcessingChain getProcessingChain() {
         return processingChain;
+    }
+
+    public String getStartTime(){
+        return startTime;
+    }
+
+    public String getEndTime(){
+        return endTime;
+    }
+
+    public void setStartTime(String startTime){
+        this.startTime = startTime;
+    }
+    public void setEndTime(String endTime){
+        this.endTime = endTime;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof Flight flight)) return false;
+        return Objects.equals(date, flight.date) &&
+                Objects.equals(location, flight.location) &&
+                Objects.equals(aoi, flight.aoi) &&
+                Objects.equals(pilot, flight.pilot) &&
+                Objects.equals(coPilot, flight.coPilot) &&
+                Objects.equals(startTime, flight.startTime) &&
+                Objects.equals(endTime, flight.endTime) &&
+                uav == flight.uav &&
+                sensor == flight.sensor;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(date, location, aoi, pilot, coPilot, startTime, endTime, flightParameters, uav, sensor, imageTypes, processingChain, baseDirectory, originFlightDirs, originCalibDirs, notes);
     }
 }

@@ -6,6 +6,7 @@ import javafx.util.Pair;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.List;
+import java.util.Objects;
 
 public class FlightParameters implements Serializable {
 
@@ -66,4 +67,14 @@ public class FlightParameters implements Serializable {
         this.coordinates = coordinates;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (!(o instanceof FlightParameters that)) return false;
+        return height == that.height && frontOverlap == that.frontOverlap && sideOverlap == that.sideOverlap && Double.compare(speed, that.speed) == 0 && Objects.equals(coordinates, that.coordinates);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(height, frontOverlap, sideOverlap, speed, coordinates);
+    }
 }

@@ -1,12 +1,17 @@
 package wue.eorc.umas.controller.panes.views.panes;
 
 import javafx.application.Platform;
+import javafx.beans.binding.Bindings;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.scene.control.MenuItem;
 import javafx.util.Callback;
 import wue.eorc.umas.controller.panes.mains.DisplayController;
 import wue.eorc.umas.controller.panes.mains.MapController;
 import wue.eorc.umas.controller.panes.views.dialogs.AddFlightController;
+import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.ImageType;
 import wue.eorc.umas.enums.SplitPanePosition;
 import wue.eorc.umas.exception.UMASException;
@@ -27,7 +32,17 @@ import wue.eorc.umas.utils.ItemSearcher;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.nio.file.attribute.FileTime;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalField;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Optional;
 
 public class ShowFlightsController implements ViewController {
 
@@ -37,6 +52,44 @@ public class ShowFlightsController implements ViewController {
         TableView<Flight> tableView = ItemSearcher.getGenericControlById("showflights.table", pane, TableView.class, Flight.class);
         tableView.setEditable(false);
         initTableViewCellFactories(tableView, display);
+
+        tableView.setRowFactory(tableView1 -> {
+            final TableRow<Flight> row = new TableRow<>();
+            final ContextMenu contextMenu = new ContextMenu();
+            final MenuItem removeMenuItem = new MenuItem("Delete flight");
+            removeMenuItem.setOnAction(event -> {
+                ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
+                ButtonType no = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
+                Alert alert = new Alert(Alert.AlertType.WARNING,
+                        "Do you really want to delete this flight?", yes, no);
+
+                alert.setTitle("Date format warning");
+                Optional<ButtonType> result = alert.showAndWait();
+
+                if (result.orElse(no) == yes) {
+                    try {
+                        boolean success = ProjectCache.currentlyOpenedProject.removeFlight(row.getItem());
+                        if(success){
+                            ProjectCache.currentlyOpenedProject.save();
+                            tableView1.getItems().remove(row.getItem());
+                        }else{
+                            UMASException.throwWindow(ErrorType.INTERNAL, "Could nto remove flight. Please remove it manually!");
+                        }
+                    } catch (IOException e) {
+                        UMASException.throwWindow(ErrorType.INTERNAL, "Could nto remove flight. Please remove it manually!");
+                    }
+                    initTableViewCellFactories(tableView, display);
+                }
+            });
+            contextMenu.getItems().add(removeMenuItem);
+            row.contextMenuProperty().bind(
+                    Bindings.when(row.emptyProperty())
+                            .then((ContextMenu)null)
+                            .otherwise(contextMenu)
+            );
+
+            return row;
+        });
 
         for(Flight flight : ProjectCache.currentlyOpenedProject.getFlights()){
             tableView.getItems().add(flight);
@@ -138,18 +191,48 @@ public class ShowFlightsController implements ViewController {
         });
 
         TableColumn<Flight, String> heightCol = (TableColumn<Flight, String>) tableView.getColumns().get(8);
-        heightCol.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getFlightParameters().getHeight())));
+        heightCol.setCellValueFactory(cellData -> {
+            try {
+                return new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getFlightParameters().getHeight()));
+            } catch (NullPointerException e){
+                return new ReadOnlyObjectWrapper<>("");
+            }
+        });
 
         TableColumn<Flight, String> speedCol = (TableColumn<Flight, String>) tableView.getColumns().get(9);
-        speedCol.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getFlightParameters().getSpeed())));
+        speedCol.setCellValueFactory(cellData -> {
+            try {
+                return new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getFlightParameters().getSpeed()));
+            } catch (NullPointerException e){
+                return new ReadOnlyObjectWrapper<>("");
+            }
+        });
 
         TableColumn<Flight, String> fontOvCol = (TableColumn<Flight, String>) tableView.getColumns().get(10);
-        fontOvCol.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getFlightParameters().getFrontOverlap())));
+        fontOvCol.setCellValueFactory(cellData -> {
+            try {
+                return new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getFlightParameters().getFrontOverlap()));
+            } catch (NullPointerException e){
+                return new ReadOnlyObjectWrapper<>("");
+            }
+        });
 
-        TableColumn<Flight, String> SideOvCol = (TableColumn<Flight, String>) tableView.getColumns().get(11);
-        SideOvCol.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getFlightParameters().getSideOverlap())));
+        TableColumn<Flight, String> sideOvCol = (TableColumn<Flight, String>) tableView.getColumns().get(11);
+        sideOvCol.setCellValueFactory(cellData -> {
+            try {
+                return new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getFlightParameters().getSideOverlap()));
+            } catch (NullPointerException e){
+                return new ReadOnlyObjectWrapper<>("");
+            }
+        });
 
-        TableColumn<Flight, Void> folderCol = (TableColumn<Flight, Void>) tableView.getColumns().get(12);
+        TableColumn<Flight, String> startTime = (TableColumn<Flight, String>) tableView.getColumns().get(12);
+        startTime.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getStartTime()));
+
+        TableColumn<Flight, String> endTime = (TableColumn<Flight, String>) tableView.getColumns().get(13);
+        endTime.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getEndTime()));
+
+        TableColumn<Flight, Void> folderCol = (TableColumn<Flight, Void>) tableView.getColumns().get(14);
         folderCol.setCellFactory(_ignored -> new TableCell<>() {
             private final ImageView imageView = new ImageView();
             private final StackPane container = new StackPane();
@@ -194,7 +277,7 @@ public class ShowFlightsController implements ViewController {
             }
         });
 
-        TableColumn<Flight, Void> processedCol = (TableColumn<Flight, Void>) tableView.getColumns().get(13);
+        TableColumn<Flight, Void> processedCol = (TableColumn<Flight, Void>) tableView.getColumns().get(15);
         processedCol.setCellFactory(_ignored -> new TableCell<>() {
             private final ImageView imageView = new ImageView();
             private final StackPane container = new StackPane();
@@ -218,11 +301,17 @@ public class ShowFlightsController implements ViewController {
                 imageView.setImage(new Image("wue/eorc/umas/assets/icons8-gear-144.png"));
 
                 imageView.setOnMouseClicked(_ignored -> {
-                    display.switchSceneTo(
-                            SplitPanePosition.RIGHT,
-                            SceneLoader.getAvailableScenes().get("show_processing"),
-                            new ShowProcessingController(flight)
-                    );
+                    File flightDir = new File(flight.getFlightDirectory());
+
+                    if(flightDir.exists()) {
+                        display.switchSceneTo(
+                                SplitPanePosition.RIGHT,
+                                SceneLoader.getAvailableScenes().get("show_processing"),
+                                new ShowProcessingController(flight)
+                        );
+                    }else{
+                        UMASException.throwWindow(ErrorType.USER, "Please fix all explorer issues before start processing.");
+                    }
                 });
                 imageView.setOnMouseEntered(_ignored -> imageView.setCursor(Cursor.HAND));
                 imageView.setOnMouseExited(_ignored -> imageView.setCursor(Cursor.DEFAULT));

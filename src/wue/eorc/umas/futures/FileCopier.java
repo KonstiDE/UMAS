@@ -8,9 +8,8 @@ import wue.eorc.umas.utils.ImageUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+import java.nio.file.*;
+import java.nio.file.attribute.BasicFileAttributes;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
@@ -57,7 +56,7 @@ public class FileCopier {
         }
     }
 
-    private void copy(List<String> origins, String flightDirectory, Predicate<String> filter, String... baseDest) throws IOException, InterruptedException {
+    private void copy(List<String> origins, String flightDirectory, Predicate<String> filter, String... baseDest) throws IOException {
         ArrayList<File> filesToCopy = new ArrayList<>();
         for(String absPathString : origins){
             File[] files = Paths.get(absPathString).toFile().listFiles((_ignored, name) -> filter.test(name));
@@ -70,7 +69,13 @@ public class FileCopier {
         int c = 0;
         int max = filesToCopy.size();
         for(File file : filesToCopy){
-            Files.copy(Path.of(file.getAbsolutePath()), Paths.get(flightDirectory, innerPath, file.getName()));
+            Path source = Path.of(file.getAbsolutePath());
+            Path target = Paths.get(flightDirectory, innerPath, file.getName());
+
+
+            // # TODO not working 
+            Files.copy(source, target, StandardCopyOption.COPY_ATTRIBUTES);
+            Files.setAttribute(target, "basic:creationTime", Files.readAttributes(source, BasicFileAttributes.class).creationTime());
             c++;
             copyProgressListener.receivedProgress((double) c / max);
         }

@@ -61,6 +61,10 @@ public class Project implements Serializable {
         this.flights.add(flight);
     }
 
+    public boolean removeFlight(Flight flight) {
+        return this.flights.remove(flight);
+    }
+
     public File getFile(){
         return Paths.get(directory.getAbsolutePath(), name, name.concat(".umasproject")).toFile();
     }

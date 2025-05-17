@@ -58,7 +58,5 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        KMZProcessor.processKmz(new File("/home/caipi/Desktop/Stolsnek1.kmz"));
-
     }
 }
