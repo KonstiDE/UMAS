@@ -22,6 +22,8 @@
                      </font>
                   </Label>
                   <Button id="showflights.add" mnemonicParsing="false" text="+" />
+                  <HBox prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                  <Button id="showflights.refresh" mnemonicParsing="false" text="Refresh" />
                </children>
             </HBox>
             <Separator prefWidth="200.0" />

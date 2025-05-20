@@ -29,7 +29,9 @@ import wue.eorc.umas.utils.KMZProcessor;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
+import java.nio.file.attribute.FileTime;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 import java.util.concurrent.CompletableFuture;
@@ -211,11 +213,14 @@ public class AddFlightController implements DialogController, CopyProgressListen
                     fileCopier.getCopyTask().thenRun(() -> {
                         this.flightJson = Flight.toJson(flight);
 
-                        DateTimeFormatter minuteFormatter = DateTimeFormatter.ofPattern("HH:mm");
-                        LocalDateTime[] startAndEndTime = flight.computeFlightStartAndEnd();
+                        FileTime[] times = fileCopier.getTimes();
+                        LocalDateTime start = OffsetDateTime.parse(times[0].toString()).toLocalDateTime();
+                        LocalDateTime end = OffsetDateTime.parse(times[1].toString()).toLocalDateTime();
 
-                        flight.setStartTime(minuteFormatter.format(startAndEndTime[0]));
-                        flight.setEndTime(minuteFormatter.format(startAndEndTime[1]));
+                        DateTimeFormatter minuteFormatter = DateTimeFormatter.ofPattern("HH:mm");
+
+                        flight.setStartTime(minuteFormatter.format(start));
+                        flight.setEndTime(minuteFormatter.format(end));
 
                         try{
                             ProjectCache.currentlyOpenedProject.addFlight(flight);

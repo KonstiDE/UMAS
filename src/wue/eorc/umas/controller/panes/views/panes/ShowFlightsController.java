@@ -36,6 +36,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -48,10 +49,19 @@ public class ShowFlightsController implements ViewController {
 
     @Override
     public void init(Pane pane, DisplayController display) throws UMASException {
-
         TableView<Flight> tableView = ItemSearcher.getGenericControlById("showflights.table", pane, TableView.class, Flight.class);
         tableView.setEditable(false);
         initTableViewCellFactories(tableView, display);
+
+        Button button = ItemSearcher.getItemById("showflights.refresh", pane, Button.class);
+        button.setOnAction(_ignored -> {
+            try {
+                tableView.getItems().clear();
+                init(pane, display);
+            } catch (UMASException e) {
+                UMASException.throwWindow(ErrorType.INTERNAL, "Could not refresh tableview. Please restart the application.");
+            }
+        });
 
         tableView.setRowFactory(tableView1 -> {
             final TableRow<Flight> row = new TableRow<>();
@@ -124,12 +134,7 @@ public class ShowFlightsController implements ViewController {
     @SuppressWarnings("unchecked")
     private void initTableViewCellFactories(TableView<Flight> tableView, DisplayController display) {
         TableColumn<Flight, String> dateCol = (TableColumn<Flight, String>) tableView.getColumns().get(0);
-        dateCol.setCellValueFactory(new Callback<TableColumn.CellDataFeatures<Flight, String>, ObservableValue<String>>() {
-            @Override
-            public ObservableValue<String> call(TableColumn.CellDataFeatures<Flight, String> flightStringCellDataFeatures) {
-                return new ReadOnlyObjectWrapper<>(flightStringCellDataFeatures.getValue().getDate());
-            }
-        });
+        dateCol.setCellValueFactory(flightStringCellDataFeatures -> new ReadOnlyObjectWrapper<>(flightStringCellDataFeatures.getValue().getDate()));
 
         TableColumn<Flight, String> locationCol = (TableColumn<Flight, String>) tableView.getColumns().get(1);
         locationCol.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getLocation()));

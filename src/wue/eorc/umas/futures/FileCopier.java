@@ -10,10 +10,9 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Set;
+import java.nio.file.attribute.FileTime;
+import java.time.LocalDateTime;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Predicate;
 
@@ -22,6 +21,8 @@ public class FileCopier {
     CopyProgressListener copyProgressListener;
 
     private final CompletableFuture<Void> copyTask;
+
+    private FileTime[] times;
 
     public FileCopier(CopyProgressListener copyProgressListener, Flight flight) {
         this.copyProgressListener = copyProgressListener;
@@ -66,19 +67,26 @@ public class FileCopier {
         }
         String innerPath = String.join(File.separator, baseDest);
 
+        List<FileTime> fileTimes = new ArrayList<>();
+
         int c = 0;
         int max = filesToCopy.size();
         for(File file : filesToCopy){
             Path source = Path.of(file.getAbsolutePath());
             Path target = Paths.get(flightDirectory, innerPath, file.getName());
 
+            FileTime fileTime = Files.readAttributes(source, BasicFileAttributes.class).creationTime();
+            fileTimes.add(fileTime);
 
-            // # TODO not working 
             Files.copy(source, target, StandardCopyOption.COPY_ATTRIBUTES);
-            Files.setAttribute(target, "basic:creationTime", Files.readAttributes(source, BasicFileAttributes.class).creationTime());
             c++;
             copyProgressListener.receivedProgress((double) c / max);
         }
+
+        Collections.sort(fileTimes);
+
+        this.times = new FileTime[]{fileTimes.get(0), fileTimes.get(fileTimes.size() - 1)};
+
     }
 
 
@@ -88,6 +96,10 @@ public class FileCopier {
             Thread.sleep(10);
             this.copyProgressListener.receivedProgress((double) i / max);
         }
+    }
+
+    public FileTime[] getTimes() {
+        return times;
     }
 
 }
