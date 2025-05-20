@@ -68,7 +68,7 @@ public class FlightParameters implements Serializable {
         this.coordinates = coordinates;
     }
 
-    private List<String[]> getWaypoints() {
+    public List<String[]> getWaypoints() {
         return waypoints;
     }
 

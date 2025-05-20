@@ -110,13 +110,13 @@ public class ShowFlightsController implements ViewController {
             tableView.getItems().add(flight);
 
             if(flight.getFlightParameters() != null){
-                display.getMapController().showFlightArea(flight.getFlightParameters().getCoordinates());
+                display.getMapController().showFlightArea(flight.getFlightParameters().getCoordinates(), flight.getFlightParameters().getWaypoints());
             }
         });
 
         tableView.getSelectionModel().selectedItemProperty().addListener(
                 (_ignored, oldT, newT) -> {
-                    display.getMapController().showFlightArea(newT.getFlightParameters().getCoordinates());
+                    display.getMapController().showFlightArea(newT.getFlightParameters().getCoordinates(), newT.getFlightParameters().getWaypoints());
                 });
 
     }

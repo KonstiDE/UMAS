@@ -1,6 +1,7 @@
 package wue.eorc.umas;
 
 import wue.eorc.umas.controller.RootController;
+import wue.eorc.umas.controller.panes.mains.MapController;
 import wue.eorc.umas.enums.Setting;
 import wue.eorc.umas.exception.UMASException;
 import javafx.application.Application;
@@ -15,6 +16,7 @@ import wue.eorc.umas.loader.Settings;
 import wue.eorc.umas.utils.KMZProcessor;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 
 public class Main extends Application {

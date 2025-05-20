@@ -1,26 +1,17 @@
 package wue.eorc.umas.utils;
 
-import javafx.util.Pair;
 import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.models.FlightParameters;
 import wue.eorc.umas.models.Waypoint;
 
-import javax.xml.XMLConstants;
-import javax.xml.namespace.NamespaceContext;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathConstants;
-import javax.xml.xpath.XPathFactory;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
@@ -28,18 +19,24 @@ import java.util.zip.ZipInputStream;
 public class KMZProcessor {
 
     public static FlightParameters processKmz(File kmzFile) {
-        try (FileInputStream fis = new FileInputStream(kmzFile);
-             ZipInputStream zis = new ZipInputStream(fis)) {
+        try (FileInputStream fis = new FileInputStream(kmzFile)) {
+
+            ZipInputStream zis = new ZipInputStream(fis);
 
             ZipEntry entry;
             FlightParameters flightParameters = null;
             List<String[]> waypoints = null;
             while ((entry = zis.getNextEntry()) != null) {
                 if (entry.getName().toLowerCase().endsWith(".kml")) {
-                    flightParameters = parseKML(zis);
-                }
-                if(entry.getName().toLowerCase().endsWith(".wpml")) {
-                    waypoints = parseWayPoints(zis);
+                    byte[] kmlData = readEntryData(zis);
+                    try (InputStream kmlStream = new ByteArrayInputStream(kmlData)) {
+                        flightParameters = parseKML(kmlStream);
+                    }
+                }else if(entry.getName().toLowerCase().endsWith(".wpml")) {
+                    byte[] wpmlData = readEntryData(zis);
+                    try (InputStream wpmlStream = new ByteArrayInputStream(wpmlData)) {
+                        waypoints = parseWayPoints(wpmlStream);
+                    }
                 }
             }
             if(flightParameters != null && waypoints != null){
@@ -88,46 +85,32 @@ public class KMZProcessor {
         DocumentBuilder builder = factory.newDocumentBuilder();
         Document doc = builder.parse(wpmlStream);
 
-        XPathFactory xPathFactory = XPathFactory.newInstance();
-        XPath xpath = xPathFactory.newXPath();
+        NodeList list = doc.getElementsByTagName("coordinates");
 
-        // Define the wpml namespace
-        xpath.setNamespaceContext(new NamespaceContext() {
-            public String getNamespaceURI(String prefix) {
-                if ("wpml".equals(prefix)) return "http://www.dji.com/wpmz/1.0.6";
-                else return XMLConstants.NULL_NS_URI;
-            }
+        List<String[]> waypoints = new ArrayList<>();
 
-            public String getPrefix(String uri) { return null; }
-            public Iterator<String> getPrefixes(String uri) { return null; }
-        });
-
-        // Query all wpml:point elements
-        NodeList points = (NodeList) xpath.evaluate("//wpml:point", doc, XPathConstants.NODESET);
-
-        List<Waypoint> waypoints = new ArrayList<>();
-
-        for (int i = 0; i < points.getLength(); i++) {
-            Node point = points.item(i);
-            Element elem = (Element) point;
-
-            double lat = Double.parseDouble(elem.getElementsByTagNameNS("http://www.dji.com/wpmz/1.0.6", "latitude").item(0).getTextContent());
-            double lon = Double.parseDouble(elem.getElementsByTagNameNS("http://www.dji.com/wpmz/1.0.6", "longitude").item(0).getTextContent());
-            double alt = Double.parseDouble(elem.getElementsByTagNameNS("http://www.dji.com/wpmz/1.0.6", "altitude").item(0).getTextContent());
-
-            waypoints.add(new Waypoint(lat, lon, alt));
+        for(int i = 0; i < list.getLength(); i++){
+            String[] coords = list.item(i).getFirstChild().getNodeValue().trim().split(",");
+            waypoints.add(new String[]{coords[0], coords[1], "" + 0});
         }
 
-        return waypoints.stream().map(waypoint -> new String[]{
-                String.valueOf(waypoint.getLongitude()),
-                String.valueOf(waypoint.getLatitude()),
-                String.valueOf(waypoint.getAltitude())
-        }).toList();
+
+        return waypoints;
 
     }
 
     private static String getWpmlTagValue(NodeList nodeList) {
         return nodeList.item(0).getFirstChild().getNodeValue();
+    }
+
+    private static byte[] readEntryData(ZipInputStream zis) throws IOException {
+        ByteArrayOutputStream buffer = new ByteArrayOutputStream();
+        byte[] temp = new byte[4096];
+        int bytesRead;
+        while ((bytesRead = zis.read(temp)) != -1) {
+            buffer.write(temp, 0, bytesRead);
+        }
+        return buffer.toByteArray();
     }
 
 }
