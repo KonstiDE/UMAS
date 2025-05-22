@@ -155,7 +155,7 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
 
-        enqueue(AgisoftTask.OPTIMIZE_CAMERAS_CHECK, stackPane, pb, true);
+        enqueue(AgisoftTask.BUILD_POINT_CLOUD_CHECK, stackPane, pb, true);
     }
 
     public void buildPointCloud(StackPane stackPane, String psxFile){
@@ -165,7 +165,7 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
 
-        enqueue(AgisoftTask.OPTIMIZE_CAMERAS_CHECK, stackPane, pb, false);
+        enqueue(AgisoftTask.BUILD_POINT_CLOUD, stackPane, pb, false);
     }
 
     public void buildDemCheck(StackPane stackPane, String psxFile){
@@ -195,7 +195,7 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
 
-        enqueue(AgisoftTask.BUILD_DEM_CHECK, stackPane, pb, true);
+        enqueue(AgisoftTask.BUILD_ORTHOMOSAIC_CHECK, stackPane, pb, true);
     }
 
     public void buildOrthomosaic(StackPane stackPane, String psxFile){
@@ -205,46 +205,97 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
 
-        enqueue(AgisoftTask.BUILD_DEM, stackPane, pb, false);
+        enqueue(AgisoftTask.BUILD_ORTHOMOSAIC, stackPane, pb, false);
+    }
+
+    public void exportDemCheck(StackPane stackPane, String psxFile, String targetFile){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "export_dem_check.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-demFile", targetFile);
+
+        enqueue(AgisoftTask.EXPORT_DEM_CHECK, stackPane, pb, true);
+
+    }
+    public void exportDem(StackPane stackPane, String psxFile, String targetFile){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "export_dem.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-demFile", targetFile);
+
+        enqueue(AgisoftTask.EXPORT_DEM, stackPane, pb, false);
+
+    }
+
+    public void exportOrthoCheck(StackPane stackPane, String psxFile, String targetFile){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "export_orthomosaic_check.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-orthoFile", targetFile);
+
+        enqueue(AgisoftTask.EXPORT_ORTHOMOSAIC_CHECK, stackPane, pb, true);
+
+    }
+    public void exportOrtho(StackPane stackPane, String psxFile, String targetFile){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "export_orthomosaic.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-orthoFile", targetFile);
+
+        enqueue(AgisoftTask.EXPORT_ORTHOMOSAIC, stackPane, pb, false);
+
     }
 
 
 
+
     private void enqueue(AgisoftTask task, StackPane stackPane, ProcessBuilder pb, boolean nextIfFailed){
-        queue.add(() -> {
-            CompletableFuture.supplyAsync(() -> {
-                try{
-                   pb.redirectErrorStream(true);
-                   Process p = pb.start();
+        this.agisoftQueueListener.enqueue(task);
 
-                   boolean success = Boolean.parseBoolean(watchForSignal("vn: ", p.getInputStream(), agisoftCallbackListener));
-
-                   int exitCode = p.waitFor();
-
-                   return exitCode == 0 && success;
-                }catch (IOException | InterruptedException e){
-                   return false;
+        queue.add(() -> CompletableFuture.supplyAsync(() -> {
+            this.agisoftQueueListener.started(task);
+            try{
+                if(task == AgisoftTask.ADD_PHOTOS_CHECK){
+                    Thread.sleep(10000);
                 }
-            }) .thenAcceptAsync(result -> {
-                if(result) {
+
+                pb.redirectErrorStream(true);
+                Process p = pb.start();
+
+                boolean success = Boolean.parseBoolean(watchForSignal("vn: ", p.getInputStream(), agisoftCallbackListener));
+
+                int exitCode = p.waitFor();
+
+                return exitCode == 0 && success;
+            }catch (IOException | InterruptedException e){
+                return false;
+            }
+        }) .thenAcceptAsync(result -> {
+            try {
+                agisoftCallbackListener.callback(stackPane, task, result);
+            } catch (UMASException e) {
+                throw new RuntimeException(e);
+            }
+
+            agisoftQueueListener.finish();
+
+            if(result) {
+                isRunning = true;
+                processNext();
+            }else{
+                if(nextIfFailed) {
                     isRunning = true;
                     processNext();
                 }else{
-                    if(nextIfFailed) {
-                        isRunning = true;
-                        processNext();
-                    }else{
-                        isRunning = false;
-                    }
+                    isRunning = false;
                 }
-                try {
-                    agisoftCallbackListener.callback(stackPane, task, result);
-                } catch (UMASException e) {
-                    throw new RuntimeException(e);
-                }
+            }
 
-            });
-        });
+        }));
 
         if (!isRunning) {
             isRunning = true;

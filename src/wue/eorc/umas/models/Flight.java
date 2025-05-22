@@ -92,6 +92,20 @@ public class Flight implements Serializable {
         return dtf_new.format(dtf_old.parse(date)) + "_" + this.location + "_" + this.aoi + "_" + this.uav + this.sensor + "_Terra.symlink";
     }
 
+    public String getExportDemName(){
+        DateTimeFormatter dtf_old = DateTimeFormatter.ofPattern("M/d/yyyy");
+        DateTimeFormatter dtf_new = DateTimeFormatter.ofPattern("ddMMyyyy");
+
+        return dtf_new.format(dtf_old.parse(date)) + "_" + this.location + "_" + this.aoi + "_" + this.uav + this.sensor + "_DSM.tif";
+    }
+
+    public String getExportOrthomosaicName(){
+        DateTimeFormatter dtf_old = DateTimeFormatter.ofPattern("M/d/yyyy");
+        DateTimeFormatter dtf_new = DateTimeFormatter.ofPattern("ddMMyyyy");
+
+        return dtf_new.format(dtf_old.parse(date)) + "_" + this.location + "_" + this.aoi + "_" + this.uav + this.sensor + "_OM.tif";
+    }
+
     private HashMap<ImageType, Integer> countImages(List<ImageType> imageTypes) {
         switch (uav) {
             case MAVICM3M -> new HashMap<>();

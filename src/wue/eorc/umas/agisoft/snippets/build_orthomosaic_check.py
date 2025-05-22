@@ -7,22 +7,33 @@ import Metashape as ms
 from utils import get_arg, report_progress
 
 
-def export_orthomosaic(psx_file, ortho_file):
+def export_orthomosaic(psx_file):
     doc = ms.Document()
 
     doc.open(path=psx_file, read_only=True)
 
-    if os.path.exists(ortho_file):
-        print("vn: false")
-    else:
-        print("vn: true")
+    if len(doc.chunks) > 0:
+        all_have_dem = True
 
-    del doc
+        for chunk in doc.chunks:
+            if chunk.orthomosaic is None:
+                all_have_dem = False
+                break
+
+        del doc
+        if all_have_dem:
+            print("vn: true")
+        else:
+            print("vn: false")
+
+    else:
+        del doc
+        print("vn: false")
+
 
 if __name__ == '__main__':
     args = sys.argv[1:]
 
     project_file = get_arg(args, "-psxFile")
-    target_file = get_arg(args, "-orthoFile")
 
-    export_orthomosaic(project_file, target_file)
+    export_orthomosaic(project_file)

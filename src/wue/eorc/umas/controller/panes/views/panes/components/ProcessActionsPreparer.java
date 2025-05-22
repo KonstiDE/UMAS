@@ -23,6 +23,7 @@ import wue.eorc.umas.utils.Colors;
 import wue.eorc.umas.utils.DirectoryUtils;
 import wue.eorc.umas.utils.ItemSearcher;
 
+import java.nio.file.Paths;
 import java.util.Optional;
 
 public class ProcessActionsPreparer {
@@ -64,7 +65,8 @@ public class ProcessActionsPreparer {
                 setupBuildPointCloud();
                 setupBuildDem();
                 setupBuildOrthomosaic();
-                // ...
+                setupExportDem();
+                setupExportOrthomosaic();
             }
             case IR -> {}
             case LIDAR -> {}
@@ -189,6 +191,38 @@ public class ProcessActionsPreparer {
         buildOrthomosaic.setCursor(Cursor.HAND);
         buildOrthomosaic.setOnMouseClicked(_ignored -> {
             agisoftCaller.buildOrthomosaic(buildOrthomosaic, DirectoryUtils.figureAgisoftFilePath(this.flight));
+        });
+    }
+
+    private void setupExportDem() throws UMASException {
+        StackPane exportDem = ItemSearcher.getItemById("processing.exportdem", this.workflowPane, StackPane.class);
+        agisoftCaller.exportDemCheck(exportDem, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
+                DirectoryUtils.figureExportPath(this.flight),
+                this.flight.getExportDemName()
+        ).toFile().getAbsolutePath());
+
+        exportDem.setCursor(Cursor.HAND);
+        exportDem.setOnMouseClicked(_ignored -> {
+            agisoftCaller.exportDem(exportDem, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
+                    DirectoryUtils.figureExportPath(this.flight),
+                    this.flight.getExportDemName()
+            ).toFile().getAbsolutePath());
+        });
+    }
+
+    private void setupExportOrthomosaic() throws UMASException {
+        StackPane exportOrtho = ItemSearcher.getItemById("processing.exportorthomosaic", this.workflowPane, StackPane.class);
+        agisoftCaller.exportOrthoCheck(exportOrtho, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
+                DirectoryUtils.figureExportPath(this.flight),
+                this.flight.getExportOrthomosaicName()
+        ).toFile().getAbsolutePath());
+
+        exportOrtho.setCursor(Cursor.HAND);
+        exportOrtho.setOnMouseClicked(_ignored -> {
+            agisoftCaller.exportOrtho(exportOrtho, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
+                    DirectoryUtils.figureExportPath(this.flight),
+                    this.flight.getExportOrthomosaicName()
+            ).toFile().getAbsolutePath());
         });
     }
 

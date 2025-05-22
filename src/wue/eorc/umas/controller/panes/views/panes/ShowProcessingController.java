@@ -1,5 +1,6 @@
 package wue.eorc.umas.controller.panes.views.panes;
 
+import javafx.application.Platform;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -142,7 +143,7 @@ public class ShowProcessingController implements ViewController, AgisoftQueueLis
         if(flight.getProcessingChain() == ProcessingChain.AGISOFT){
             return Paths.get(flight.getFlightDirectory(), "1_Agisoft", fileName).toFile().exists();
         }else if(flight.getProcessingChain() == ProcessingChain.BOTH){
-            return Paths.get(flight.getFlightDirectory(), "1_Agisoft", fileName).toFile().exists();
+            return Paths.get(flight.getFlightDirectory(), "2_Agisoft", fileName).toFile().exists();
         }
         return false;
     }
@@ -156,24 +157,39 @@ public class ShowProcessingController implements ViewController, AgisoftQueueLis
         return false;
     }
 
-    public Pane getProcessingPaneRoot() {
-        return processingPaneRoot;
+    @Override
+    public void enqueue(AgisoftTask agisoftTask) {
+        Platform.runLater(() -> {
+            processingListView.getItems().add(agisoftTask.name());
+        });
     }
 
     @Override
-    public void enqueue() {
-
+    public void started(AgisoftTask agisoftTask) {
+        Platform.runLater(() -> {
+            processingListView.getItems().removeFirst();
+            currentlyProcessing.textProperty().set(agisoftTask.name());
+        });
     }
 
     @Override
     public void finish() {
-
+        Platform.runLater(() -> {
+            if(!processingListView.getItems().isEmpty()){
+                currentlyProcessing.textProperty().set(processingListView.getItems().get(0));
+                processingListView.getItems().remove(0);
+            }else{
+                currentlyProcessing.textProperty().set("");
+            }
+        });
     }
 
     @Override
     public void callback(StackPane source, AgisoftTask task, boolean result) throws UMASException {
         switch (task){
-            case ADD_PHOTOS_CHECK, SET_BRIGHTNESS_CHECK, ALIGN_IMAGES_CHECK, OPTIMIZE_CAMERAS_CHECK -> {
+            case ADD_PHOTOS_CHECK, SET_BRIGHTNESS_CHECK, ALIGN_IMAGES_CHECK,
+                 OPTIMIZE_CAMERAS_CHECK, BUILD_DEM_CHECK, BUILD_ORTHOMOSAIC_CHECK,
+                 EXPORT_DEM_CHECK, EXPORT_ORTHOMOSAIC_CHECK -> {
                 Rectangle rectangle = ItemSearcher.getItemById("processing.rectangle", source, Rectangle.class);
                 ProgressIndicator indicator = ItemSearcher.getItemById("processing.indicator", source, ProgressIndicator.class);
 
