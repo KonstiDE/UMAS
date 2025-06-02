@@ -106,6 +106,13 @@ public class Flight implements Serializable {
         return dtf_new.format(dtf_old.parse(date)) + "_" + this.location + "_" + this.aoi + "_" + this.uav + this.sensor + "_OM.tif";
     }
 
+    public String getGenerateReportName(){
+        DateTimeFormatter dtf_old = DateTimeFormatter.ofPattern("M/d/yyyy");
+        DateTimeFormatter dtf_new = DateTimeFormatter.ofPattern("ddMMyyyy");
+
+        return dtf_new.format(dtf_old.parse(date)) + "_" + this.location + "_" + this.aoi + "_" + this.uav + this.sensor + ".pdf";
+    }
+
     private HashMap<ImageType, Integer> countImages(List<ImageType> imageTypes) {
         switch (uav) {
             case MAVICM3M -> new HashMap<>();
@@ -244,4 +251,5 @@ public class Flight implements Serializable {
     public int hashCode() {
         return Objects.hash(date, location, aoi, pilot, coPilot, startTime, endTime, flightParameters, uav, sensor, imageTypes, processingChain, baseDirectory, originFlightDirs, originCalibDirs, notes);
     }
+
 }

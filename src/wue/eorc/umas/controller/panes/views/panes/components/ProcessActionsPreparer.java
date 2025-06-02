@@ -67,6 +67,7 @@ public class ProcessActionsPreparer {
                 setupBuildOrthomosaic();
                 setupExportDem();
                 setupExportOrthomosaic();
+                setupGenerateReports();
             }
             case IR -> {}
             case LIDAR -> {}
@@ -223,6 +224,26 @@ public class ProcessActionsPreparer {
                     DirectoryUtils.figureExportPath(this.flight),
                     this.flight.getExportOrthomosaicName()
             ).toFile().getAbsolutePath());
+        });
+    }
+
+    public void setupGenerateReports() throws UMASException {
+        StackPane generateReport = ItemSearcher.getItemById("processing.generatereport", this.workflowPane, StackPane.class);
+        agisoftCaller.generateReportCheck(generateReport, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
+                DirectoryUtils.figureExportPath(this.flight),
+                this.flight.getExportOrthomosaicName()
+        ).toFile().getAbsolutePath());
+
+        generateReport.setCursor(Cursor.HAND);
+        generateReport.setOnMouseClicked(_ignored -> {
+            agisoftCaller.generateReport(
+                    generateReport, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
+                        DirectoryUtils.figureReportPath(this.flight),
+                        this.flight.getExportOrthomosaicName()
+                    ).toFile().getAbsolutePath(),
+                    this.flight.getGenerateReportName(),
+                    "Automatically generated Report"
+            );
         });
     }
 

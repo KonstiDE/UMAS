@@ -396,4 +396,10 @@ public class DirectoryUtils {
                 "5_RawOutput/" + flight.getProjectFileNameAgisoft()).toFile().getAbsolutePath();
     }
 
+    public static String figureReportPath(Flight flight) {
+        return Paths.get(flight.getFlightDirectory(), flight.getProcessingChain() == ProcessingChain.AGISOFT ?
+                "2_Reports/" + flight.getProjectFileNameAgisoft() :
+                "3_Reports/" + flight.getProjectFileNameAgisoft()).toFile().getAbsolutePath();
+    }
+
 }

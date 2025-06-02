@@ -20,7 +20,7 @@ def build_point_cloud_check(file):
                 break
 
         del doc
-        if not all_have_point_cloud:
+        if all_have_point_cloud:
             print("vn: true")
         else:
             print("vn: false")

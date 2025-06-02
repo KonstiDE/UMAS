@@ -250,7 +250,26 @@ public class AgisoftCaller {
 
     }
 
+    public void generateReportCheck(StackPane stackPane, String psxFile, String targetFile){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "generate_report_check.py");
 
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-reportFile", targetFile);
+
+        enqueue(AgisoftTask.GENERATE_REPORT_CHECK, stackPane, pb, true);
+
+    }
+    public void generateReport(StackPane stackPane, String psxFile, String targetFile, String flightName, String description){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "generate_report.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-reportFile", targetFile, "-flightName", flightName, "-description", description);
+
+        enqueue(AgisoftTask.GENERATE_REPORT, stackPane, pb, false);
+
+    }
 
 
     private void enqueue(AgisoftTask task, StackPane stackPane, ProcessBuilder pb, boolean nextIfFailed){
@@ -259,10 +278,6 @@ public class AgisoftCaller {
         queue.add(() -> CompletableFuture.supplyAsync(() -> {
             this.agisoftQueueListener.started(task);
             try{
-                if(task == AgisoftTask.ADD_PHOTOS_CHECK){
-                    Thread.sleep(10000);
-                }
-
                 pb.redirectErrorStream(true);
                 Process p = pb.start();
 

@@ -8,9 +8,11 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.MenuItem;
 import javafx.util.Callback;
+import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.panes.mains.DisplayController;
 import wue.eorc.umas.controller.panes.mains.MapController;
 import wue.eorc.umas.controller.panes.views.dialogs.AddFlightController;
+import wue.eorc.umas.controller.panes.views.panes.components.ProcessActionsPreparer;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.ImageType;
 import wue.eorc.umas.enums.SplitPanePosition;
@@ -66,6 +68,14 @@ public class ShowFlightsController implements ViewController {
         tableView.setRowFactory(tableView1 -> {
             final TableRow<Flight> row = new TableRow<>();
             final ContextMenu contextMenu = new ContextMenu();
+
+            final MenuItem separator = new SeparatorMenuItem();
+
+            final MenuItem buildRGBOrtho = new MenuItem("Build Quick Look");
+            buildRGBOrtho.setOnAction(event -> {
+
+            });
+
             final MenuItem removeMenuItem = new MenuItem("Delete flight");
             removeMenuItem.setOnAction(event -> {
                 ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
@@ -91,6 +101,8 @@ public class ShowFlightsController implements ViewController {
                     initTableViewCellFactories(tableView, display);
                 }
             });
+            contextMenu.getItems().add(buildRGBOrtho);
+            contextMenu.getItems().add(separator);
             contextMenu.getItems().add(removeMenuItem);
             row.contextMenuProperty().bind(
                     Bindings.when(row.emptyProperty())

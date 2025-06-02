@@ -188,8 +188,8 @@ public class ShowProcessingController implements ViewController, AgisoftQueueLis
     public void callback(StackPane source, AgisoftTask task, boolean result) throws UMASException {
         switch (task){
             case ADD_PHOTOS_CHECK, SET_BRIGHTNESS_CHECK, ALIGN_IMAGES_CHECK,
-                 OPTIMIZE_CAMERAS_CHECK, BUILD_DEM_CHECK, BUILD_ORTHOMOSAIC_CHECK,
-                 EXPORT_DEM_CHECK, EXPORT_ORTHOMOSAIC_CHECK -> {
+                 OPTIMIZE_CAMERAS_CHECK, BUILD_POINT_CLOUD_CHECK, BUILD_DEM_CHECK, BUILD_ORTHOMOSAIC_CHECK,
+                 EXPORT_DEM_CHECK, EXPORT_ORTHOMOSAIC_CHECK, GENERATE_REPORT_CHECK -> {
                 Rectangle rectangle = ItemSearcher.getItemById("processing.rectangle", source, Rectangle.class);
                 ProgressIndicator indicator = ItemSearcher.getItemById("processing.indicator", source, ProgressIndicator.class);
 

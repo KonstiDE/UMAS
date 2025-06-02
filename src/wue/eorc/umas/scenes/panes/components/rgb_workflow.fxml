@@ -355,6 +355,42 @@
                   </VBox>
                </children>
             </StackPane>
+            <StackPane id="processing.generatereport" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+               <children>
+                  <Rectangle id="processing.rectangle" arcHeight="5.0" arcWidth="5.0" fill="#979797" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
+                  <HBox alignment="BASELINE_RIGHT" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <ProgressIndicator id="processing.indicator" prefHeight="24.0" prefWidth="24.0" />
+                     </children>
+                     <opaqueInsets>
+                        <Insets />
+                     </opaqueInsets>
+                     <padding>
+                        <Insets right="5.0" top="5.0" />
+                     </padding>
+                  </HBox>
+                  <VBox prefHeight="106.0" prefWidth="100.0">
+                     <children>
+                        <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true">
+                           <VBox.margin>
+                              <Insets left="4.0" />
+                           </VBox.margin>
+                           <image>
+                              <Image url="@../../../assets/processing/generate_report.png" />
+                           </image>
+                        </ImageView>
+                        <Label text="Generate Report" textFill="WHITE" wrapText="true">
+                           <VBox.margin>
+                              <Insets left="4.0" />
+                           </VBox.margin>
+                           <font>
+                              <Font name="System Bold" size="13.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+            </StackPane>
          </children>
          <padding>
             <Insets bottom="2.0" left="2.0" right="2.0" top="2.0" />
