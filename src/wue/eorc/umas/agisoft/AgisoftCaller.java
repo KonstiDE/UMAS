@@ -86,6 +86,7 @@ public class AgisoftCaller {
                 "-psxFile", psxFile, "-photo_folder", folders.size() > 1 ? String.join(",", folders) : folders.get(0));
 
         enqueue(AgisoftTask.ADD_PHOTOS, stackPane, pb, false);
+        addPhotosCheck(stackPane, psxFile);
     }
 
     public void setBrightnessCheck(StackPane stackPane, String psxFile){
@@ -106,6 +107,7 @@ public class AgisoftCaller {
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-brightness", String.valueOf(brightness), "-contrast", String.valueOf(contrast));
 
         enqueue(AgisoftTask.SET_BRIGHTNESS, stackPane, pb, false);
+        setBrightnessCheck(stackPane, psxFile);
     }
 
     public void alignPhotosCheck(StackPane stackPane, String psxFile){
@@ -126,6 +128,7 @@ public class AgisoftCaller {
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
 
         enqueue(AgisoftTask.ALIGN_IMAGES, stackPane, pb, false);
+        alignPhotosCheck(stackPane, psxFile);
     }
 
     public void optimizeCamerasCheck(StackPane stackPane, String psxFile){
@@ -146,6 +149,7 @@ public class AgisoftCaller {
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
 
         enqueue(AgisoftTask.OPTIMIZE_CAMERAS, stackPane, pb, false);
+        optimizeCamerasCheck(stackPane, psxFile);
     }
 
     public void buildPointCloudCheck(StackPane stackPane, String psxFile){
@@ -166,6 +170,7 @@ public class AgisoftCaller {
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
 
         enqueue(AgisoftTask.BUILD_POINT_CLOUD, stackPane, pb, false);
+        buildPointCloudCheck(stackPane, psxFile);
     }
 
     public void buildDemCheck(StackPane stackPane, String psxFile){
@@ -186,6 +191,7 @@ public class AgisoftCaller {
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
 
         enqueue(AgisoftTask.BUILD_DEM, stackPane, pb, false);
+        buildDemCheck(stackPane, psxFile);
     }
 
     public void buildOrthomosaicCheck(StackPane stackPane, String psxFile){
@@ -206,6 +212,7 @@ public class AgisoftCaller {
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
 
         enqueue(AgisoftTask.BUILD_ORTHOMOSAIC, stackPane, pb, false);
+        buildOrthomosaicCheck(stackPane, psxFile);
     }
 
     public void exportDemCheck(StackPane stackPane, String psxFile, String targetFile){
@@ -226,7 +233,7 @@ public class AgisoftCaller {
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-demFile", targetFile);
 
         enqueue(AgisoftTask.EXPORT_DEM, stackPane, pb, false);
-
+        exportDemCheck(stackPane, psxFile, targetFile);
     }
 
     public void exportOrthoCheck(StackPane stackPane, String psxFile, String targetFile){
@@ -247,7 +254,7 @@ public class AgisoftCaller {
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-orthoFile", targetFile);
 
         enqueue(AgisoftTask.EXPORT_ORTHOMOSAIC, stackPane, pb, false);
-
+        exportOrthoCheck(stackPane, psxFile, targetFile);
     }
 
     public void generateReportCheck(StackPane stackPane, String psxFile, String targetFile){
@@ -268,6 +275,7 @@ public class AgisoftCaller {
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-reportFile", targetFile, "-flightName", flightName, "-description", description);
 
         enqueue(AgisoftTask.GENERATE_REPORT, stackPane, pb, false);
+        generateReportCheck(stackPane, psxFile, targetFile);
 
     }
 

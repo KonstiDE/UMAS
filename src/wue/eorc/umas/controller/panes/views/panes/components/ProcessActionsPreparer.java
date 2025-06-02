@@ -230,16 +230,16 @@ public class ProcessActionsPreparer {
     public void setupGenerateReports() throws UMASException {
         StackPane generateReport = ItemSearcher.getItemById("processing.generatereport", this.workflowPane, StackPane.class);
         agisoftCaller.generateReportCheck(generateReport, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
-                DirectoryUtils.figureExportPath(this.flight),
-                this.flight.getExportOrthomosaicName()
+                DirectoryUtils.figureReportPath(this.flight),
+                this.flight.getGenerateReportName()
         ).toFile().getAbsolutePath());
 
         generateReport.setCursor(Cursor.HAND);
         generateReport.setOnMouseClicked(_ignored -> {
             agisoftCaller.generateReport(
                     generateReport, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
-                        DirectoryUtils.figureReportPath(this.flight),
-                        this.flight.getExportOrthomosaicName()
+                            DirectoryUtils.figureReportPath(this.flight),
+                            this.flight.getGenerateReportName()
                     ).toFile().getAbsolutePath(),
                     this.flight.getGenerateReportName(),
                     "Automatically generated Report"

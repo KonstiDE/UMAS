@@ -25,6 +25,7 @@ import wue.eorc.umas.utils.ItemSearcher;
 
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.util.NoSuchElementException;
 
 public class ShowProcessingController implements ViewController, AgisoftQueueListener, AgisoftCallbackListener {
 
@@ -167,7 +168,9 @@ public class ShowProcessingController implements ViewController, AgisoftQueueLis
     @Override
     public void started(AgisoftTask agisoftTask) {
         Platform.runLater(() -> {
-            processingListView.getItems().removeFirst();
+            try{
+                processingListView.getItems().removeFirst();
+            }catch(NoSuchElementException ignored){}
             currentlyProcessing.textProperty().set(agisoftTask.name());
         });
     }
@@ -177,7 +180,7 @@ public class ShowProcessingController implements ViewController, AgisoftQueueLis
         Platform.runLater(() -> {
             if(!processingListView.getItems().isEmpty()){
                 currentlyProcessing.textProperty().set(processingListView.getItems().get(0));
-                processingListView.getItems().remove(0);
+                //processingListView.getItems().remove(0);
             }else{
                 currentlyProcessing.textProperty().set("");
             }
