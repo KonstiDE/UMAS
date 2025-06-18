@@ -279,6 +279,23 @@ public class AgisoftCaller {
 
     }
 
+    public void completeBuildRGB(List<StackPane> stackPanes, List<String> folders, int brightness, int contrast,
+                                 String psxFile, String demFile, String orthoFile, String reportFile,
+                                 String flightName, String reportDescription){
+
+        addPhotos(stackPanes.get(0), psxFile, folders);
+        setBrightness(stackPanes.get(1), psxFile, brightness, contrast);
+        alignPhotos(stackPanes.get(2), psxFile);
+        optimizeCameras(stackPanes.get(3), psxFile);
+        buildPointCloudCheck(stackPanes.get(4), psxFile);
+        buildDemCheck(stackPanes.get(5), psxFile);
+        buildOrthomosaic(stackPanes.get(6), psxFile);
+        exportDem(stackPanes.get(7), psxFile, demFile);
+        exportOrtho(stackPanes.get(8), psxFile, orthoFile);
+        generateReport(stackPanes.get(9), psxFile, reportFile, flightName, reportDescription);
+
+    }
+
 
     private void enqueue(AgisoftTask task, StackPane stackPane, ProcessBuilder pb, boolean nextIfFailed){
         this.agisoftQueueListener.enqueue(task);
