@@ -3,12 +3,15 @@ package wue.eorc.umas.controller.panes.mains;
 import javafx.scene.layout.StackPane;
 import wue.eorc.umas.controller.RootController;
 import wue.eorc.umas.controller.panes.views.dialogs.DialogController;
+import wue.eorc.umas.controller.panes.views.panes.ShowProjectController;
+import wue.eorc.umas.controller.panes.views.panes.SplashController;
 import wue.eorc.umas.controller.panes.views.panes.ViewController;
 import wue.eorc.umas.enums.SplitPanePosition;
 import wue.eorc.umas.exception.UMASException;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import wue.eorc.umas.loader.SceneLoader;
 import wue.eorc.umas.models.Flight;
 
 import java.util.Optional;
@@ -35,6 +38,8 @@ public class DisplayController {
         this.right = (AnchorPane) rootControl.getItems().get(2);
 
         this.mapController = new MapController(map);
+
+        switchSceneTo(SplitPanePosition.CENTER, SceneLoader.getAvailableScenes().get("splash"), new SplashController());
     }
 
     public void switchSceneTo(SplitPanePosition key, Pane pane, ViewController trigger) {
@@ -44,10 +49,10 @@ public class DisplayController {
             case RIGHT -> setRight(pane);
         }
 
-        try{
-            trigger.init(pane, this);
-        }catch (UMASException e){
-            e.printStackTrace();
+        if(trigger != null){
+            try{
+                trigger.init(pane, this);
+            }catch (UMASException ignored){ ignored.printStackTrace(); }
         }
 
     }
