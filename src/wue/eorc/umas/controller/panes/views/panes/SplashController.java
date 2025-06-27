@@ -1,12 +1,13 @@
 package wue.eorc.umas.controller.panes.views.panes;
 
+import javafx.application.Platform;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import wue.eorc.umas.controller.panes.mains.DisplayController;
 import wue.eorc.umas.enums.Setting;
 import wue.eorc.umas.exception.UMASException;
-import wue.eorc.umas.loader.ProjectCache;
 import wue.eorc.umas.loader.Settings;
 import wue.eorc.umas.utils.ItemSearcher;
 
@@ -14,6 +15,16 @@ public class SplashController implements ViewController{
 
     @Override
     public void init(Pane pane, DisplayController display) throws UMASException {
+        AnchorPane innerParent = ItemSearcher.getItemById("splash:innerparent", pane, AnchorPane.class);
+
+        Platform.runLater(new Runnable() {
+            @Override
+            public void run() {
+                AnchorPane outer = (AnchorPane) innerParent.getParent();
+                innerParent.setPrefHeight(outer.getScene().getHeight() - 40);
+            }
+        });
+
         ImageView imageView = ItemSearcher.getItemById("splash:imageview", pane, ImageView.class);
 
         if(!Settings.getSetting(Setting.UITHEME).equals("Dark")){

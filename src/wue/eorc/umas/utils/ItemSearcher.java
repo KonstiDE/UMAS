@@ -19,6 +19,7 @@ public class ItemSearcher {
         }
 
         ArrayList<Node> list = getAllNodes(root);
+        list.add(root);
 
         Optional<Node> item = list.stream()
                 .filter(e -> e.getId() != null && e.getId().equals(query))

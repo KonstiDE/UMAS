@@ -6,15 +6,15 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane prefHeight="200.0" prefWidth="200.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="splash:innerparent" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: red;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <HBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0">
+      <HBox alignment="CENTER" prefHeight="400.0" prefWidth="600.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
-            <VBox alignment="CENTER" prefHeight="400.0" prefWidth="602.0">
+            <VBox alignment="CENTER" prefHeight="400.0" prefWidth="602.0" HBox.hgrow="ALWAYS">
                <children>
                   <ImageView id="splash:imageview" fitHeight="56.0" fitWidth="594.0" pickOnBounds="true" preserveRatio="true">
                      <image>
-                        <Image url="@../assets/splash/EOR_JMU_2-2048x179.png" />
+                        <Image url="@../../assets/splash/EOR_JMU_2-2048x179_black.png" />
                      </image>
                   </ImageView>
                </children>
