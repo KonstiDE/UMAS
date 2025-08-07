@@ -1,0 +1,33 @@
+package wue.eorc.umas.controller;
+
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.SplitPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import wue.eorc.umas.controller.panes.mains.*;
+import wue.eorc.umas.exception.UMASException;
+
+public class RootController {
+
+    private final MenuController menuController;
+    private final DisplayController splitPaneController;
+    private final StatusController statusController;
+
+    public RootController(VBox vBox) throws UMASException {
+        this.menuController = new MenuController(this, (MenuBar) vBox.getChildren().get(0));
+        this.splitPaneController = new DisplayController(this, (SplitPane) vBox.getChildren().get(1));
+        this.statusController = new StatusController((HBox) vBox.getChildren().get(2));
+    }
+
+    public MenuController getMenuController() {
+        return menuController;
+    }
+
+    public DisplayController getDisplayController() {
+        return splitPaneController;
+    }
+
+    public StatusController getStatusController() {
+        return statusController;
+    }
+}
