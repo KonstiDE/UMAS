@@ -1,14 +1,13 @@
-package wue.eorc.umas.controller.panes.mains;
+package wue.eorc.umas.controller.scenes.main;
 
 import javafx.scene.layout.StackPane;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
-import javafx.util.Callback;
 import wue.eorc.umas.controller.RootController;
-import wue.eorc.umas.controller.panes.views.dialogs.DialogController;
-import wue.eorc.umas.controller.panes.views.panes.SplashController;
-import wue.eorc.umas.controller.panes.views.panes.ViewController;
+import wue.eorc.umas.controller.scenes.views.dialogs.DialogController;
+import wue.eorc.umas.controller.scenes.views.panes.ViewController;
+import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.SplitPanePosition;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.SceneLoader;
@@ -38,8 +37,6 @@ public class DisplayController {
         this.right = (AnchorPane) rootControl.getItems().get(2);
 
         this.mapController = new MapController(map);
-
-        switchSceneTo(SplitPanePosition.CENTER, SceneLoader.getAvailableScenes().get("splash"), new SplashController());
     }
 
     public void switchSceneTo(SplitPanePosition key, Pane pane, ViewController trigger) {
@@ -52,7 +49,9 @@ public class DisplayController {
         if(trigger != null){
             try{
                 trigger.init(pane, this);
-            }catch (UMASException ignored){ ignored.printStackTrace(); }
+            }catch (UMASException _ignored){
+                UMASException.throwWindow(ErrorType.INTERNAL, "Something went terribly wrong. Please contact Caipi!");
+            }
         }
 
     }
@@ -65,7 +64,7 @@ public class DisplayController {
         try{
             trigger.init(pane, this, dialog);
         }catch (UMASException e){
-            e.printStackTrace();
+            UMASException.throwWindow(ErrorType.INTERNAL, "Could not open the flight dialog! Please restart the application.");
         }
 
         Optional<String> json = dialog.showAndWait();
@@ -83,7 +82,7 @@ public class DisplayController {
         try{
             trigger.init(pane, this, dialog);
         }catch (UMASException e){
-            e.printStackTrace();
+            UMASException.throwWindow(ErrorType.INTERNAL, "Could not open the settings dialog! Please restart the application.");
         }
 
         dialog.showAndWait();

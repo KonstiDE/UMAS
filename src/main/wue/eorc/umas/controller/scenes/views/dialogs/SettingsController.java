@@ -1,4 +1,4 @@
-package wue.eorc.umas.controller.panes.views.dialogs;
+package wue.eorc.umas.controller.scenes.views.dialogs;
 
 import javafx.application.Platform;
 import javafx.scene.control.*;
@@ -8,12 +8,11 @@ import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import org.controlsfx.control.ToggleSwitch;
 import wue.eorc.umas.agisoft.AgisoftCaller;
-import wue.eorc.umas.controller.panes.mains.DisplayController;
+import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.Setting;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.Settings;
-import wue.eorc.umas.utils.ImageUtils;
 import wue.eorc.umas.utils.ItemSearcher;
 
 import java.io.File;

@@ -1,4 +1,4 @@
-package wue.eorc.umas.controller.panes.views.panes;
+package wue.eorc.umas.controller.scenes.views.panes;
 
 import javafx.application.Platform;
 import javafx.scene.control.*;
@@ -11,8 +11,8 @@ import javafx.scene.layout.Pane;
 import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.listeners.AgisoftCallbackListener;
 import wue.eorc.umas.controller.listeners.AgisoftQueueListener;
-import wue.eorc.umas.controller.panes.mains.DisplayController;
-import wue.eorc.umas.controller.panes.views.panes.components.ProcessActionsPreparer;
+import wue.eorc.umas.controller.scenes.main.DisplayController;
+import wue.eorc.umas.controller.scenes.views.panes.components.ProcessActionsPreparer;
 import wue.eorc.umas.enums.AgisoftTask;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.ProcessingChain;

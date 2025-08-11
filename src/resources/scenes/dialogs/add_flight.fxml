@@ -21,7 +21,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.CheckComboBox?>
 
-<DialogPane expanded="true" prefHeight="811.0" prefWidth="772.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<DialogPane expanded="true" prefHeight="811.0" prefWidth="772.0"  xmlns:fx="http://javafx.com/fxml/1">
    <content>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>

@@ -1,4 +1,4 @@
-package wue.eorc.umas.controller.panes.views.dialogs;
+package wue.eorc.umas.controller.scenes.views.dialogs;
 
 import javafx.scene.input.DragEvent;
 import javafx.scene.input.Dragboard;
@@ -15,7 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
 import org.controlsfx.control.CheckComboBox;
 import wue.eorc.umas.controller.listeners.CopyProgressListener;
-import wue.eorc.umas.controller.panes.mains.DisplayController;
+import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.enums.*;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.futures.FileCopier;
@@ -27,7 +27,6 @@ import wue.eorc.umas.utils.ItemSearcher;
 import wue.eorc.umas.utils.KMZProcessor;
 
 import java.io.File;
-import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.FileTime;
 import java.time.LocalDateTime;

@@ -1,4 +1,4 @@
-package wue.eorc.umas.controller.panes.views.panes.components;
+package wue.eorc.umas.controller.scenes.views.panes.components;
 
 import javafx.application.Platform;
 import javafx.geometry.Insets;
@@ -9,8 +9,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Pair;
 import wue.eorc.umas.agisoft.AgisoftCaller;
-import wue.eorc.umas.controller.panes.mains.DisplayController;
-import wue.eorc.umas.controller.panes.views.panes.ShowProcessingController;
+import wue.eorc.umas.controller.scenes.main.DisplayController;
+import wue.eorc.umas.controller.scenes.views.panes.ShowProcessingController;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.WorkflowType;
 import wue.eorc.umas.exception.UMASException;

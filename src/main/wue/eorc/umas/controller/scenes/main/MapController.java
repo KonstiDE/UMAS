@@ -1,4 +1,4 @@
-package wue.eorc.umas.controller.panes.mains;
+package wue.eorc.umas.controller.scenes.main;
 
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;

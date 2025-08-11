@@ -18,7 +18,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="920.0" prefWidth="542.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="920.0" prefWidth="542.0"  xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <VBox prefHeight="911.0" prefWidth="542.0" spacing="8.0">
          <children>

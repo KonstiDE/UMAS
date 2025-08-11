@@ -1,11 +1,11 @@
-package wue.eorc.umas.controller.panes.views.panes;
+package wue.eorc.umas.controller.scenes.views.panes;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
-import wue.eorc.umas.controller.panes.mains.DisplayController;
+import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.SplitPanePosition;
 import wue.eorc.umas.exception.UMASException;

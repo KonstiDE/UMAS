@@ -1,4 +1,4 @@
-package wue.eorc.umas.controller.panes.mains;
+package wue.eorc.umas.controller.scenes.main;
 
 import javafx.scene.control.DialogPane;
 import javafx.collections.ObservableList;
@@ -8,10 +8,10 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
 import wue.eorc.umas.controller.RootController;
-import wue.eorc.umas.controller.panes.views.dialogs.SettingsController;
-import wue.eorc.umas.controller.panes.views.panes.CreateProjectController;
-import wue.eorc.umas.controller.panes.views.panes.ShowFlightsController;
-import wue.eorc.umas.controller.panes.views.panes.ShowProjectController;
+import wue.eorc.umas.controller.scenes.views.dialogs.SettingsController;
+import wue.eorc.umas.controller.scenes.views.panes.CreateProjectController;
+import wue.eorc.umas.controller.scenes.views.panes.ShowFlightsController;
+import wue.eorc.umas.controller.scenes.views.panes.ShowProjectController;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.SplitPanePosition;
 import wue.eorc.umas.exception.UMASException;
@@ -91,6 +91,7 @@ public class MenuController {
             }
         });
 
+        // Open recent
         Menu recentMenu = (Menu) menus.get(0).getItems().get(2);
         for(Map.Entry<String, Timestamp> entry : ProjectCache.cache.entrySet()){
             File projectFile = new File(entry.getKey());

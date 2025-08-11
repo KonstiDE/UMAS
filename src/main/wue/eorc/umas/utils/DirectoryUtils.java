@@ -21,8 +21,8 @@ public class DirectoryUtils {
         return switch (flight.getProcessingChain()){
             case AGISOFT -> {
                 List<File> files = switch (flight.getUav()){
-                    case MAVICM2 -> List.of(
-                            createDeepFolder(baseDir, "0_Images"),
+                    case MAVICM2, PHAMTOM -> List.of(
+                            createDeepFolder(baseDir, "0_Images", "0_RGB"),
                             createDeepFolder(baseDir, "1_Agisoft"),
                             createDeepFolder(baseDir, "2_Reports"),
                             createDeepFolder(baseDir, "3_FlightFiles", "0_Log"),
@@ -45,15 +45,6 @@ public class DirectoryUtils {
                             createDeepFolder(baseDir, "0_Images", "0_RGB"),
                             createDeepFolder(baseDir, "0_Images", "1_T"),
                             createDeepFolder(baseDir, "0_Images", "2_TCal"),
-                            createDeepFolder(baseDir, "1_Agisoft"),
-                            createDeepFolder(baseDir, "2_Reports"),
-                            createDeepFolder(baseDir, "3_FlightFiles", "0_Log"),
-                            createDeepFolder(baseDir, "3_FlightFiles", "1_Plan"),
-                            createDeepFolder(baseDir, "3_FlightFiles", "2_Other"),
-                            createDeepFolder(baseDir, "4_RawOutput")
-                    );
-                    case PHAMTOM ->  List.of(
-                            createDeepFolder(baseDir, "0_Images", "0_RGB"),
                             createDeepFolder(baseDir, "1_Agisoft"),
                             createDeepFolder(baseDir, "2_Reports"),
                             createDeepFolder(baseDir, "3_FlightFiles", "0_Log"),

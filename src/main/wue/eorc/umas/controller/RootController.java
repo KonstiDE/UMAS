@@ -4,7 +4,7 @@ import javafx.scene.control.MenuBar;
 import javafx.scene.control.SplitPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import wue.eorc.umas.controller.panes.mains.*;
+import wue.eorc.umas.controller.scenes.main.*;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.SceneLoader;
 

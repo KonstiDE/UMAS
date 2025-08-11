@@ -1,4 +1,4 @@
-package wue.eorc.umas.controller.panes.views.panes;
+package wue.eorc.umas.controller.scenes.views.panes;
 
 import javafx.beans.binding.Bindings;
 import javafx.scene.control.MenuItem;
@@ -11,8 +11,8 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import wue.eorc.umas.controller.panes.mains.DisplayController;
-import wue.eorc.umas.controller.panes.views.dialogs.AddFlightController;
+import wue.eorc.umas.controller.scenes.main.DisplayController;
+import wue.eorc.umas.controller.scenes.views.dialogs.AddFlightController;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.ImageType;
 import wue.eorc.umas.enums.SplitPanePosition;
@@ -35,6 +35,7 @@ public class ShowFlightsController implements ViewController {
     @Override
     public void init(Pane pane, DisplayController display) throws UMASException {
         TableView<Flight> tableView = ItemSearcher.getGenericControlById("showflights.table", pane, TableView.class, Flight.class);
+        tableView.getItems().clear();
         tableView.setEditable(false);
         initTableViewCellFactories(tableView, display);
 
@@ -127,7 +128,7 @@ public class ShowFlightsController implements ViewController {
                     throw new RuntimeException(e);
                 }
             }else{
-                UMASException.throwWindow(ErrorType.INTERNAL, "Could not add flight. Please restart the application.");
+                UMASException.throwWindow(ErrorType.INTERNAL, "Flight now added.");
             }
 
         });

@@ -1,4 +1,4 @@
-package wue.eorc.umas.controller.panes.mains;
+package wue.eorc.umas.controller.scenes.main;
 
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;

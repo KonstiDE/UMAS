@@ -20,4 +20,15 @@ public class ImageUtils {
         return name.endsWith(".mrk") || name.endsWith(".MRK");
     }
 
+    public static boolean isJPGorMRK(String name){
+        return isJPG(name) && isMRK(name);
+    }
+    public static boolean isPNGorMRK(String name){
+        return isJPG(name) && isMRK(name);
+    }
+
+    public static boolean isTIForMRK(String name){
+        return isTIF(name) && isMRK(name);
+    }
+
 }

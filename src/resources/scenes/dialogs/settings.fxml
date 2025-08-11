@@ -18,7 +18,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.ToggleSwitch?>
 
-<DialogPane prefHeight="578.0" prefWidth="634.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<DialogPane prefHeight="578.0" prefWidth="634.0"  xmlns:fx="http://javafx.com/fxml/1">
    <content>
       <AnchorPane depthTest="DISABLE" prefHeight="651.0" prefWidth="634.0">
          <children>

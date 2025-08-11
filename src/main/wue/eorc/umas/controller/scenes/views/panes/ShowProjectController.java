@@ -1,9 +1,9 @@
-package wue.eorc.umas.controller.panes.views.panes;
+package wue.eorc.umas.controller.scenes.views.panes;
 
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.layout.Pane;
-import wue.eorc.umas.controller.panes.mains.DisplayController;
+import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.ProjectCache;
 import wue.eorc.umas.models.Project;
