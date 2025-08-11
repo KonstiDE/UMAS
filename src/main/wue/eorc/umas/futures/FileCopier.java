@@ -64,6 +64,11 @@ public class FileCopier {
                 filesToCopy.addAll(Arrays.asList(files));
             }
         }
+
+        if(filesToCopy.isEmpty()){
+            return;
+        }
+
         String innerPath = String.join(File.separator, baseDest);
 
         List<FileTime> fileTimes = new ArrayList<>();

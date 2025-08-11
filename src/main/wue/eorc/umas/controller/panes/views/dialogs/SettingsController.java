@@ -2,6 +2,7 @@ package wue.eorc.umas.controller.panes.views.dialogs;
 
 import javafx.application.Platform;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
@@ -17,6 +18,7 @@ import wue.eorc.umas.utils.ItemSearcher;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.Objects;
 
 public class SettingsController implements DialogController {
 
@@ -73,10 +75,10 @@ public class SettingsController implements DialogController {
                         .checkAgisoftVersion(file.getAbsolutePath());
 
                 if(version != null){
-                    agisoftIndicator.setImage(ImageUtils.getImage("settings/check", ".png"));
+                    agisoftIndicator.setImage(new Image(Objects.requireNonNull(getClass().getClassLoader().getResource("assets/settings/check.png")).toString()));
                     agisoftVersion.setText(version);
                 }else{
-                    agisoftIndicator.setImage(ImageUtils.getImage("settings/cross", ".png"));
+                    agisoftIndicator.setImage(new Image(Objects.requireNonNull(getClass().getClassLoader().getResource("assets/settings/cross.png")).toString()));
                     agisoftVersion.setText("Invalid Agisoft Executable");
                 }
 

@@ -121,7 +121,7 @@ public class MenuController {
         getMenuItem(mainMenu, "settings").setOnAction(_ignored -> {
             try {
                 rootController.getDisplayController().openSettingsDialog(
-                        (DialogPane) SceneLoader.getDialogSceneReset("settings"),
+                        (DialogPane) rootController.getSceneLoader().getDialogSceneReset("settings"),
                         new SettingsController()
                 );
             } catch (UMASException e) {

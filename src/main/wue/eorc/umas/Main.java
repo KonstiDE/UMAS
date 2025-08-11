@@ -33,7 +33,7 @@ public class Main extends Application {
         SceneLoader loader = new SceneLoader(this.getClass().getClassLoader());
 
         VBox root = (VBox) loader.getScene("main");
-        new RootController(root);
+        new RootController(root, loader);
 
         Scene scene = new Scene(root, 1024, 720);
 

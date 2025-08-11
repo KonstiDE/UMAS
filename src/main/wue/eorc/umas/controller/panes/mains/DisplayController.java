@@ -4,6 +4,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.util.Callback;
 import wue.eorc.umas.controller.RootController;
 import wue.eorc.umas.controller.panes.views.dialogs.DialogController;
 import wue.eorc.umas.controller.panes.views.panes.SplashController;

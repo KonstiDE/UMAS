@@ -170,10 +170,12 @@ public class AddFlightController implements DialogController, CopyProgressListen
             directoryChooser.setTitle("Choose an image directory");
             File path = directoryChooser.showDialog(display.rootControl.getScene().getWindow());
 
-            addPath(flightDirs, path.getAbsolutePath());
-            this.flightsOrigins.add(path.getAbsolutePath());
+            if(path != null){
+                addPath(flightDirs, path.getAbsolutePath());
+                this.flightsOrigins.add(path.getAbsolutePath());
 
-            addTreeViewDeleteBehavior(flightDirs, this.flightsOrigins);
+                addTreeViewDeleteBehavior(flightDirs, this.flightsOrigins);
+            }
         });
 
         browseCalib.setOnAction(_ignored -> {
@@ -181,10 +183,12 @@ public class AddFlightController implements DialogController, CopyProgressListen
             directoryChooser.setTitle("Choose an calibration directory");
             File path = directoryChooser.showDialog(display.rootControl.getScene().getWindow());
 
-            addPath(calibDirs, path.getAbsolutePath());
-            this.calibOrigins.add(path.getAbsolutePath());
+            if(path != null){
+                addPath(calibDirs, path.getAbsolutePath());
+                this.calibOrigins.add(path.getAbsolutePath());
 
-            addTreeViewDeleteBehavior(calibDirs, this.calibOrigins);
+                addTreeViewDeleteBehavior(calibDirs, this.calibOrigins);
+            }
         });
 
         datePicker.setOnAction(_ignored -> this.date = datePicker.getEditor().getCharacters().toString());
@@ -209,10 +213,12 @@ public class AddFlightController implements DialogController, CopyProgressListen
                             this.flightParameters, this.uav, this.sensor, this.imageTypes, this.processingChain,
                             baseDirectory.toFile().getAbsolutePath(), this.flightsOrigins, this.calibOrigins, this.notes);
 
-                    FileCopier fileCopier = new FileCopier(this, flight);
-                    fileCopier.getCopyTask().thenRun(() -> {
-                        this.flightJson = Flight.toJson(flight);
+                    this.flightJson = Flight.toJson(flight);
 
+                    FileCopier fileCopier = new FileCopier(this, flight);
+                    this.copyJob = fileCopier.getCopyTask();
+
+                    fileCopier.getCopyTask().thenRun(() -> {
                         FileTime[] times = fileCopier.getTimes();
                         LocalDateTime start = OffsetDateTime.parse(times[0].toString()).toLocalDateTime();
                         LocalDateTime end = OffsetDateTime.parse(times[1].toString()).toLocalDateTime();
@@ -222,20 +228,13 @@ public class AddFlightController implements DialogController, CopyProgressListen
                         flight.setStartTime(minuteFormatter.format(start));
                         flight.setEndTime(minuteFormatter.format(end));
 
-                        try{
-                            ProjectCache.currentlyOpenedProject.addFlight(flight);
-                            ProjectCache.currentlyOpenedProject.save();
-                        } catch (IOException e) {
-                            throw new RuntimeException(e);
-                        }
-
                         Platform.runLater(() -> {
                             dialog.setResult(this.flightJson);
                             dialog.hide();
                             dialog.close();
                         });
+
                     });
-                    this.copyJob = fileCopier.getCopyTask();
                 }catch (UMASException e){
                     UMASException.throwWindow(ErrorType.USER, "Could not create the folder structure for flights.");
                 }

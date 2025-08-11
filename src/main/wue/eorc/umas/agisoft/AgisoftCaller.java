@@ -14,6 +14,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Queue;
 import java.util.concurrent.CompletableFuture;
 
@@ -22,8 +23,7 @@ public class AgisoftCaller {
     public static Queue<Runnable> queue = new LinkedList<>();
     public static boolean isRunning = false;
 
-    private final String snippetsPath =
-            Paths.get("src", "wue", "eorc", "umas", "agisoft", "snippets").toFile().getAbsolutePath();
+    private final String snippetsPath = Objects.requireNonNull(getClass().getClassLoader().getResource("python")).getPath();
 
     public AgisoftQueueListener agisoftQueueListener;
     public AgisoftCallbackListener agisoftCallbackListener;

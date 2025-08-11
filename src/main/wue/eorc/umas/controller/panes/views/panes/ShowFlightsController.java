@@ -25,7 +25,9 @@ import wue.eorc.umas.utils.ItemSearcher;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
+import java.util.Objects;
 import java.util.Optional;
 
 public class ShowFlightsController implements ViewController {
@@ -104,22 +106,37 @@ public class ShowFlightsController implements ViewController {
             Flight flight;
             try {
                 flight = display.openFlightDialog(
-                        (DialogPane) SceneLoader.getDialogSceneReset("add_flight"),
+                        (DialogPane) display.getRootController().getSceneLoader().getDialogSceneReset("add_flight"),
                         new AddFlightController()
                 );
             } catch (UMASException e) {
                 throw new RuntimeException(e);
             }
-            tableView.getItems().add(flight);
 
-            if(flight.getFlightParameters() != null){
-                display.getMapController().showFlightArea(flight.getFlightParameters().getCoordinates(), flight.getFlightParameters().getWaypoints());
+            if(flight != null){
+                tableView.getItems().add(flight);
+
+                if(flight.getFlightParameters() != null){
+                    display.getMapController().showFlightArea(flight.getFlightParameters().getCoordinates(), flight.getFlightParameters().getWaypoints());
+                }
+
+                ProjectCache.currentlyOpenedProject.addFlight(flight);
+                try {
+                    ProjectCache.currentlyOpenedProject.save();
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }else{
+                UMASException.throwWindow(ErrorType.INTERNAL, "Could not add flight. Please restart the application.");
             }
+
         });
 
         tableView.getSelectionModel().selectedItemProperty().addListener(
                 (_ignored, oldT, newT) -> {
-                    display.getMapController().showFlightArea(newT.getFlightParameters().getCoordinates(), newT.getFlightParameters().getWaypoints());
+                    try {
+                        display.getMapController().showFlightArea(newT.getFlightParameters().getCoordinates(), newT.getFlightParameters().getWaypoints());
+                    } catch (NullPointerException ignored) {  }
                 });
 
     }
@@ -127,7 +144,7 @@ public class ShowFlightsController implements ViewController {
     @SuppressWarnings("unchecked")
     private void initTableViewCellFactories(TableView<Flight> tableView, DisplayController display) {
         TableColumn<Flight, String> dateCol = (TableColumn<Flight, String>) tableView.getColumns().get(0);
-        dateCol.setCellValueFactory(flightStringCellDataFeatures -> new ReadOnlyObjectWrapper<>(flightStringCellDataFeatures.getValue().getDate()));
+        dateCol.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getDate()));
 
         TableColumn<Flight, String> locationCol = (TableColumn<Flight, String>) tableView.getColumns().get(1);
         locationCol.setCellValueFactory(cellData -> new ReadOnlyObjectWrapper<>(cellData.getValue().getLocation()));
@@ -255,10 +272,10 @@ public class ShowFlightsController implements ViewController {
                 Flight flight = getTableView().getItems().get(getIndex());
                 File flightDir = new File(flight.getFlightDirectory());
 
-                String iconPath = flightDir.exists()
-                        ? "assets/icons8-folder-144.png"
-                        : "assets/icons8-warning-100.png";
-                imageView.setImage(new Image(iconPath));
+                URL iconPath = flightDir.exists()
+                        ? Objects.requireNonNull(getClass().getClassLoader().getResource("assets/flighttable/explorer_folder.png"))
+                        : Objects.requireNonNull(getClass().getClassLoader().getResource("assets/flighttable/explorer_warning.png"));
+                imageView.setImage(new Image(iconPath.toString()));
 
                 imageView.setOnMouseClicked(_ignored -> {
                     if (flightDir.exists()) {
@@ -298,7 +315,7 @@ public class ShowFlightsController implements ViewController {
 
                 Flight flight = getTableView().getItems().get(getIndex());
 
-                imageView.setImage(new Image("assets/icons8-gear-144.png"));
+                imageView.setImage(new Image(String.valueOf(getClass().getClassLoader().getResource("assets/flighttable/gear.png"))));
 
                 imageView.setOnMouseClicked(_ignored -> {
                     File flightDir = new File(flight.getFlightDirectory());

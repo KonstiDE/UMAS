@@ -75,9 +75,8 @@ public class SceneLoader {
         return availableScenes;
     }
 
-    public static Pane getDialogSceneReset(String key) throws UMASException {
-        Class<?> clazz = Main.class;
-        URL url = clazz.getResource( "scenes/dialogs/" + key + ".fxml");
+    public Pane getDialogSceneReset(String key) throws UMASException {
+        URL url = this.classLoader.getResource( "scenes/dialogs/" + key + ".fxml");
         try {
             return FXMLLoader.load(Objects.requireNonNull(url));
         } catch (IOException e) {

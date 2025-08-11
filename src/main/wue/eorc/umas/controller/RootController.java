@@ -6,6 +6,7 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import wue.eorc.umas.controller.panes.mains.*;
 import wue.eorc.umas.exception.UMASException;
+import wue.eorc.umas.loader.SceneLoader;
 
 public class RootController {
 
@@ -13,10 +14,14 @@ public class RootController {
     private final DisplayController splitPaneController;
     private final StatusController statusController;
 
-    public RootController(VBox vBox) throws UMASException {
+    private final SceneLoader sceneLoader;
+
+    public RootController(VBox vBox, SceneLoader sceneLoader) throws UMASException {
         this.menuController = new MenuController(this, (MenuBar) vBox.getChildren().get(0));
         this.splitPaneController = new DisplayController(this, (SplitPane) vBox.getChildren().get(1));
         this.statusController = new StatusController((HBox) vBox.getChildren().get(2));
+
+        this.sceneLoader = sceneLoader;
     }
 
     public MenuController getMenuController() {
@@ -30,4 +35,6 @@ public class RootController {
     public StatusController getStatusController() {
         return statusController;
     }
+
+    public SceneLoader getSceneLoader() { return sceneLoader; }
 }
