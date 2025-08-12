@@ -7,8 +7,7 @@ from utils import get_arg
 
 def create_project(psx):
     doc = ms.Document()
-    doc.save(path=psx,
-             archive=True)
+    doc.save(path=psx)
     del doc
 
     print("vn: true")

@@ -1,11 +1,5 @@
 package wue.eorc.umas.utils;
 
-import javafx.scene.image.Image;
-
-import java.nio.file.FileSystems;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-
 public class ImageUtils {
 
     public static boolean isJPG(String name){
@@ -16,19 +10,20 @@ public class ImageUtils {
         return name.endsWith(".tif") || name.endsWith(".TIF");
     }
 
-    public static boolean isMRK(String name){
-        return name.endsWith(".mrk") || name.endsWith(".MRK");
+    public static boolean isAux(String name){
+        return name.endsWith(".mrk") || name.endsWith(".MRK") || name.endsWith(".nav") || name.endsWith(".NAV") ||
+                name.endsWith(".obs") || name.endsWith(".OBS") || name.endsWith(".rtk") || name.endsWith(".RTK");
     }
 
-    public static boolean isJPGorMRK(String name){
-        return isJPG(name) && isMRK(name);
+    public static boolean isJPGorAux(String name){
+        return isJPG(name) && isAux(name);
     }
-    public static boolean isPNGorMRK(String name){
-        return isJPG(name) && isMRK(name);
+    public static boolean isPNGorAux(String name){
+        return isJPG(name) && isAux(name);
     }
 
-    public static boolean isTIForMRK(String name){
-        return isTIF(name) && isMRK(name);
+    public static boolean isTIForAux(String name){
+        return isTIF(name) && isAux(name);
     }
 
 }

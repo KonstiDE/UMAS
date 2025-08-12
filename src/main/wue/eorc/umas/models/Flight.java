@@ -11,6 +11,9 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
@@ -71,42 +74,42 @@ public class Flight implements Serializable {
     }
 
     public String getFlightDirectory() {
-        DateTimeFormatter dtf_old = DateTimeFormatter.ofPattern("M/d/yyyy");
+        DateTimeFormatter dtf_old = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DateTimeFormatter dtf_new = DateTimeFormatter.ofPattern("ddMMyyyy");
 
         return Paths.get(baseDirectory, "0_Flights", dtf_new.format(dtf_old.parse(date)) + "_" + this.location + "_" + this.aoi + "_" + this.uav + this.sensor).toFile().getAbsolutePath();
     }
 
     public String getProjectFileNameAgisoft(){
-        DateTimeFormatter dtf_old = DateTimeFormatter.ofPattern("M/d/yyyy");
+        DateTimeFormatter dtf_old = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DateTimeFormatter dtf_new = DateTimeFormatter.ofPattern("ddMMyyyy");
 
         return dtf_new.format(dtf_old.parse(date)) + "_" + this.location + "_" + this.aoi + "_" + this.uav + this.sensor + "_Agisoft.psx";
     }
 
     public String getProjectFileNameTerra(){
-        DateTimeFormatter dtf_old = DateTimeFormatter.ofPattern("M/d/yyyy");
+        DateTimeFormatter dtf_old = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DateTimeFormatter dtf_new = DateTimeFormatter.ofPattern("ddMMyyyy");
 
         return dtf_new.format(dtf_old.parse(date)) + "_" + this.location + "_" + this.aoi + "_" + this.uav + this.sensor + "_Terra.symlink";
     }
 
     public String getExportDemName(){
-        DateTimeFormatter dtf_old = DateTimeFormatter.ofPattern("M/d/yyyy");
+        DateTimeFormatter dtf_old = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DateTimeFormatter dtf_new = DateTimeFormatter.ofPattern("ddMMyyyy");
 
         return dtf_new.format(dtf_old.parse(date)) + "_" + this.location + "_" + this.aoi + "_" + this.uav + this.sensor + "_DSM.tif";
     }
 
     public String getExportOrthomosaicName(){
-        DateTimeFormatter dtf_old = DateTimeFormatter.ofPattern("M/d/yyyy");
+        DateTimeFormatter dtf_old = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DateTimeFormatter dtf_new = DateTimeFormatter.ofPattern("ddMMyyyy");
 
         return dtf_new.format(dtf_old.parse(date)) + "_" + this.location + "_" + this.aoi + "_" + this.uav + this.sensor + "_OM.tif";
     }
 
     public String getGenerateReportName(){
-        DateTimeFormatter dtf_old = DateTimeFormatter.ofPattern("M/d/yyyy");
+        DateTimeFormatter dtf_old = DateTimeFormatter.ofPattern("dd/MM/yyyy");
         DateTimeFormatter dtf_new = DateTimeFormatter.ofPattern("ddMMyyyy");
 
         return dtf_new.format(dtf_old.parse(date)) + "_" + this.location + "_" + this.aoi + "_" + this.uav + this.sensor + ".pdf";

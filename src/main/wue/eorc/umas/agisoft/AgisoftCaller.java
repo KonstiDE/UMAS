@@ -10,6 +10,7 @@ import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.Settings;
 
 import java.io.*;
+import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.LinkedList;
@@ -23,12 +24,12 @@ public class AgisoftCaller {
     public static Queue<Runnable> queue = new LinkedList<>();
     public static boolean isRunning = false;
 
-    private final String snippetsPath = Objects.requireNonNull(getClass().getClassLoader().getResource("python")).getPath();
+    private final String snippetsPath = Path.of(Objects.requireNonNull(getClass().getClassLoader().getResource("python")).toURI()).toString();
 
     public AgisoftQueueListener agisoftQueueListener;
     public AgisoftCallbackListener agisoftCallbackListener;
 
-    public AgisoftCaller(AgisoftQueueListener agisoftQueueListener, AgisoftCallbackListener agisoftCallbackListener) {
+    public AgisoftCaller(AgisoftQueueListener agisoftQueueListener, AgisoftCallbackListener agisoftCallbackListener) throws URISyntaxException {
         this.agisoftQueueListener = agisoftQueueListener;
         this.agisoftCallbackListener = agisoftCallbackListener;
     }

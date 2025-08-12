@@ -25,6 +25,7 @@ import wue.eorc.umas.utils.ItemSearcher;
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Objects;
@@ -322,11 +323,15 @@ public class ShowFlightsController implements ViewController {
                     File flightDir = new File(flight.getFlightDirectory());
 
                     if(flightDir.exists()) {
-                        display.switchSceneTo(
-                                SplitPanePosition.RIGHT,
-                                SceneLoader.getAvailableScenes().get("show_processing"),
-                                new ShowProcessingController(flight)
-                        );
+                        try {
+                            display.switchSceneTo(
+                                    SplitPanePosition.RIGHT,
+                                    SceneLoader.getAvailableScenes().get("show_processing"),
+                                    new ShowProcessingController(flight)
+                            );
+                        } catch (URISyntaxException e) {
+                            UMASException.throwWindow(ErrorType.USER, "Could not find the path to Agisoft. Please update this in the settings.");
+                        }
                     }else{
                         UMASException.throwWindow(ErrorType.USER, "Please fix all explorer issues before start processing.");
                     }

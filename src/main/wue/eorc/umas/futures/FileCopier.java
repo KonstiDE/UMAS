@@ -46,13 +46,31 @@ public class FileCopier {
         }
     }
 
-    public void copyM3M(Set<ImageType> imageTypes, List<String> originFlightDirs, List<String> originCalibDirs, String flightDirectory) throws IOException, InterruptedException {
+    public void copyM3M(Set<ImageType> imageTypes, List<String> originFlightDirs, List<String> originCalibDirs, String flightDirectory) throws IOException {
         if(imageTypes.contains(ImageType.RGB)) {
-            copy(originFlightDirs, flightDirectory, ImageUtils::isJPGorMRK, "0_Images", "0_RGB");
+            copy(originFlightDirs, flightDirectory, ImageUtils::isJPGorAux, "0_Images", "0_RGB");
         }
         if(imageTypes.contains(ImageType.MULTISPECTRAL)) {
-            copy(originFlightDirs, flightDirectory, ImageUtils::isTIForMRK,"0_Images", "1_MS");
+            copy(originFlightDirs, flightDirectory, ImageUtils::isTIForAux,"0_Images", "1_MS");
             copy(originCalibDirs, flightDirectory, _ignored -> true,"0_Images", "2_CALIB");
+        }
+    }
+
+    public void copyM3T(Set<ImageType> imageTypes, List<String> originFlightDirs, List<String> originCalibDirs, String flightDirectory) throws IOException {
+        if(imageTypes.contains(ImageType.RGB)) {
+            copy(originFlightDirs, flightDirectory, ImageUtils::isJPGorAux, "0_Images", "0_RGB");
+        }
+        if(imageTypes.contains(ImageType.IR)) {
+            copy(originFlightDirs, flightDirectory, ImageUtils::isTIForAux,"0_Images", "1_T");
+        }
+    }
+
+    public void copyM4T(Set<ImageType> imageTypes, List<String> originFlightDirs, List<String> originCalibDirs, String flightDirectory) throws IOException {
+        if(imageTypes.contains(ImageType.RGB)) {
+            copy(originFlightDirs, flightDirectory, ImageUtils::isJPGorAux, "0_Images", "0_RGB");
+        }
+        if(imageTypes.contains(ImageType.IR)) {
+            copy(originFlightDirs, flightDirectory, ImageUtils::isTIForAux,"0_Images", "1_T");
         }
     }
 

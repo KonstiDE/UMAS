@@ -24,6 +24,7 @@ import wue.eorc.umas.utils.DirectoryUtils;
 import wue.eorc.umas.utils.ItemSearcher;
 
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.nio.file.Paths;
 import java.util.NoSuchElementException;
 
@@ -32,7 +33,7 @@ public class ShowProcessingController implements ViewController, AgisoftQueueLis
     private final AgisoftCaller agisoftCaller;
     private final Flight flight;
 
-    public ShowProcessingController(Flight flight) {
+    public ShowProcessingController(Flight flight) throws URISyntaxException {
         this.flight = flight;
         this.agisoftCaller = new AgisoftCaller(this, this);
     }

@@ -17,6 +17,7 @@ import wue.eorc.umas.utils.ItemSearcher;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Objects;
 
 public class SettingsController implements DialogController {
@@ -83,7 +84,7 @@ public class SettingsController implements DialogController {
 
                 agisoftExecPath.setText(file.getAbsolutePath());
 
-            } catch (InterruptedException e) {
+            } catch (InterruptedException | URISyntaxException e) {
                 throw new RuntimeException(e);
             }
 

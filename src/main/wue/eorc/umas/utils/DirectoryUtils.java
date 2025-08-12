@@ -99,8 +99,18 @@ public class DirectoryUtils {
                         default -> null;
                     };
                     case WINGTRA -> switch (flight.getSensor()){
-                        case ALTUM, NIKONRGB ->  List.of(
-                                createDeepFolder(baseDir, "0_Images"),
+                        case ALTUM ->  List.of(
+                                createDeepFolder(baseDir, "0_Images", "0_RGB"),
+                                createDeepFolder(baseDir, "0_Images", "1_MS"),
+                                createDeepFolder(baseDir, "1_Agisoft"),
+                                createDeepFolder(baseDir, "2_Reports"),
+                                createDeepFolder(baseDir, "3_FlightFiles", "0_Log"),
+                                createDeepFolder(baseDir, "3_FlightFiles", "1_Plan"),
+                                createDeepFolder(baseDir, "3_FlightFiles", "2_Other"),
+                                createDeepFolder(baseDir, "4_RawOutput")
+                        );
+                        case NIKONRGB -> List.of(
+                                createDeepFolder(baseDir, "0_Images", "0_RGB"),
                                 createDeepFolder(baseDir, "1_Agisoft"),
                                 createDeepFolder(baseDir, "2_Reports"),
                                 createDeepFolder(baseDir, "3_FlightFiles", "0_Log"),

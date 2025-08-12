@@ -13,6 +13,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
+import javafx.util.StringConverter;
 import org.controlsfx.control.CheckComboBox;
 import wue.eorc.umas.controller.listeners.CopyProgressListener;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
@@ -29,6 +30,8 @@ import wue.eorc.umas.utils.KMZProcessor;
 import java.io.File;
 import java.nio.file.*;
 import java.nio.file.attribute.FileTime;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -189,6 +192,8 @@ public class AddFlightController implements DialogController, CopyProgressListen
                 addTreeViewDeleteBehavior(calibDirs, this.calibOrigins);
             }
         });
+
+
 
         datePicker.setOnAction(_ignored -> this.date = datePicker.getEditor().getCharacters().toString());
 
