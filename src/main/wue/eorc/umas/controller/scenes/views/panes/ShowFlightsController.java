@@ -106,14 +106,10 @@ public class ShowFlightsController implements ViewController {
 
         add.setOnAction(_ignored -> {
             Flight flight;
-            try {
-                flight = display.openFlightDialog(
-                        (DialogPane) display.getRootController().getSceneLoader().getDialogSceneReset("add_flight"),
-                        new AddFlightController()
-                );
-            } catch (UMASException e) {
-                throw new RuntimeException(e);
-            }
+            flight = display.openFlightDialog(
+                    (DialogPane) display.getRootController().getSceneLoader().getScene("add_flight"),
+                    new AddFlightController()
+            );
 
             if(flight != null){
                 tableView.getItems().add(flight);
@@ -326,7 +322,7 @@ public class ShowFlightsController implements ViewController {
                         try {
                             display.switchSceneTo(
                                     SplitPanePosition.RIGHT,
-                                    SceneLoader.getAvailableScenes().get("show_processing"),
+                                    display.getRootController().getSceneLoader().getScene("show_processing"),
                                     new ShowProcessingController(flight)
                             );
                         } catch (URISyntaxException e) {

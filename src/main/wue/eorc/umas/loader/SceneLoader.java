@@ -1,12 +1,12 @@
 package wue.eorc.umas.loader;
 
-import wue.eorc.umas.Main;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.Pane;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.exception.UMASException;
 
 import java.io.IOException;
+import java.net.MalformedURLException;
 import java.net.URISyntaxException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 public class SceneLoader {
     private final ClassLoader classLoader;
 
-    public static HashMap<String, Pane> availableScenes = new HashMap<>();
+    public static HashMap<String, URL> availableScenes = new HashMap<>();
 
     public SceneLoader(ClassLoader classLoader) throws UMASException, IOException, URISyntaxException {
         this.classLoader = classLoader;
@@ -27,14 +27,11 @@ public class SceneLoader {
         initScenePreLoading();
     }
 
-    public Pane getScene(String path) throws UMASException {
-        try {
-            return availableScenes.get("main");
-        } catch (Exception ioe) {
-            throw new UMASException(
-                    ErrorType.INTERNAL,
-                    "Could not find the scene \"" + path + "\""
-            );
+    public Pane getScene(String key) {
+        try{
+            return loadSceneFromFXML(key);
+        } catch (IOException | UMASException e){
+            return null;
         }
     }
 
@@ -46,8 +43,8 @@ public class SceneLoader {
                 lines.forEach(f -> {
                     if(f.getFileName().toString().endsWith(".fxml")) {
                         try {
-                            availableScenes.put(f.toFile().getName().replace(".fxml", ""), loadSceneFromFXML(f));
-                        } catch (UMASException e) {
+                            availableScenes.put(f.toFile().getName().replace(".fxml", ""), f.toFile().toURI().toURL());
+                        } catch (MalformedURLException e) {
                             throw new RuntimeException(e);
                         }
                     }
@@ -60,29 +57,20 @@ public class SceneLoader {
         }
     }
 
-    public Pane loadSceneFromFXML(Path path) throws UMASException {
-        try {
-            return FXMLLoader.load(path.toUri().toURL());
-        } catch (IOException ioe) {
+    public Pane loadSceneFromFXML(String key) throws UMASException, IOException {
+
+        if (getAvailableScenes().containsKey(key)) {
+            return FXMLLoader.load(getAvailableScenes().get(key));
+        }else{
             throw new UMASException(
                     ErrorType.INTERNAL,
-                    "Could not find the scene \"" + path + "\""
+                    "Could not find the scene \"" + key + "\".fxml within the preloaded urls."
             );
         }
     }
 
-    public static HashMap<String, Pane> getAvailableScenes() {
+    public static HashMap<String, URL> getAvailableScenes() {
         return availableScenes;
-    }
-
-    public Pane getDialogSceneReset(String key) throws UMASException {
-        URL url = this.classLoader.getResource( "scenes/dialogs/" + key + ".fxml");
-        try {
-            return FXMLLoader.load(Objects.requireNonNull(url));
-        } catch (IOException e) {
-            UMASException.throwWindow(ErrorType.INTERNAL, "Failed to load FXML for scene: " + key);
-        }
-        return null;
     }
 
 }

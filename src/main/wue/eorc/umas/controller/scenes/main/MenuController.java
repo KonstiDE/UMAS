@@ -57,7 +57,7 @@ public class MenuController {
 
                 rootController.getDisplayController().switchSceneTo(
                         SplitPanePosition.LEFT,
-                        SceneLoader.getAvailableScenes().get("new_mission"),
+                        rootController.getSceneLoader().getScene("new_mission"),
                         new CreateProjectController()
                 );
         });
@@ -75,13 +75,13 @@ public class MenuController {
 
                     rootController.getDisplayController().switchSceneTo(
                             SplitPanePosition.LEFT,
-                            SceneLoader.getAvailableScenes().get("show_mission"),
+                            rootController.getSceneLoader().getScene("show_mission"),
                             new ShowProjectController(project)
                     );
 
                     rootController.getDisplayController().switchSceneTo(
                             SplitPanePosition.CENTER,
-                            SceneLoader.getAvailableScenes().get("show_flights"),
+                            rootController.getSceneLoader().getScene("show_flights"),
                             new ShowFlightsController()
                     );
 
@@ -103,13 +103,13 @@ public class MenuController {
 
                     rootController.getDisplayController().switchSceneTo(
                             SplitPanePosition.LEFT,
-                            SceneLoader.getAvailableScenes().get("show_mission"),
+                            rootController.getSceneLoader().getScene("show_mission"),
                             new ShowProjectController(project)
                     );
 
                     rootController.getDisplayController().switchSceneTo(
                             SplitPanePosition.CENTER,
-                            SceneLoader.getAvailableScenes().get("show_flights"),
+                            rootController.getSceneLoader().getScene("show_flights"),
                             new ShowFlightsController()
                     );
 
@@ -120,14 +120,10 @@ public class MenuController {
         }
 
         getMenuItem(mainMenu, "settings").setOnAction(_ignored -> {
-            try {
-                rootController.getDisplayController().openSettingsDialog(
-                        (DialogPane) rootController.getSceneLoader().getDialogSceneReset("settings"),
-                        new SettingsController()
-                );
-            } catch (UMASException e) {
-                throw new RuntimeException(e);
-            }
+            rootController.getDisplayController().openSettingsDialog(
+                    (DialogPane) rootController.getSceneLoader().getScene("settings"),
+                    new SettingsController()
+            );
         });
 
 

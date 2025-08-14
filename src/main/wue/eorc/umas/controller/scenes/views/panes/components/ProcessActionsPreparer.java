@@ -36,13 +36,13 @@ public class ProcessActionsPreparer {
     public ProcessActionsPreparer(Flight flight, WorkflowType workflowType, DisplayController display, ShowProcessingController showProcessingController, AgisoftCaller agisoftCaller) {
         this.flight = flight;
         this.workflowPane = switch (workflowType){
-            case RGB -> (AnchorPane) SceneLoader.getAvailableScenes().get("rgb_workflow");
-            case RGB_PLUS_MULTISPECTRAL -> (AnchorPane) SceneLoader.getAvailableScenes().get("rgb_workflow");
-            case IR -> (AnchorPane) SceneLoader.getAvailableScenes().get("rgb_workflow");
-            case RGB_PLUS_IR -> (AnchorPane) SceneLoader.getAvailableScenes().get("rgb_workflow");
-            case HYPERSPECTRAL -> (AnchorPane) SceneLoader.getAvailableScenes().get("rgb_workflow");
-            case LIDAR -> (AnchorPane) SceneLoader.getAvailableScenes().get("rgb_workflow");
-            case MULTISPECTRAL -> (AnchorPane) SceneLoader.getAvailableScenes().get("rgb_workflow");
+            case RGB -> (AnchorPane) display.getRootController().getSceneLoader().getScene("rgb_workflow");
+            case RGB_PLUS_MULTISPECTRAL -> (AnchorPane) display.getRootController().getSceneLoader().getScene("rgb_workflow");
+            case IR -> (AnchorPane) display.getRootController().getSceneLoader().getScene("rgb_workflow");
+            case RGB_PLUS_IR -> (AnchorPane) display.getRootController().getSceneLoader().getScene("rgb_workflow");
+            case HYPERSPECTRAL -> (AnchorPane) display.getRootController().getSceneLoader().getScene("rgb_workflow");
+            case LIDAR -> (AnchorPane) display.getRootController().getSceneLoader().getScene("rgb_workflow");
+            case MULTISPECTRAL -> (AnchorPane) display.getRootController().getSceneLoader().getScene("rgb_workflow");
             case INVALID -> null;
         };
         this.workflowType = workflowType;

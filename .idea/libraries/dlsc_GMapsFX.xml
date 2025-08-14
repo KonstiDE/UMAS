@@ -4,19 +4,19 @@
     <CLASSES>
       <root url="jar://$MAVEN_REPOSITORY$/com/dlsc/GMapsFX/11.0.7/GMapsFX-11.0.7.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-base/17.0.2/javafx-base-17.0.2.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-base/17.0.2/javafx-base-17.0.2-linux.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-base/17.0.2/javafx-base-17.0.2-win.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/17.0.2/javafx-graphics-17.0.2.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/17.0.2/javafx-graphics-17.0.2-linux.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-graphics/17.0.2/javafx-graphics-17.0.2-win.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-swing/17.0.2/javafx-swing-17.0.2.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-swing/17.0.2/javafx-swing-17.0.2-linux.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-swing/17.0.2/javafx-swing-17.0.2-win.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-web/17.0.2/javafx-web-17.0.2.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-web/17.0.2/javafx-web-17.0.2-linux.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-web/17.0.2/javafx-web-17.0.2-win.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/17.0.2/javafx-controls-17.0.2.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/17.0.2/javafx-controls-17.0.2-linux.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-controls/17.0.2/javafx-controls-17.0.2-win.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-media/17.0.2/javafx-media-17.0.2.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-media/17.0.2/javafx-media-17.0.2-linux.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-media/17.0.2/javafx-media-17.0.2-win.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/17.0.2/javafx-fxml-17.0.2.jar!/" />
-      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/17.0.2/javafx-fxml-17.0.2-linux.jar!/" />
+      <root url="jar://$MAVEN_REPOSITORY$/org/openjfx/javafx-fxml/17.0.2/javafx-fxml-17.0.2-win.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/jakarta/xml/bind/jakarta.xml.bind-api/4.0.0/jakarta.xml.bind-api-4.0.0.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/jakarta/activation/jakarta.activation-api/2.1.0/jakarta.activation-api-2.1.0.jar!/" />
       <root url="jar://$MAVEN_REPOSITORY$/com/sun/xml/bind/jaxb-impl/4.0.0/jaxb-impl-4.0.0.jar!/" />

@@ -61,12 +61,12 @@ public class CreateProjectController implements ViewController {
 
                     display.switchSceneTo(
                             SplitPanePosition.LEFT,
-                            SceneLoader.getAvailableScenes().get("show_mission"),
+                            display.getRootController().getSceneLoader().getScene("show_mission"),
                             new ShowProjectController(project)
                     );
                     display.switchSceneTo(
                             SplitPanePosition.CENTER,
-                            SceneLoader.getAvailableScenes().get("show_flights"),
+                            display.getRootController().getSceneLoader().getScene("show_flights"),
                             new ShowFlightsController()
                     );
 
