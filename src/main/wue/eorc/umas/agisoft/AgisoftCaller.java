@@ -1,7 +1,10 @@
 package wue.eorc.umas.agisoft;
 
 import javafx.application.Platform;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.util.Pair;
 import wue.eorc.umas.controller.listeners.AgisoftCallbackListener;
 import wue.eorc.umas.controller.listeners.AgisoftQueueListener;
 import wue.eorc.umas.enums.AgisoftTask;
@@ -43,11 +46,11 @@ public class AgisoftCaller {
         pb.redirectErrorStream(true);
         Process p = pb.start();
 
-        boolean success = Boolean.parseBoolean(watchForSignal("vn: ", p.getInputStream(), null));
+        Pair<AgisoftTask, String> success = watchForSignal("vn: ", p.getInputStream(), null);
 
         int exitCode = p.waitFor();
 
-        return exitCode == 0 && success;
+        return exitCode == 0 && Boolean.parseBoolean(success.getValue());
     }
 
     public String checkAgisoftVersion(String path) throws InterruptedException {
@@ -59,14 +62,24 @@ public class AgisoftCaller {
             pb.redirectErrorStream(true);
             Process p = pb.start();
 
-            String versionNumber = watchForSignal("vn: ", p.getInputStream(), null);
+            Pair<AgisoftTask, String> versionNumber = watchForSignal("vn:", p.getInputStream(), null);
 
             int exitCode = p.waitFor();
 
-            return exitCode == 0 ? versionNumber : null;
+            return exitCode == 0 ? versionNumber.getValue() : null;
         }catch (IOException e){
             return null;
         }
+    }
+
+    public void checkProject(AnchorPane anchorPane, String psxFile){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "check_project.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+
+        enqueue(AgisoftTask.CHECK_PROJECT, anchorPane, pb, true);
     }
 
     public void addPhotosCheck(StackPane stackPane, String psxFile){
@@ -298,7 +311,7 @@ public class AgisoftCaller {
     }
 
 
-    private void enqueue(AgisoftTask task, StackPane stackPane, ProcessBuilder pb, boolean nextIfFailed){
+    private void enqueue(AgisoftTask task, Pane pane, ProcessBuilder pb, boolean nextIfFailed){
         this.agisoftQueueListener.enqueue(task);
 
         queue.add(() -> CompletableFuture.supplyAsync(() -> {
@@ -307,24 +320,28 @@ public class AgisoftCaller {
                 pb.redirectErrorStream(true);
                 Process p = pb.start();
 
-                boolean success = Boolean.parseBoolean(watchForSignal("vn: ", p.getInputStream(), agisoftCallbackListener));
+                Pair<AgisoftTask, String> success = watchForSignal("vn:", p.getInputStream(), agisoftCallbackListener);
 
                 int exitCode = p.waitFor();
 
-                return exitCode == 0 && success;
+                if (exitCode != 0) return new Pair<>(AgisoftTask.UNDEFINED, "False");
+
+                return success;
             }catch (IOException | InterruptedException e){
-                return false;
+                return new Pair<>(AgisoftTask.UNDEFINED, "False");
             }
         }) .thenAcceptAsync(result -> {
+            boolean success = Boolean.parseBoolean(result.getValue());
+
             try {
-                agisoftCallbackListener.callback(stackPane, task, result);
+                agisoftCallbackListener.callback(pane, result.getKey(), success);
             } catch (UMASException e) {
                 throw new RuntimeException(e);
             }
 
             agisoftQueueListener.finish();
 
-            if(result) {
+            if(success) {
                 isRunning = true;
                 processNext();
             }else{
@@ -345,12 +362,12 @@ public class AgisoftCaller {
     }
 
     // !!!Signal key must be 4 chars long!!!
-    public static String watchForSignal(String signalKey, InputStream inputStream, AgisoftCallbackListener listener) throws IOException {
+    public static Pair<AgisoftTask, String> watchForSignal(String signalKey, InputStream inputStream, AgisoftCallbackListener listener) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
-                if(listener != null && line.contains("vp: ")) {
+                if(listener != null && line.startsWith("vp: ")) {
                     String finalLine = line;
                     Platform.runLater(() -> {
                         try{
@@ -360,11 +377,14 @@ public class AgisoftCaller {
                 }
                 if(line.startsWith(signalKey)){
                     if(listener != null) Platform.runLater(() -> listener.progress(0));
-                    return line.substring(4);
+
+                    String[] split = line.split(":");
+                    return new Pair<>(AgisoftTask.valueOf(split[1]), split[2]);
+
                 }
             }
         }
-        return null;
+        return new Pair<>(AgisoftTask.UNDEFINED, Boolean.FALSE.toString());
     }
 
     private static synchronized void processNext() {

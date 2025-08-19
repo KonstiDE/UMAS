@@ -51,6 +51,7 @@ public class DisplayController {
                 trigger.init(pane, this);
             }catch (UMASException _ignored){
                 UMASException.throwWindow(ErrorType.INTERNAL, "Something went terribly wrong. Please contact Caipi!");
+                _ignored.printStackTrace();
             }
         }
 

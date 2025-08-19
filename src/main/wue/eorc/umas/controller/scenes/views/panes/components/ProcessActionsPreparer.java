@@ -14,13 +14,14 @@ import wue.eorc.umas.controller.scenes.views.panes.ShowProcessingController;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.WorkflowType;
 import wue.eorc.umas.exception.UMASException;
-import wue.eorc.umas.loader.SceneLoader;
 import wue.eorc.umas.models.Flight;
 import wue.eorc.umas.utils.DirectoryUtils;
 import wue.eorc.umas.utils.ItemSearcher;
 
 import java.nio.file.Paths;
 import java.util.Optional;
+
+import static wue.eorc.umas.enums.AgisoftTask.*;
 
 public class ProcessActionsPreparer {
 
@@ -64,6 +65,8 @@ public class ProcessActionsPreparer {
                 setupExportDem();
                 setupExportOrthomosaic();
                 setupGenerateReports();
+
+                setupCheckProject();
             }
             case IR -> {}
             case LIDAR -> {}
@@ -72,9 +75,13 @@ public class ProcessActionsPreparer {
         }
     }
 
+    private void setupCheckProject() throws UMASException {
+        AnchorPane workflowParent = ItemSearcher.getItemById("workflowpane", this.workflowPane, AnchorPane.class);
+        agisoftCaller.checkProject(workflowParent, DirectoryUtils.figureAgisoftFilePath(this.flight));
+    }
+
     private void setupAddPhotos() throws UMASException {
-        StackPane addPhotos = ItemSearcher.getItemById("processing.addphotos", this.workflowPane, StackPane.class);
-        agisoftCaller.addPhotosCheck(addPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight));
+        StackPane addPhotos = ItemSearcher.getItemById("processing." + ADD_PHOTOS, this.workflowPane, StackPane.class);
 
         addPhotos.setCursor(Cursor.HAND);
         addPhotos.setOnMouseClicked(_ignored -> {
@@ -87,8 +94,7 @@ public class ProcessActionsPreparer {
     }
 
     private void setupSetBrightness() throws UMASException {
-        StackPane setBrightness = ItemSearcher.getItemById("processing.setbrightness", this.workflowPane, StackPane.class);
-        agisoftCaller.setBrightnessCheck(setBrightness, DirectoryUtils.figureAgisoftFilePath(this.flight));
+        StackPane setBrightness = ItemSearcher.getItemById("processing." + SET_BRIGHTNESS, this.workflowPane, StackPane.class);
 
         setBrightness.setCursor(Cursor.HAND);
         setBrightness.setOnMouseClicked(_ignored -> {
@@ -142,8 +148,7 @@ public class ProcessActionsPreparer {
     }
 
     private void setupAlignPhotos() throws UMASException {
-        StackPane alignPhotos = ItemSearcher.getItemById("processing.alignimages", this.workflowPane, StackPane.class);
-        agisoftCaller.alignPhotosCheck(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight));
+        StackPane alignPhotos = ItemSearcher.getItemById("processing." + ALIGN_IMAGES, this.workflowPane, StackPane.class);
 
         alignPhotos.setCursor(Cursor.HAND);
         alignPhotos.setOnMouseClicked(_ignored -> {
@@ -152,8 +157,7 @@ public class ProcessActionsPreparer {
     }
 
     private void setupOptimizeCameras() throws UMASException {
-        StackPane optimizeCameras = ItemSearcher.getItemById("processing.optimizecameras", this.workflowPane, StackPane.class);
-        agisoftCaller.optimizeCamerasCheck(optimizeCameras, DirectoryUtils.figureAgisoftFilePath(this.flight));
+        StackPane optimizeCameras = ItemSearcher.getItemById("processing." + OPTIMIZE_CAMERAS, this.workflowPane, StackPane.class);
 
         optimizeCameras.setCursor(Cursor.HAND);
         optimizeCameras.setOnMouseClicked(_ignored -> {
@@ -162,8 +166,7 @@ public class ProcessActionsPreparer {
     }
 
     private void setupBuildPointCloud() throws UMASException {
-        StackPane buildPointCloud = ItemSearcher.getItemById("processing.buildpointcloud", this.workflowPane, StackPane.class);
-        agisoftCaller.buildPointCloudCheck(buildPointCloud, DirectoryUtils.figureAgisoftFilePath(this.flight));
+        StackPane buildPointCloud = ItemSearcher.getItemById("processing." + BUILD_POINT_CLOUD, this.workflowPane, StackPane.class);
 
         buildPointCloud.setCursor(Cursor.HAND);
         buildPointCloud.setOnMouseClicked(_ignored -> {
@@ -172,8 +175,7 @@ public class ProcessActionsPreparer {
     }
 
     private void setupBuildDem() throws UMASException {
-        StackPane buildDem = ItemSearcher.getItemById("processing.builddem", this.workflowPane, StackPane.class);
-        agisoftCaller.buildDemCheck(buildDem, DirectoryUtils.figureAgisoftFilePath(this.flight));
+        StackPane buildDem = ItemSearcher.getItemById("processing." + BUILD_DEM, this.workflowPane, StackPane.class);
 
         buildDem.setCursor(Cursor.HAND);
         buildDem.setOnMouseClicked(_ignored -> {
@@ -182,8 +184,7 @@ public class ProcessActionsPreparer {
     }
 
     private void setupBuildOrthomosaic() throws UMASException {
-        StackPane buildOrthomosaic = ItemSearcher.getItemById("processing.buildorthomosaic", this.workflowPane, StackPane.class);
-        agisoftCaller.buildOrthomosaicCheck(buildOrthomosaic, DirectoryUtils.figureAgisoftFilePath(this.flight));
+        StackPane buildOrthomosaic = ItemSearcher.getItemById("processing." + BUILD_ORTHOMOSAIC, this.workflowPane, StackPane.class);
 
         buildOrthomosaic.setCursor(Cursor.HAND);
         buildOrthomosaic.setOnMouseClicked(_ignored -> {
@@ -192,11 +193,7 @@ public class ProcessActionsPreparer {
     }
 
     private void setupExportDem() throws UMASException {
-        StackPane exportDem = ItemSearcher.getItemById("processing.exportdem", this.workflowPane, StackPane.class);
-        agisoftCaller.exportDemCheck(exportDem, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
-                DirectoryUtils.figureExportPath(this.flight),
-                this.flight.getExportDemName()
-        ).toFile().getAbsolutePath());
+        StackPane exportDem = ItemSearcher.getItemById("processing." + EXPORT_DEM, this.workflowPane, StackPane.class);
 
         exportDem.setCursor(Cursor.HAND);
         exportDem.setOnMouseClicked(_ignored -> {
@@ -208,11 +205,7 @@ public class ProcessActionsPreparer {
     }
 
     private void setupExportOrthomosaic() throws UMASException {
-        StackPane exportOrtho = ItemSearcher.getItemById("processing.exportorthomosaic", this.workflowPane, StackPane.class);
-        agisoftCaller.exportOrthoCheck(exportOrtho, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
-                DirectoryUtils.figureExportPath(this.flight),
-                this.flight.getExportOrthomosaicName()
-        ).toFile().getAbsolutePath());
+        StackPane exportOrtho = ItemSearcher.getItemById("processing." + EXPORT_ORTHOMOSAIC, this.workflowPane, StackPane.class);
 
         exportOrtho.setCursor(Cursor.HAND);
         exportOrtho.setOnMouseClicked(_ignored -> {
@@ -224,11 +217,7 @@ public class ProcessActionsPreparer {
     }
 
     public void setupGenerateReports() throws UMASException {
-        StackPane generateReport = ItemSearcher.getItemById("processing.generatereport", this.workflowPane, StackPane.class);
-        agisoftCaller.generateReportCheck(generateReport, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
-                DirectoryUtils.figureReportPath(this.flight),
-                this.flight.getGenerateReportName()
-        ).toFile().getAbsolutePath());
+        StackPane generateReport = ItemSearcher.getItemById("processing." + GENERATE_REPORT, this.workflowPane, StackPane.class);
 
         generateReport.setCursor(Cursor.HAND);
         generateReport.setOnMouseClicked(_ignored -> {

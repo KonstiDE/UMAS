@@ -15,7 +15,7 @@
 <?import javafx.scene.shape.Rectangle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0"  xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane id="workflowpane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="400.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/24.0.1">
    <children>
       <GridPane alignment="CENTER" hgap="4.0" prefHeight="400.0" prefWidth="400.0" vgap="4.0">
         <columnConstraints>
@@ -31,7 +31,7 @@
           <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
-            <StackPane id="processing.addphotos" prefHeight="150.0" prefWidth="200.0">
+            <StackPane id="processing.ADD_PHOTOS" prefHeight="150.0" prefWidth="200.0">
                <children>
                   <Rectangle id="processing.rectangle" arcHeight="5.0" arcWidth="5.0" fill="#979797" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <HBox alignment="BASELINE_RIGHT" prefHeight="100.0" prefWidth="200.0">
@@ -67,7 +67,7 @@
                   </VBox>
                </children>
             </StackPane>
-            <StackPane id="processing.setbrightness" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1">
+            <StackPane id="processing.SET_BRIGHTNESS" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1">
                <children>
                   <Rectangle id="processing.rectangle" arcHeight="5.0" arcWidth="5.0" fill="#979797" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <HBox alignment="BASELINE_RIGHT" prefHeight="100.0" prefWidth="200.0">
@@ -103,7 +103,7 @@
                   </VBox>
                </children>
             </StackPane>
-            <StackPane id="processing.alignimages" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="2">
+            <StackPane id="processing.ALIGN_IMAGES" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="2">
                <children>
                   <Rectangle id="processing.rectangle" arcHeight="5.0" arcWidth="5.0" fill="#979797" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <HBox alignment="BASELINE_RIGHT" prefHeight="100.0" prefWidth="200.0">
@@ -139,7 +139,7 @@
                   </VBox>
                </children>
             </StackPane>
-            <StackPane id="processing.optimizecameras" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="3">
+            <StackPane id="processing.OPTIMIZE_CAMERAS" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="3">
                <children>
                   <Rectangle id="processing.rectangle" arcHeight="5.0" arcWidth="5.0" fill="#979797" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <HBox alignment="BASELINE_RIGHT" prefHeight="100.0" prefWidth="200.0">
@@ -175,7 +175,7 @@
                   </VBox>
                </children>
             </StackPane>
-            <StackPane id="processing.buildpointcloud" prefHeight="150.0" prefWidth="200.0" GridPane.rowIndex="1">
+            <StackPane id="processing.BUILD_POINT_CLOUD" prefHeight="150.0" prefWidth="200.0" GridPane.rowIndex="1">
                <children>
                   <Rectangle id="processing.rectangle" arcHeight="5.0" arcWidth="5.0" fill="#979797" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <HBox alignment="BASELINE_RIGHT" prefHeight="100.0" prefWidth="200.0">
@@ -211,7 +211,7 @@
                   </VBox>
                </children>
             </StackPane>
-            <StackPane id="processing.builddem" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <StackPane id="processing.BUILD_DEM" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1">
                <children>
                   <Rectangle id="processing.rectangle" arcHeight="5.0" arcWidth="5.0" fill="#979797" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <HBox alignment="BASELINE_RIGHT" prefHeight="100.0" prefWidth="200.0">
@@ -247,7 +247,7 @@
                   </VBox>
                </children>
             </StackPane>
-            <StackPane id="processing.buildorthomosaic" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
+            <StackPane id="processing.BUILD_ORTHOMOSAIC" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="2" GridPane.rowIndex="1">
                <children>
                   <Rectangle id="processing.rectangle" arcHeight="5.0" arcWidth="5.0" fill="#979797" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <HBox alignment="BASELINE_RIGHT" prefHeight="100.0" prefWidth="200.0">
@@ -283,7 +283,7 @@
                   </VBox>
                </children>
             </StackPane>
-            <StackPane id="processing.exportdem" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+            <StackPane id="processing.EXPORT_DEM" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
                <children>
                   <Rectangle id="processing.rectangle" arcHeight="5.0" arcWidth="5.0" fill="#979797" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <HBox alignment="BASELINE_RIGHT" prefHeight="100.0" prefWidth="200.0">
@@ -319,7 +319,7 @@
                   </VBox>
                </children>
             </StackPane>
-            <StackPane id="processing.exportorthomosaic" prefHeight="150.0" prefWidth="200.0" GridPane.rowIndex="2">
+            <StackPane id="processing.EXPORT_ORTHOMOSAIC" prefHeight="150.0" prefWidth="200.0" GridPane.rowIndex="2">
                <children>
                   <Rectangle id="processing.rectangle" arcHeight="5.0" arcWidth="5.0" fill="#979797" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <HBox alignment="BASELINE_RIGHT" prefHeight="100.0" prefWidth="200.0">
@@ -355,7 +355,7 @@
                   </VBox>
                </children>
             </StackPane>
-            <StackPane id="processing.generatereport" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+            <StackPane id="processing.GENERATE_REPORT" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                <children>
                   <Rectangle id="processing.rectangle" arcHeight="5.0" arcWidth="5.0" fill="#979797" height="96.0" stroke="BLACK" strokeType="INSIDE" strokeWidth="0.0" width="96.0" />
                   <HBox alignment="BASELINE_RIGHT" prefHeight="100.0" prefWidth="200.0">

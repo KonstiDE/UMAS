@@ -189,13 +189,15 @@ public class ShowProcessingController implements ViewController, AgisoftQueueLis
     }
 
     @Override
-    public void callback(StackPane source, AgisoftTask task, boolean result) throws UMASException {
+    public void callback(Pane source, AgisoftTask task, boolean result) throws UMASException {
         switch (task){
-            case ADD_PHOTOS_CHECK, SET_BRIGHTNESS_CHECK, ALIGN_IMAGES_CHECK,
-                 OPTIMIZE_CAMERAS_CHECK, BUILD_POINT_CLOUD_CHECK, BUILD_DEM_CHECK, BUILD_ORTHOMOSAIC_CHECK,
-                 EXPORT_DEM_CHECK, EXPORT_ORTHOMOSAIC_CHECK, GENERATE_REPORT_CHECK -> {
-                Rectangle rectangle = ItemSearcher.getItemById("processing.rectangle", source, Rectangle.class);
-                ProgressIndicator indicator = ItemSearcher.getItemById("processing.indicator", source, ProgressIndicator.class);
+            case ADD_PHOTOS_CHECK, ALIGN_IMAGES_CHECK, OPTIMIZE_CAMERAS_CHECK, BUILD_DEM_CHECK, BUILD_ORTHOMOSAIC_CHECK,
+                 EXPORT_DEM_CHECK, EXPORT_ORTHOMOSAIC_CHECK, BUILD_POINT_CLOUD_CHECK, SET_BRIGHTNESS_CHECK,
+                 GENERATE_REPORT_CHECK -> {
+                StackPane workFlowStep = ItemSearcher.getItemById("processing." + task.name().replace("_CHECK", ""), source, StackPane.class);
+
+                Rectangle rectangle = ItemSearcher.getItemById("processing.rectangle", workFlowStep, Rectangle.class);
+                ProgressIndicator indicator = ItemSearcher.getItemById("processing.indicator", workFlowStep, ProgressIndicator.class);
 
                 indicator.setVisible(false);
                 if(result){
