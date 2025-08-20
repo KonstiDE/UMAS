@@ -104,46 +104,46 @@ public class AgisoftCaller {
         addPhotosCheck(stackPane, psxFile, workflowType);
     }
 
-    public void setBrightnessCheck(StackPane stackPane, String psxFile){
+    public void setBrightnessCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "set_brightness_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.SET_BRIGHTNESS_CHECK, stackPane, pb, true);
     }
 
-    public void setBrightness(StackPane stackPane, String psxFile, int brightness, int contrast){
+    public void setBrightness(StackPane stackPane, String psxFile, int brightness, int contrast, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "set_brightness.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-brightness", String.valueOf(brightness), "-contrast", String.valueOf(contrast));
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-brightness", String.valueOf(brightness), "-contrast", String.valueOf(contrast), "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.SET_BRIGHTNESS, stackPane, pb, false);
-        setBrightnessCheck(stackPane, psxFile);
+        setBrightnessCheck(stackPane, psxFile, workflowType);
     }
 
-    public void alignPhotosCheck(StackPane stackPane, String psxFile){
+    public void alignPhotosCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
-        Path filePath = Paths.get(snippetsPath, "align_photos_check.py");
+        Path filePath = Paths.get(snippetsPath, "align_images_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.ALIGN_IMAGES_CHECK, stackPane, pb, true);
     }
 
-    public void alignPhotos(StackPane stackPane, String psxFile){
+    public void alignPhotos(StackPane stackPane, String psxFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
-        Path filePath = Paths.get(snippetsPath, "align_photos.py");
+        Path filePath = Paths.get(snippetsPath, "align_images.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.ALIGN_IMAGES, stackPane, pb, false);
-        alignPhotosCheck(stackPane, psxFile);
+        alignPhotosCheck(stackPane, psxFile, workflowType);
     }
 
     public void optimizeCamerasCheck(StackPane stackPane, String psxFile){
@@ -299,8 +299,8 @@ public class AgisoftCaller {
                                  String flightName, String reportDescription){
 
         // addPhotos(stackPanes.get(0), psxFile, folders);
-        setBrightness(stackPanes.get(1), psxFile, brightness, contrast);
-        alignPhotos(stackPanes.get(2), psxFile);
+        // setBrightness(stackPanes.get(1), psxFile, brightness, contrast);
+        // alignPhotos(stackPanes.get(2), psxFile);
         optimizeCameras(stackPanes.get(3), psxFile);
         buildPointCloudCheck(stackPanes.get(4), psxFile);
         buildDemCheck(stackPanes.get(5), psxFile);

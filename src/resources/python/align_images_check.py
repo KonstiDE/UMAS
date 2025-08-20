@@ -3,7 +3,7 @@ import sys
 
 import Metashape as ms
 
-from utils import get_arg
+from utils import get_arg, get_chunk
 
 
 def align_photos_check(file, chunk_lab):
@@ -13,10 +13,10 @@ def align_photos_check(file, chunk_lab):
 
     chunk = get_chunk(doc.chunks, chunk_lab)
 
-    if chunk.tie_points is None:
-        print("vn:ALIGN_PHOTOS:false")
+    if chunk.point_cloud is None:
+        print("vn:ALIGN_IMAGES_CHECK:false")
     else:
-        print("vn:ALIGN_PHOTOS:true")
+        print("vn:ALIGN_IMAGES_CHECK:true")
 
     del doc
 

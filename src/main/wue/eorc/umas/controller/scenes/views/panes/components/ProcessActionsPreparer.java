@@ -139,7 +139,7 @@ public class ProcessActionsPreparer {
                     int brightness = Integer.parseInt(result.get().getKey());
                     int contrast = Integer.parseInt(result.get().getValue());
 
-                    agisoftCaller.setBrightness(setBrightness, DirectoryUtils.figureAgisoftFilePath(this.flight), brightness, contrast);
+                    agisoftCaller.setBrightness(setBrightness, DirectoryUtils.figureAgisoftFilePath(this.flight), brightness, contrast, this.workflowType);
                 } catch (NumberFormatException e) {
                     UMASException.throwWindow(ErrorType.USER, "Please provide non-decimal numbers!");
                 }
@@ -153,7 +153,7 @@ public class ProcessActionsPreparer {
 
         alignPhotos.setCursor(Cursor.HAND);
         alignPhotos.setOnMouseClicked(_ignored -> {
-            agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight));
+            agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
         });
     }
 
