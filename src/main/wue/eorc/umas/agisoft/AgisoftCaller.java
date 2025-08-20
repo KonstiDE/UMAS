@@ -188,46 +188,46 @@ public class AgisoftCaller {
         buildPointCloudCheck(stackPane, psxFile, workflowType);
     }
 
-    public void buildDemCheck(StackPane stackPane, String psxFile){
+    public void buildDemCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "build_dem_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.BUILD_DEM_CHECK, stackPane, pb, true);
     }
 
-    public void buildDem(StackPane stackPane, String psxFile){
+    public void buildDem(StackPane stackPane, String psxFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "build_dem.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.BUILD_DEM, stackPane, pb, false);
-        buildDemCheck(stackPane, psxFile);
+        buildDemCheck(stackPane, psxFile, workflowType);
     }
 
-    public void buildOrthomosaicCheck(StackPane stackPane, String psxFile){
+    public void buildOrthomosaicCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "build_orthomosaic_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.BUILD_ORTHOMOSAIC_CHECK, stackPane, pb, true);
     }
 
-    public void buildOrthomosaic(StackPane stackPane, String psxFile){
+    public void buildOrthomosaic(StackPane stackPane, String psxFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "build_orthomosaic.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.BUILD_ORTHOMOSAIC, stackPane, pb, false);
-        buildOrthomosaicCheck(stackPane, psxFile);
+        buildOrthomosaicCheck(stackPane, psxFile, workflowType);
     }
 
     public void exportDemCheck(StackPane stackPane, String psxFile, String targetFile){

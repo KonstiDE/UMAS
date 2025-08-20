@@ -4,36 +4,28 @@ import sys
 import Metashape
 import Metashape as ms
 
-from utils import get_arg, report_progress
+from utils import get_arg, report_progress, get_chunk
 
 
-def export_orthomosaic(psx_file):
+def build_ortho_check(file, chunk_lab):
     doc = ms.Document()
 
-    doc.open(path=psx_file, read_only=True)
+    doc.open(path=file, read_only=True)
 
-    if len(doc.chunks) > 0:
-        all_have_dem = True
+    chunk = get_chunk(doc.chunks, chunk_lab)
 
-        for chunk in doc.chunks:
-            if chunk.orthomosaic is None:
-                all_have_dem = False
-                break
-
-        del doc
-        if all_have_dem:
-            print("vn: true")
-        else:
-            print("vn: false")
-
+    if chunk.orthomosaic is None:
+        print("vn:BUILD_ORTHOMOSAIC_CHECK:false")
     else:
-        del doc
-        print("vn: false")
+        print("vn:BUILD_ORTHOMOSAIC_CHECK:true")
+
+    del doc
 
 
 if __name__ == '__main__':
     args = sys.argv[1:]
 
     project_file = get_arg(args, "-psxFile")
+    chunk_label = get_arg(args, "-chunk_label")
 
-    export_orthomosaic(project_file)
+    build_ortho_check(project_file, chunk_label)

@@ -3,6 +3,7 @@ package wue.eorc.umas;
 import javafx.geometry.Rectangle2D;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.image.Image;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
@@ -16,6 +17,7 @@ import wue.eorc.umas.loader.Settings;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Objects;
 
 public class Main extends Application {
 
@@ -53,6 +55,10 @@ public class Main extends Application {
             primaryStage.setX((primScreenBounds.getWidth() - primaryStage.getWidth()) / 2);
             primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
         }
+
+        /*primaryStage.getIcons().add(new Image(
+                Objects.requireNonNull(this.getClass().getResourceAsStream("icon.ac"))
+        )); */
 
         primaryStage.setScene(scene);
         primaryStage.show();

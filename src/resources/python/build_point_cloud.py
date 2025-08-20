@@ -4,56 +4,47 @@ import sys
 import Metashape
 import Metashape as ms
 
-from utils import get_arg, report_progress
+from utils import get_arg, report_progress, get_chunk
 
 
-def build_point_cloud(file):
+def build_point_cloud(file, chunk_lab):
     doc = ms.Document()
 
     doc.open(path=file, read_only=False)
 
-    all_aligned_already = True
+    chunk = get_chunk(doc.chunks, chunk_lab)
 
-    for chunk in doc.chunks:
-        if chunk.point_cloud is None:
-            all_aligned_already = False
-
-    if all_aligned_already:
+    if chunk.dense_cloud is not None:
         print("vd: All chunks already have point cloud!")
-        del doc
 
     else:
-        for chunk in doc.chunks:
-            if chunk.point_cloud is None:
-                chunk.buildDepthMaps(
-                    downscale=1, # 4, options: 1: ultra high, 2: high, 3: not working!!, 4: medium, 5: ?
-                    filter_mode=Metashape.MildFiltering,
-                    # options: NoFiltering, MildFiltering, ModerateFiltering, AggressiveFiltering
-                    # [, cameras],
-                    reuse_depth=False,
-                    max_neighbors=16,
-                    subdivide_task=True,
-                    workitem_size_cameras=20,
-                    max_workgroup_size=100,
-                    progress=report_progress
-                )
+        chunk.buildDepthMaps(
+            downscale=1, # 4, options: 1: ultra high, 2: high, 3: not working!!, 4: medium, 5: ?
+            filter_mode=Metashape.MildFiltering,
+            # options: NoFiltering, MildFiltering, ModerateFiltering, AggressiveFiltering
+            # [, cameras],
+            reuse_depth=False,
+            max_neighbors=16,
+            subdivide_task=True,
+            workitem_size_cameras=20,
+            max_workgroup_size=100,
+            progress=report_progress
+        )
 
-                chunk.buildPointCloud(
-                    source_data=Metashape.DepthMapsData, # options: TiePointsData, PointCloudData, DepthMapsData, ModelData, TiledModelData, ElevationData, OrthomosaicData, ImagesData
-                    point_colors=True,
-                    point_confidence=True,  # default False
-                    keep_depth=True,
-                    max_neighbors=100,
-                    uniform_sampling=True,
-                    points_spacing=0.1,
-                    # [,asset],
-                    subdivide_task=True,
-                    workitem_size_cameras=20,
-                    max_workgroup_size=100,
-                    progress=report_progress
-                )
+        chunk.buildDenseCloud(
+            point_colors=True,
+            point_confidence=True,  # default False
+            keep_depth=True,
+            max_neighbors=100,
+            subdivide_task=True,
+            workitem_size_cameras=20,
+            max_workgroup_size=100,
+            progress=report_progress
+        )
 
         doc.save()
+
+        print("vn:BUILD_POINT_CLOUD:true")
 
         del doc
 
@@ -62,5 +53,6 @@ if __name__ == '__main__':
     args = sys.argv[1:]
 
     project_file = get_arg(args, "-psxFile")
+    chunk_label = get_arg(args, "-chunk_label")
 
-    build_point_cloud(project_file)
+    build_point_cloud(project_file, chunk_label)

@@ -55,6 +55,25 @@ def check_chunk(file, chunk_lab):
                 print("vn:OPTIMIZE_CAMERAS_CHECK:false")
 
 
+            # build_point_cloud / dense_cloud check
+            if chunk.dense_cloud is None:
+                print("vn:BUILD_POINT_CLOUD_CHECK:false")
+            else:
+                print("vn:BUILD_POINT_CLOUD_CHECK:true")
+
+
+            # build_dem check
+            if chunk.elevation is None:
+                print("vn:BUILD_DEM_CHECK:false")
+            else:
+                print("vn:BUILD_DEM_CHECK:true")
+
+
+            # build_orthomosaic check
+            if chunk.orthomosaic is None:
+                print("vn:BUILD_ORTHOMOSAIC_CHECK:false")
+            else:
+                print("vn:BUILD_ORTHOMOSAIC_CHECK:true")
 
 
 

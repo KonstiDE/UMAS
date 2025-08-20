@@ -15,9 +15,6 @@ def align_photos(file, chunk_lab):
 
     if chunk.point_cloud is not None:
         print(f"vd: Chunk {chunk_lab} is already aligned!")
-
-        del doc
-
     else:
         for frame in chunk.frames:
             frame.matchPhotos(

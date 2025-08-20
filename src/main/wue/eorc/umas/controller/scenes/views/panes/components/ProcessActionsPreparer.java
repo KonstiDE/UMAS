@@ -180,7 +180,7 @@ public class ProcessActionsPreparer {
 
         buildDem.setCursor(Cursor.HAND);
         buildDem.setOnMouseClicked(_ignored -> {
-            agisoftCaller.buildDem(buildDem, DirectoryUtils.figureAgisoftFilePath(this.flight));
+            agisoftCaller.buildDem(buildDem, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
         });
     }
 
@@ -189,7 +189,7 @@ public class ProcessActionsPreparer {
 
         buildOrthomosaic.setCursor(Cursor.HAND);
         buildOrthomosaic.setOnMouseClicked(_ignored -> {
-            agisoftCaller.buildOrthomosaic(buildOrthomosaic, DirectoryUtils.figureAgisoftFilePath(this.flight));
+            agisoftCaller.buildOrthomosaic(buildOrthomosaic, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
         });
     }
 
