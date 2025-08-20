@@ -9,6 +9,7 @@ import wue.eorc.umas.controller.listeners.AgisoftCallbackListener;
 import wue.eorc.umas.controller.listeners.AgisoftQueueListener;
 import wue.eorc.umas.enums.AgisoftTask;
 import wue.eorc.umas.enums.Setting;
+import wue.eorc.umas.enums.WorkflowType;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.Settings;
 
@@ -46,7 +47,7 @@ public class AgisoftCaller {
         pb.redirectErrorStream(true);
         Process p = pb.start();
 
-        Pair<AgisoftTask, String> success = watchForSignal("vn: ", p.getInputStream(), null);
+        Pair<AgisoftTask, String> success = watchForSignal("vn: ", p.getInputStream(), null, AgisoftTask.CREATE_PROJECT, null);
 
         int exitCode = p.waitFor();
 
@@ -62,7 +63,7 @@ public class AgisoftCaller {
             pb.redirectErrorStream(true);
             Process p = pb.start();
 
-            Pair<AgisoftTask, String> versionNumber = watchForSignal("vn:", p.getInputStream(), null);
+            Pair<AgisoftTask, String> versionNumber = watchForSignal("vn:", p.getInputStream(), null, AgisoftTask.CHECK_VERSION, null);
 
             int exitCode = p.waitFor();
 
@@ -72,35 +73,35 @@ public class AgisoftCaller {
         }
     }
 
-    public void checkProject(AnchorPane anchorPane, String psxFile){
+    public void checkChunk(AnchorPane anchorPane, String psxFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
-        Path filePath = Paths.get(snippetsPath, "check_project.py");
+        Path filePath = Paths.get(snippetsPath, "check_chunk.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.CHECK_PROJECT, anchorPane, pb, true);
+        enqueue(AgisoftTask.CHECK_CHUNK, anchorPane, pb, true);
     }
 
-    public void addPhotosCheck(StackPane stackPane, String psxFile){
+    public void addPhotosCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "add_photos_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.ADD_PHOTOS_CHECK, stackPane, pb, true);
     }
 
-    public void addPhotos(StackPane stackPane, String psxFile, List<String> folders){
+    public void addPhotos(StackPane stackPane, String psxFile, List<String> folders, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "add_photos.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r", filePath.toFile().getAbsolutePath(),
-                "-psxFile", psxFile, "-photo_folder", folders.size() > 1 ? String.join(",", folders) : folders.get(0));
+                "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType), "-photo_folder", folders.size() > 1 ? String.join(",", folders) : folders.get(0));
 
-        enqueue(AgisoftTask.ADD_PHOTOS, stackPane, pb, false);
-        addPhotosCheck(stackPane, psxFile);
+        enqueue(AgisoftTask.ADD_PHOTOS, stackPane, pb, true);
+        addPhotosCheck(stackPane, psxFile, workflowType);
     }
 
     public void setBrightnessCheck(StackPane stackPane, String psxFile){
@@ -297,7 +298,7 @@ public class AgisoftCaller {
                                  String psxFile, String demFile, String orthoFile, String reportFile,
                                  String flightName, String reportDescription){
 
-        addPhotos(stackPanes.get(0), psxFile, folders);
+        // addPhotos(stackPanes.get(0), psxFile, folders);
         setBrightness(stackPanes.get(1), psxFile, brightness, contrast);
         alignPhotos(stackPanes.get(2), psxFile);
         optimizeCameras(stackPanes.get(3), psxFile);
@@ -320,7 +321,7 @@ public class AgisoftCaller {
                 pb.redirectErrorStream(true);
                 Process p = pb.start();
 
-                Pair<AgisoftTask, String> success = watchForSignal("vn:", p.getInputStream(), agisoftCallbackListener);
+                Pair<AgisoftTask, String> success = watchForSignal("vn:", p.getInputStream(), agisoftCallbackListener, task, pane);
 
                 int exitCode = p.waitFor();
 
@@ -362,7 +363,7 @@ public class AgisoftCaller {
     }
 
     // !!!Signal key must be 4 chars long!!!
-    public static Pair<AgisoftTask, String> watchForSignal(String signalKey, InputStream inputStream, AgisoftCallbackListener listener) throws IOException {
+    public static Pair<AgisoftTask, String> watchForSignal(String signalKey, InputStream inputStream, AgisoftCallbackListener listener, AgisoftTask task, Pane pane) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -376,13 +377,23 @@ public class AgisoftCaller {
                     });
                 }
                 if(line.startsWith(signalKey)){
-                    if(listener != null) Platform.runLater(() -> listener.progress(0));
-
                     String[] split = line.split(":");
-                    return new Pair<>(AgisoftTask.valueOf(split[1]), split[2]);
 
+                    AgisoftTask currentTask = AgisoftTask.valueOf(split[1]);
+
+                    if(currentTask == task){
+                        if(listener != null)
+                            Platform.runLater(() -> listener.progress(0));
+
+                        return new Pair<>(currentTask, split[2]);
+                    }else{
+                        if(listener != null && pane != null)
+                            listener.callback(pane, currentTask, Boolean.parseBoolean(split[2]));
+                    }
                 }
             }
+        } catch (UMASException e) {
+            throw new RuntimeException(e);
         }
         return new Pair<>(AgisoftTask.UNDEFINED, Boolean.FALSE.toString());
     }
@@ -394,6 +405,10 @@ public class AgisoftCaller {
         } else {
             isRunning = false;
         }
+    }
+
+    private String chunkLabel(WorkflowType workflowType){
+        return workflowType.name();
     }
 
 }

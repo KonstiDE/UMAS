@@ -77,7 +77,7 @@ public class ProcessActionsPreparer {
 
     private void setupCheckProject() throws UMASException {
         AnchorPane workflowParent = ItemSearcher.getItemById("workflowpane", this.workflowPane, AnchorPane.class);
-        agisoftCaller.checkProject(workflowParent, DirectoryUtils.figureAgisoftFilePath(this.flight));
+        agisoftCaller.checkChunk(workflowParent, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
     }
 
     private void setupAddPhotos() throws UMASException {
@@ -88,7 +88,8 @@ public class ProcessActionsPreparer {
             agisoftCaller.addPhotos(addPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
                     this.flight.getImageTypes().keySet().stream()
                             .filter(i -> this.workflowType.getImageTypes().contains(i))
-                            .map(i -> this.flight.getImageTypes().get(i)).toList());
+                            .map(i -> this.flight.getImageTypes().get(i)).toList(),
+                    this.workflowType);
         });
 
     }

@@ -23,8 +23,9 @@ public enum AgisoftTask {
     GENERATE_REPORT,
     GENERATE_REPORT_CHECK,
 
+    CREATE_PROJECT,
     CHECK_VERSION,
-    CHECK_PROJECT,
+    CHECK_CHUNK,
 
     UNDEFINED;
 }

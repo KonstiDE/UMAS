@@ -6,11 +6,12 @@ import Metashape as ms
 from utils import get_arg, report_progress
 
 
-def add_photos(file, folders):
+def add_photos(file, chunk_lab, folders):
     doc = ms.Document()
 
     doc.open(path=file, read_only=False)
     chunk = doc.addChunk()
+    chunk.label = chunk_lab
 
     for folder in folders:
         photos = os.listdir(folder)
@@ -33,13 +34,14 @@ def add_photos(file, folders):
 
     del doc
 
-    print("vn: true")
+    print("vn:ADD_PHOTOS:true")
 
 
 if __name__ == '__main__':
     args = sys.argv[1:]
 
     project_file = get_arg(args, "-psxFile")
+    chunk_label = get_arg(args, "-chunk_label")
     photo_folder_list = get_arg(args, "-photo_folder")
 
     try:
@@ -47,4 +49,4 @@ if __name__ == '__main__':
     except TypeError:
         photo_folders = [photo_folder_list]
 
-    add_photos(project_file, photo_folders)
+    add_photos(project_file, chunk_label, photo_folders)
