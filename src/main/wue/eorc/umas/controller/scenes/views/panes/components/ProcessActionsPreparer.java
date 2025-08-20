@@ -162,7 +162,7 @@ public class ProcessActionsPreparer {
 
         optimizeCameras.setCursor(Cursor.HAND);
         optimizeCameras.setOnMouseClicked(_ignored -> {
-            agisoftCaller.optimizeCameras(optimizeCameras, DirectoryUtils.figureAgisoftFilePath(this.flight));
+            agisoftCaller.optimizeCameras(optimizeCameras, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
         });
     }
 
@@ -171,7 +171,7 @@ public class ProcessActionsPreparer {
 
         buildPointCloud.setCursor(Cursor.HAND);
         buildPointCloud.setOnMouseClicked(_ignored -> {
-            agisoftCaller.buildPointCloud(buildPointCloud, DirectoryUtils.figureAgisoftFilePath(this.flight));
+            agisoftCaller.buildPointCloud(buildPointCloud, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
         });
     }
 

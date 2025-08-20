@@ -25,23 +25,43 @@ def check_chunk(file, chunk_lab):
         print("vn:ADD_PHOTOS_CHECK:false")
         print("vn:SET_BRIGHTNESS_CHECK:false")
         print("vn:ALIGN_IMAGES_CHECK:false")
+        print("vn:OPTIMIZE_CAMERAS_CHECK:false")
     else:
         chunk = get_chunk(doc.chunks, chunk_lab)
 
         if chunk is not None:
+
+            # set_brightness check
             if chunk.image_brightness == 100 and chunk.image_contrast == 100:
                 print("vn:SET_BRIGHTNESS_CHECK:false")
             else:
                 print("vn:SET_BRIGHTNESS_CHECK:true")
 
+            # align_images check
             if chunk.point_cloud is None:
                 print("vn:ALIGN_IMAGES_CHECK:false")
             else:
                 print("vn:ALIGN_IMAGES_CHECK:true")
 
+            # optimize_cameras check
+            sensor = chunk.sensors[0]
+            if sensor is not None:
+                if sensor.calibration.k4 == 0 and sensor.calibration.b1 == 0 and sensor.calibration.b2 == 0:
+                    print("vn:OPTIMIZE_CAMERAS_CHECK:false")
+                else:
+                    print("vn:OPTIMIZE_CAMERAS_CHECK:true")
+
+            else:
+                print("vn:OPTIMIZE_CAMERAS_CHECK:false")
+
+
+
+
+
         else:
             print("vn:SET_BRIGHTNESS_CHECK:false")
             print("vn:ALIGN_IMAGES_CHECK:false")
+            print("vn:OPTIMIZE_CAMERAS_CHECK:false")
             print("vn:CHECK_CHUNK:false")
 
     del doc

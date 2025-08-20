@@ -146,46 +146,46 @@ public class AgisoftCaller {
         alignPhotosCheck(stackPane, psxFile, workflowType);
     }
 
-    public void optimizeCamerasCheck(StackPane stackPane, String psxFile){
+    public void optimizeCamerasCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "optimize_cameras_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.OPTIMIZE_CAMERAS_CHECK, stackPane, pb, true);
     }
 
-    public void optimizeCameras(StackPane stackPane, String psxFile){
+    public void optimizeCameras(StackPane stackPane, String psxFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "optimize_cameras.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.OPTIMIZE_CAMERAS, stackPane, pb, false);
-        optimizeCamerasCheck(stackPane, psxFile);
+        optimizeCamerasCheck(stackPane, psxFile, workflowType);
     }
 
-    public void buildPointCloudCheck(StackPane stackPane, String psxFile){
+    public void buildPointCloudCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "build_point_cloud_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.BUILD_POINT_CLOUD_CHECK, stackPane, pb, true);
     }
 
-    public void buildPointCloud(StackPane stackPane, String psxFile){
+    public void buildPointCloud(StackPane stackPane, String psxFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "build_point_cloud.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.BUILD_POINT_CLOUD, stackPane, pb, false);
-        buildPointCloudCheck(stackPane, psxFile);
+        buildPointCloudCheck(stackPane, psxFile, workflowType);
     }
 
     public void buildDemCheck(StackPane stackPane, String psxFile){
@@ -301,13 +301,13 @@ public class AgisoftCaller {
         // addPhotos(stackPanes.get(0), psxFile, folders);
         // setBrightness(stackPanes.get(1), psxFile, brightness, contrast);
         // alignPhotos(stackPanes.get(2), psxFile);
-        optimizeCameras(stackPanes.get(3), psxFile);
-        buildPointCloudCheck(stackPanes.get(4), psxFile);
-        buildDemCheck(stackPanes.get(5), psxFile);
-        buildOrthomosaic(stackPanes.get(6), psxFile);
-        exportDem(stackPanes.get(7), psxFile, demFile);
-        exportOrtho(stackPanes.get(8), psxFile, orthoFile);
-        generateReport(stackPanes.get(9), psxFile, reportFile, flightName, reportDescription);
+        // optimizeCameras(stackPanes.get(3), psxFile);
+        // buildPointCloudCheck(stackPanes.get(4), psxFile);
+        // buildDemCheck(stackPanes.get(5), psxFile);
+        // buildOrthomosaic(stackPanes.get(6), psxFile);
+        // exportDem(stackPanes.get(7), psxFile, demFile);
+        // exportOrtho(stackPanes.get(8), psxFile, orthoFile);
+        // generateReport(stackPanes.get(9), psxFile, reportFile, flightName, reportDescription);
 
     }
 
@@ -368,7 +368,7 @@ public class AgisoftCaller {
             String line;
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
-                if(listener != null && line.startsWith("vp: ")) {
+                if(listener != null && line.startsWith("vp: ") || line.startsWith("xvp: ")) {
                     String finalLine = line;
                     Platform.runLater(() -> {
                         try{
