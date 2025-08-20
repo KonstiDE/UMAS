@@ -24,6 +24,7 @@ def check_chunk(file, chunk_lab):
     if not found:
         print("vn:ADD_PHOTOS_CHECK:false")
         print("vn:SET_BRIGHTNESS_CHECK:false")
+        print("vn:ALIGN_PHOTOS_CHECK:false")
     else:
         chunk = get_chunk(doc.chunks, chunk_lab)
 
@@ -33,8 +34,14 @@ def check_chunk(file, chunk_lab):
             else:
                 print("vn:SET_BRIGHTNESS_CHECK:true")
 
+            if chunk.tie_points is None:
+                print("vn:ALIGN_PHOTOS_CHECK:false")
+            else:
+                print("vn:ALIGN_PHOTOS_CHECK:true")
+
         else:
             print("vn:SET_BRIGHTNESS_CHECK:false")
+            print("vn:ALIGN_PHOTOS_CHECK:false")
             print("vn:CHECK_CHUNK:false")
 
     del doc

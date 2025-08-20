@@ -6,33 +6,25 @@ import Metashape as ms
 from utils import get_arg
 
 
-def align_photos_check(file):
+def align_photos_check(file, chunk_lab):
     doc = ms.Document()
 
     doc.open(path=file, read_only=True)
 
-    if len(doc.chunks) > 0:
-        all_aligned_already = True
+    chunk = get_chunk(doc.chunks, chunk_lab)
 
-        for chunk in doc.chunks:
-            if chunk.tie_points is None:
-                all_aligned_already = False
-                break
-
-        del doc
-        if all_aligned_already:
-            print("vn: true")
-        else:
-            print("vn: false")
-
+    if chunk.tie_points is None:
+        print("vn:ALIGN_PHOTOS:false")
     else:
-        del doc
-        print("vn: false")
+        print("vn:ALIGN_PHOTOS:true")
+
+    del doc
 
 
 if __name__ == '__main__':
     args = sys.argv[1:]
 
     project_file = get_arg(args, "-psxFile")
+    chunk_label = get_arg(args, "-chunk_label")
 
-    align_photos_check(project_file)
+    align_photos_check(project_file, chunk_label)
