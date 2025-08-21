@@ -3,6 +3,7 @@ package wue.eorc.umas.controller.scenes.views.panes.components;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
@@ -26,7 +27,10 @@ import wue.eorc.umas.models.Flight;
 import wue.eorc.umas.utils.DirectoryUtils;
 import wue.eorc.umas.utils.ItemSearcher;
 
+import javax.swing.text.html.parser.Entity;
 import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.Optional;
 
 import static wue.eorc.umas.enums.AgisoftTask.*;
@@ -168,7 +172,9 @@ public class ProcessActionsPreparer {
         alignPhotos.setCursor(Cursor.HAND);
         alignPhotos.setOnMouseClicked(mouseEvent -> {
             if(mouseEvent.getButton() == MouseButton.PRIMARY){
-                agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
+                agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
+                        this.workflowType, retrieveChoice(AgisoftTaskSetting.ALIGN_IMAGES.getParameters()));
+
             }else if(mouseEvent.getButton() == MouseButton.SECONDARY){
                 //TODO open settings window
                 // best maybe to start is a dynamic settings dialog that takes in the ALIGN_IMAGES.getParameters() and
@@ -193,7 +199,7 @@ public class ProcessActionsPreparer {
                     dialog.setTitle("Modify Parameters");
 
                     try{
-                        parameterController.init(parameterPane, display, dialog, AgisoftTaskSetting.ALIGN_IMAGES);
+                        parameterController.init(parameterPane, display, dialog, AgisoftTaskSetting.ALIGN_IMAGES.getParameters());
                     }catch (UMASException e){
                         UMASException.throwWindow(ErrorType.INTERNAL, "Could not open the flight dialog! Please restart the application.");
                     }
@@ -298,6 +304,20 @@ public class ProcessActionsPreparer {
 
     public AnchorPane getWorkflowPane() {
         return workflowPane;
+    }
+
+    public HashMap<String, String> retrieveChoice(HashMap<String, Node> choices) {
+        HashMap<String, String> choicesMap = new HashMap<>();
+
+        for(Map.Entry<String, Node> entry : choices.entrySet()){
+            if(entry instanceof ComboBox<?>){
+                choicesMap.put(entry.getKey(), ((ComboBox<?>) entry).getSelectionModel().getSelectedItem().toString());
+            } else if(entry instanceof CheckBox){
+                choicesMap.put(entry.getKey(), ((CheckBox) entry).isSelected() ? "True" : "False");
+            }
+        }
+
+        return choicesMap;
     }
 
 }

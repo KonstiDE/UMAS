@@ -1,12 +1,10 @@
 package wue.eorc.umas.enums;
 
-import javafx.collections.ObservableList;
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
 import wue.eorc.umas.enums.agisoft.AlignImages;
 
 import java.util.HashMap;
-import java.util.List;
 
 public enum AgisoftTaskSetting {
 
