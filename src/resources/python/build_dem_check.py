@@ -14,10 +14,13 @@ def build_dem_check(file, chunk_lab):
 
     chunk = get_chunk(doc.chunks, chunk_lab)
 
-    if chunk.elevation is None:
-        print("vn:BUILD_DEM_CHECK:false")
+    if chunk is not None:
+        if chunk.elevation is None:
+            print("vn:BUILD_DEM_CHECK:false")
+        else:
+            print("vn:BUILD_DEM_CHECK:true")
     else:
-        print("vn:BUILD_DEM_CHECK:true")
+        print("vn:BUILD_DEM_CHECK:false")
 
     del doc
 

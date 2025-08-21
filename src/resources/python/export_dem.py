@@ -4,20 +4,20 @@ import sys
 import Metashape
 import Metashape as ms
 
-from build_dem import report_progress
-from utils import get_arg, report_progress
+from utils import get_arg, report_progress, get_chunk
 
 
-def export_dem(psx_file, dem_file):
+def export_dem(psx_file, dem_file, chunk_lab):
     doc = ms.Document()
 
     doc.open(path=psx_file, read_only=False)
 
-    if os.path.exists(dem_file):
-        print("vd: This DEM file already exists!")
-        del doc
-    else:
-        for chunk in doc.chunks:
+    chunk = get_chunk(doc.chunks, chunk_lab)
+
+    if chunk is not None:
+        if os.path.exists(dem_file):
+            print("vd: This DEM file already exists!")
+        else:
             if chunk.elevation is not None:
                 chunk.exportRaster(
                     path=dem_file,
@@ -58,7 +58,18 @@ def export_dem(psx_file, dem_file):
                     progress=report_progress
                 )
 
-        del doc
+                doc.save()
+
+                print("vn:EXPORT_DEM:true")
+
+            else:
+                print("vn:EXPORT_DEM:false")
+
+    else:
+        print("vn:EXPORT_DEM:false")
+
+
+    del doc
 
 
 if __name__ == '__main__':
@@ -66,5 +77,6 @@ if __name__ == '__main__':
 
     project_file = get_arg(args, "-psxFile")
     target_file = get_arg(args, "-demFile")
+    chunk_label = get_arg(args, "-chunk_label")
 
-    export_dem(project_file, target_file)
+    export_dem(project_file, target_file, chunk_label)

@@ -77,7 +77,13 @@ public class ProcessActionsPreparer {
 
     private void setupCheckProject() throws UMASException {
         AnchorPane workflowParent = ItemSearcher.getItemById("workflowpane", this.workflowPane, AnchorPane.class);
-        agisoftCaller.checkChunk(workflowParent, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
+
+        String demFile = Paths.get(DirectoryUtils.figureExportPath(this.flight), this.flight.getExportDemName()).toFile().getAbsolutePath();
+        String orthoFile = Paths.get(DirectoryUtils.figureExportPath(this.flight), this.flight.getExportOrthomosaicName()).toFile().getAbsolutePath();
+        String reportFile = Paths.get(DirectoryUtils.figureReportPath(this.flight), this.flight.getGenerateReportName()).toFile().getAbsolutePath();
+
+        agisoftCaller.checkChunk(workflowParent, DirectoryUtils.figureAgisoftFilePath(this.flight), demFile,
+                orthoFile, reportFile, this.workflowType);
     }
 
     private void setupAddPhotos() throws UMASException {
@@ -201,7 +207,7 @@ public class ProcessActionsPreparer {
             agisoftCaller.exportDem(exportDem, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
                     DirectoryUtils.figureExportPath(this.flight),
                     this.flight.getExportDemName()
-            ).toFile().getAbsolutePath());
+            ).toFile().getAbsolutePath(), this.workflowType);
         });
     }
 
@@ -213,7 +219,7 @@ public class ProcessActionsPreparer {
             agisoftCaller.exportOrtho(exportOrtho, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
                     DirectoryUtils.figureExportPath(this.flight),
                     this.flight.getExportOrthomosaicName()
-            ).toFile().getAbsolutePath());
+            ).toFile().getAbsolutePath(), this.workflowType);
         });
     }
 
@@ -228,7 +234,8 @@ public class ProcessActionsPreparer {
                             this.flight.getGenerateReportName()
                     ).toFile().getAbsolutePath(),
                     this.flight.getGenerateReportName(),
-                    "Automatically generated Report"
+                    "Automatically generated Report",
+                    this.workflowType
             );
         });
     }

@@ -19,7 +19,7 @@ def build_point_cloud(file, chunk_lab):
 
     else:
         chunk.buildDepthMaps(
-            downscale=1, # 4, options: 1: ultra high, 2: high, 3: not working!!, 4: medium, 5: ?
+            downscale=4, # 4, options: 1: ultra high, 2: high, 3: not working!!, 4: medium, 5: ?
             filter_mode=Metashape.MildFiltering,
             # options: NoFiltering, MildFiltering, ModerateFiltering, AggressiveFiltering
             # [, cameras],

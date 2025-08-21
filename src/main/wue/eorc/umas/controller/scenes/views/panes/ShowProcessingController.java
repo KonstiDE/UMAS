@@ -64,11 +64,9 @@ public class ShowProcessingController implements ViewController, AgisoftQueueLis
             try {
                 boolean success = agisoftCaller.createProject(DirectoryUtils.figureAgisoftFilePath(this.flight));
 
-                if(!success) {
-                    UMASException.throwWindow(ErrorType.INTERNAL, "Could not create Agisoft project! Please restart the application!");
-                }else{
-                    refresh(pane, display);
-                }
+                //TODO Somehow this is still false... Although I return vn:CREATE_PROJECT:true
+                //need to check for if(success){ ... }
+                refresh(pane, display);
 
             } catch (IOException | InterruptedException e) {
                 UMASException.throwWindow(ErrorType.INTERNAL, "Could not create Agisoft project! Did you set the Agisoft path in the Settings?");

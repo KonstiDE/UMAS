@@ -4,19 +4,21 @@ import sys
 import Metashape
 import Metashape as ms
 
-from utils import get_arg, report_progress
+from utils import get_arg, report_progress, get_chunk
 
 
-def export_orthomosaic(psx_file, ortho_file):
+def export_orthomosaic(psx_file, ortho_file, chunk_lab):
     doc = ms.Document()
 
     doc.open(path=psx_file, read_only=False)
 
-    if os.path.exists(ortho_file):
-        print("vd: This DEM file already exists!")
-        del doc
-    else:
-        for chunk in doc.chunks:
+    chunk = get_chunk(doc.chunks, chunk_lab)
+
+    if chunk is not None:
+        if os.path.exists(ortho_file):
+            print("vd: This ORTHOMOSAIC file already exists!")
+            del doc
+        else:
             if chunk.orthomosaic is not None:
                 chunk.exportRaster(
                     path=ortho_file,
@@ -57,7 +59,17 @@ def export_orthomosaic(psx_file, ortho_file):
                     progress=report_progress
                 )
 
-        del doc
+                doc.save()
+
+                print("vn:EXPORT_ORTHOMOSAIC:true")
+
+            else:
+                print("vn:EXPORT_ORTHOMOSAIC:false")
+
+    else:
+        print("vn:EXPORT_ORTHOMOSAIC:false")
+
+    del doc
 
 
 if __name__ == '__main__':
@@ -65,5 +77,6 @@ if __name__ == '__main__':
 
     project_file = get_arg(args, "-psxFile")
     target_file = get_arg(args, "-orthoFile")
+    chunk_label = get_arg(args, "-chunk_label")
 
-    export_orthomosaic(project_file, target_file)
+    export_orthomosaic(project_file, target_file, chunk_label)

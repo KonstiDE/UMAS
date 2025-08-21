@@ -14,10 +14,13 @@ def build_ortho_check(file, chunk_lab):
 
     chunk = get_chunk(doc.chunks, chunk_lab)
 
-    if chunk.orthomosaic is None:
-        print("vn:BUILD_ORTHOMOSAIC_CHECK:false")
+    if chunk is not None:
+        if chunk.orthomosaic is None:
+            print("vn:BUILD_ORTHOMOSAIC_CHECK:false")
+        else:
+            print("vn:BUILD_ORTHOMOSAIC_CHECK:true")
     else:
-        print("vn:BUILD_ORTHOMOSAIC_CHECK:true")
+        print("vn:BUILD_ORTHOMOSAIC_CHECK:false")
 
     del doc
 

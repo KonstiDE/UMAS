@@ -73,12 +73,15 @@ public class AgisoftCaller {
         }
     }
 
-    public void checkChunk(AnchorPane anchorPane, String psxFile, WorkflowType workflowType){
+    public void checkChunk(AnchorPane anchorPane, String psxFile, String demFile, String orthoFile, String reportFile,
+                           WorkflowType workflowType){
+
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "check_chunk.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-demFile", demFile, "-orthoFile", orthoFile,
+                "-reportFile", reportFile, "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.CHECK_CHUNK, anchorPane, pb, true);
     }
@@ -230,67 +233,73 @@ public class AgisoftCaller {
         buildOrthomosaicCheck(stackPane, psxFile, workflowType);
     }
 
-    public void exportDemCheck(StackPane stackPane, String psxFile, String targetFile){
+    public void exportDemCheck(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "export_dem_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-demFile", targetFile);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-demFile", targetFile,
+                "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.EXPORT_DEM_CHECK, stackPane, pb, true);
 
     }
-    public void exportDem(StackPane stackPane, String psxFile, String targetFile){
+    public void exportDem(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "export_dem.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-demFile", targetFile);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-demFile", targetFile,
+                "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.EXPORT_DEM, stackPane, pb, false);
-        exportDemCheck(stackPane, psxFile, targetFile);
+        exportDemCheck(stackPane, psxFile, targetFile, workflowType);
     }
 
-    public void exportOrthoCheck(StackPane stackPane, String psxFile, String targetFile){
+    public void exportOrthoCheck(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "export_orthomosaic_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-orthoFile", targetFile);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-orthoFile", targetFile,
+                "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.EXPORT_ORTHOMOSAIC_CHECK, stackPane, pb, true);
 
     }
-    public void exportOrtho(StackPane stackPane, String psxFile, String targetFile){
+    public void exportOrtho(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "export_orthomosaic.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-orthoFile", targetFile);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-orthoFile", targetFile,
+                "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.EXPORT_ORTHOMOSAIC, stackPane, pb, false);
-        exportOrthoCheck(stackPane, psxFile, targetFile);
+        exportOrthoCheck(stackPane, psxFile, targetFile, workflowType);
     }
 
-    public void generateReportCheck(StackPane stackPane, String psxFile, String targetFile){
+    public void generateReportCheck(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "generate_report_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-reportFile", targetFile);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-reportFile", targetFile,
+                "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.GENERATE_REPORT_CHECK, stackPane, pb, true);
 
     }
-    public void generateReport(StackPane stackPane, String psxFile, String targetFile, String flightName, String description){
+    public void generateReport(StackPane stackPane, String psxFile, String targetFile, String flightName, String description, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "generate_report.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-reportFile", targetFile, "-flightName", flightName, "-description", description);
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-reportFile", targetFile,
+                "-flightName", flightName, "-description", description, "-chunk_label", chunkLabel(workflowType));
 
         enqueue(AgisoftTask.GENERATE_REPORT, stackPane, pb, false);
-        generateReportCheck(stackPane, psxFile, targetFile);
+        generateReportCheck(stackPane, psxFile, targetFile, workflowType);
 
     }
 

@@ -6,7 +6,7 @@ import Metashape as ms
 from utils import get_arg, get_chunk
 
 
-def check_chunk(file, chunk_lab):
+def check_chunk(file, demFile, orthoFile, reportFile, chunk_lab):
     doc = ms.Document()
 
     doc.open(path=file, read_only=True)
@@ -16,16 +16,23 @@ def check_chunk(file, chunk_lab):
 
     if len(doc.chunks) > 0:
         for chunk in doc.chunks:
-                if chunk.label == chunk_lab:
-                    print("vn:ADD_PHOTOS_CHECK:true")
-                    found = True
-                    break
+            if chunk.label == chunk_lab:
+                print("vn:ADD_PHOTOS_CHECK:true")
+                found = True
+                break
 
     if not found:
         print("vn:ADD_PHOTOS_CHECK:false")
         print("vn:SET_BRIGHTNESS_CHECK:false")
         print("vn:ALIGN_IMAGES_CHECK:false")
         print("vn:OPTIMIZE_CAMERAS_CHECK:false")
+        print("vn:BUILD_POINT_CLOUD_CHECK:false")
+        print("vn:BUILD_DEM_CHECK:false")
+        print("vn:BUILD_ORTHOMOSAIC_CHECK:false")
+        print("vn:EXPORT_DEM_CHECK:false")
+        print("vn:EXPORT_ORTHOMOSAIC_CHECK:false")
+        print("vn:GENERATE_REPORT_CHECK:false")
+        print("vn:CHECK_CHUNK:false")
     else:
         chunk = get_chunk(doc.chunks, chunk_lab)
 
@@ -76,22 +83,51 @@ def check_chunk(file, chunk_lab):
                 print("vn:BUILD_ORTHOMOSAIC_CHECK:true")
 
 
+            # export_dem check
+            if os.path.exists(demFile):
+                print("vn:EXPORT_DEM_CHECK:true")
+            else:
+                print("vn:EXPORT_DEM_CHECK:false")
+
+
+            # export_orthomosaic check
+            if os.path.exists(orthoFile):
+                print("vn:EXPORT_ORTHOMOSAIC_CHECK:true")
+            else:
+                print("vn:EXPORT_ORTHOMOSAIC_CHECK:false")
+
+
+            # generate_report check
+            if os.path.exists(reportFile):
+                print("vn:GENERATE_REPORT_CHECK:true")
+            else:
+                print("vn:GENERATE_REPORT_CHECK:false")
+
+
+            print("vn:CHECK_CHUNK:true")
 
         else:
             print("vn:SET_BRIGHTNESS_CHECK:false")
             print("vn:ALIGN_IMAGES_CHECK:false")
             print("vn:OPTIMIZE_CAMERAS_CHECK:false")
+            print("vn:BUILD_POINT_CLOUD_CHECK:false")
+            print("vn:BUILD_DEM_CHECK:false")
+            print("vn:BUILD_ORTHOMOSAIC_CHECK:false")
+            print("vn:EXPORT_DEM_CHECK:false")
+            print("vn:EXPORT_ORTHOMOSAIC_CHECK:false")
+            print("vn:GENERATE_REPORT_CHECK:false")
             print("vn:CHECK_CHUNK:false")
 
     del doc
-
-    print("vn:CHECK_CHUNK:true")
 
 
 if __name__ == "__main__":
     args = sys.argv[1:]
 
     project_file = get_arg(args, "-psxFile")
+    dem_file = get_arg(args, "-demFile")
+    ortho_file = get_arg(args, "-orthoFile")
+    report_file = get_arg(args, "-reportFile")
     chunk_label = get_arg(args, "-chunk_label")
 
-    check_chunk(project_file, chunk_label)
+    check_chunk(project_file, dem_file, ortho_file, report_file, chunk_label)
