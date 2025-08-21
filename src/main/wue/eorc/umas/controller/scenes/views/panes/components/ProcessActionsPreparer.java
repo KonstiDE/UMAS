@@ -4,12 +4,20 @@ import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
+import javafx.scene.control.TextField;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Pair;
 import wue.eorc.umas.agisoft.AgisoftCaller;
+import wue.eorc.umas.enums.AgisoftTaskSetting;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
+import wue.eorc.umas.controller.scenes.views.dialogs.AgisoftParamController;
+import wue.eorc.umas.controller.scenes.views.dialogs.DynamicDialogController;
 import wue.eorc.umas.controller.scenes.views.panes.ShowProcessingController;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.WorkflowType;
@@ -158,8 +166,51 @@ public class ProcessActionsPreparer {
         StackPane alignPhotos = ItemSearcher.getItemById("processing." + ALIGN_IMAGES, this.workflowPane, StackPane.class);
 
         alignPhotos.setCursor(Cursor.HAND);
-        alignPhotos.setOnMouseClicked(_ignored -> {
-            agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
+        alignPhotos.setOnMouseClicked(mouseEvent -> {
+            if(mouseEvent.getButton() == MouseButton.PRIMARY){
+                agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
+            }else if(mouseEvent.getButton() == MouseButton.SECONDARY){
+                //TODO open settings window
+                // best maybe to start is a dynamic settings dialog that takes in the ALIGN_IMAGES.getParameters() and
+                // returns a modified version that is then passed to the agisoftCaller alignImages method
+                // However, how can I modify AND batch process. Maybe a second menu option, modify entire batch, and
+                // then everything from the current workflowType gets loaded into the dialog
+
+                final ContextMenu contextMenu = new ContextMenu();
+                final MenuItem separator = new SeparatorMenuItem();
+
+                final MenuItem modify = new MenuItem("Modify");
+                final MenuItem modifyBatch = new MenuItem("Modify Batch");
+                final MenuItem runBatch = new MenuItem("Run Batch");
+
+                modify.setOnAction(event -> {
+                    DialogPane parameterPane = (DialogPane)
+                            display.getRootController().getSceneLoader().getScene("agisoft_params");
+                    DynamicDialogController parameterController = new AgisoftParamController();
+
+                    Dialog<String> dialog = new Dialog<>();
+                    dialog.setDialogPane(parameterPane);
+                    dialog.setTitle("Modify Parameters");
+
+                    try{
+                        parameterController.init(parameterPane, display, dialog, AgisoftTaskSetting.ALIGN_IMAGES.getParameters());
+                    }catch (UMASException e){
+                        UMASException.throwWindow(ErrorType.INTERNAL, "Could not open the flight dialog! Please restart the application.");
+                    }
+
+                    Optional<String> json = dialog.showAndWait();
+                    dialog.hide();
+                    dialog.close();
+
+                    // I receive new parameters here huuuuiiiiiii!!!!
+                });
+                contextMenu.getItems().add(modify);
+                contextMenu.getItems().add(modifyBatch);
+                contextMenu.getItems().add(separator);
+                contextMenu.getItems().add(runBatch);
+                contextMenu.show(getWorkflowPane().getScene().getWindow(), mouseEvent.getScreenX(), mouseEvent.getScreenY());
+
+            }
         });
     }
 

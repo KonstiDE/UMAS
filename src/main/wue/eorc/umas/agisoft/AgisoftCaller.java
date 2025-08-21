@@ -1,6 +1,7 @@
 package wue.eorc.umas.agisoft;
 
 import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -17,10 +18,7 @@ import java.io.*;
 import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Objects;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class AgisoftCaller {
@@ -138,7 +136,7 @@ public class AgisoftCaller {
         enqueue(AgisoftTask.ALIGN_IMAGES_CHECK, stackPane, pb, true);
     }
 
-    public void alignPhotos(StackPane stackPane, String psxFile, WorkflowType workflowType){
+    public void alignPhotos(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "align_images.py");
 

@@ -5,12 +5,11 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import wue.eorc.umas.controller.RootController;
-import wue.eorc.umas.controller.scenes.views.dialogs.DialogController;
+import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
 import wue.eorc.umas.controller.scenes.views.panes.ViewController;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.SplitPanePosition;
 import wue.eorc.umas.exception.UMASException;
-import wue.eorc.umas.loader.SceneLoader;
 import wue.eorc.umas.models.Flight;
 
 import java.util.Optional;
@@ -57,7 +56,7 @@ public class DisplayController {
 
     }
 
-    public Flight openFlightDialog(DialogPane pane, DialogController trigger) {
+    public Flight openFlightDialog(DialogPane pane, StaticDialogController trigger) {
         Dialog<String> dialog = new Dialog<>();
         dialog.setDialogPane(pane);
         dialog.setTitle("Add a new flight");
@@ -75,7 +74,7 @@ public class DisplayController {
         return json.map(Flight::factoryFromJson).orElse(null);
     }
 
-    public void openSettingsDialog(DialogPane pane, DialogController trigger) {
+    public void openSettingsDialog(DialogPane pane, StaticDialogController trigger) {
         Dialog<String> dialog = new Dialog<>();
         dialog.setDialogPane(pane);
         dialog.setTitle("Settings");

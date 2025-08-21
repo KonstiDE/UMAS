@@ -20,7 +20,7 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Objects;
 
-public class SettingsController implements DialogController {
+public class SettingsController implements StaticDialogController {
 
     @Override
     public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
