@@ -1,7 +1,6 @@
 package wue.eorc.umas.agisoft;
 
 import javafx.application.Platform;
-import javafx.scene.Node;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;

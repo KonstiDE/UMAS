@@ -11,7 +11,7 @@ import java.util.HashMap;
 
 public interface DynamicDialogController {
 
-    void init(Pane pane, DisplayController display, Dialog<String> dialog, HashMap<Node, Node> data) throws UMASException;
+    void init(Pane pane, DisplayController display, Dialog<String> dialog, HashMap<String, Node> data) throws UMASException;
 
     String jsonCallback(ButtonType buttonType);
 

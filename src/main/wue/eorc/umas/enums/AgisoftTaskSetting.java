@@ -1,25 +1,27 @@
 package wue.eorc.umas.enums;
 
+import javafx.collections.ObservableList;
 import javafx.scene.Node;
-import javafx.scene.control.Label;
+import javafx.scene.control.ComboBox;
+import wue.eorc.umas.enums.agisoft.AlignImages;
 
 import java.util.HashMap;
+import java.util.List;
 
 public enum AgisoftTaskSetting {
 
-
     ALIGN_IMAGES(new HashMap<>() {{
-        put("", new Label());
+        put("Accuracy", new ComboBox<>(AlignImages.ACCURACY.getChoices()));
     }});
 
 
-    private final HashMap<Node, Node> parameters;
+    private final HashMap<String, Node> parameters;
 
-    AgisoftTaskSetting(HashMap<Node, Node> parameters) {
+    AgisoftTaskSetting(HashMap<String, Node> parameters) {
         this.parameters = parameters;
     }
 
-    public HashMap<Node, Node> getParameters(){
+    public HashMap<String, Node> getParameters(){
         return parameters;
     }
 

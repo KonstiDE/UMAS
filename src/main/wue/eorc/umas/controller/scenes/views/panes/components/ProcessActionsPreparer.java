@@ -193,7 +193,7 @@ public class ProcessActionsPreparer {
                     dialog.setTitle("Modify Parameters");
 
                     try{
-                        parameterController.init(parameterPane, display, dialog, AgisoftTaskSetting.ALIGN_IMAGES.getParameters());
+                        parameterController.init(parameterPane, display, dialog, AgisoftTaskSetting.ALIGN_IMAGES);
                     }catch (UMASException e){
                         UMASException.throwWindow(ErrorType.INTERNAL, "Could not open the flight dialog! Please restart the application.");
                     }
