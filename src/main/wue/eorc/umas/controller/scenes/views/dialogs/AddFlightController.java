@@ -13,6 +13,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.DirectoryChooser;
+import javafx.util.StringConverter;
 import org.controlsfx.control.CheckComboBox;
 import wue.eorc.umas.controller.listeners.CopyProgressListener;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
@@ -29,6 +30,7 @@ import wue.eorc.umas.utils.KMZProcessor;
 import java.io.File;
 import java.nio.file.*;
 import java.nio.file.attribute.FileTime;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
@@ -191,7 +193,30 @@ public class AddFlightController implements StaticDialogController, CopyProgress
         });
 
 
+        datePicker.setConverter(new StringConverter<LocalDate>() {
+            final String pattern = "dd/MM/yyyy";
+            final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
 
+            {
+                datePicker.setPromptText(pattern.toLowerCase());
+            }
+
+            @Override public String toString(LocalDate date) {
+                if (date != null) {
+                    return dateFormatter.format(date);
+                } else {
+                    return "";
+                }
+            }
+
+            @Override public LocalDate fromString(String string) {
+                if (string != null && !string.isEmpty()) {
+                    return LocalDate.parse(string, dateFormatter);
+                } else {
+                    return null;
+                }
+            }
+        });
         datePicker.setOnAction(_ignored -> this.date = datePicker.getEditor().getCharacters().toString());
 
         location.textProperty().addListener(_ignored -> this.location = location.getText());
