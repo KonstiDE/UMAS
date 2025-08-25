@@ -18,6 +18,9 @@ public class ItemSearcher {
         }
 
         ArrayList<Node> list = getAllNodes(root);
+        if(root instanceof ScrollPane)
+            list.add(((ScrollPane) root).getContent());
+
         list.add(root);
 
         Optional<Node> item = list.stream()

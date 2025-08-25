@@ -1,4 +1,4 @@
-package wue.eorc.umas.enums;
+package wue.eorc.umas.enums.agisoft;
 
 public enum AgisoftTask {
 

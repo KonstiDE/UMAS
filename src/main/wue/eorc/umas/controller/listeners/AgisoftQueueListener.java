@@ -1,6 +1,6 @@
 package wue.eorc.umas.controller.listeners;
 
-import wue.eorc.umas.enums.AgisoftTask;
+import wue.eorc.umas.enums.agisoft.AgisoftTask;
 import wue.eorc.umas.enums.WorkflowType;
 
 public interface AgisoftQueueListener {

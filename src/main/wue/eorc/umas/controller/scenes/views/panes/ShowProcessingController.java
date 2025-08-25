@@ -13,7 +13,7 @@ import wue.eorc.umas.controller.listeners.AgisoftCallbackListener;
 import wue.eorc.umas.controller.listeners.AgisoftQueueListener;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.controller.scenes.views.panes.components.ProcessActionsPreparer;
-import wue.eorc.umas.enums.AgisoftTask;
+import wue.eorc.umas.enums.agisoft.AgisoftTask;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.ProcessingChain;
 import wue.eorc.umas.enums.WorkflowType;

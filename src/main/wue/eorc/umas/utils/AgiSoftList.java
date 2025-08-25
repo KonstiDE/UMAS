@@ -19,14 +19,10 @@ public class AgiSoftList implements ObservableList<String> {
     }
 
     @Override
-    public void addListener(ListChangeListener<? super String> listChangeListener) {
-        throw new UnsupportedOperationException("Not implemented for this kind of list.");
-    }
+    public void addListener(ListChangeListener<? super String> listChangeListener) {  }
 
     @Override
-    public void removeListener(ListChangeListener<? super String> listChangeListener) {
-        throw new UnsupportedOperationException("Not implemented for this kind of list.");
-    }
+    public void removeListener(ListChangeListener<? super String> listChangeListener) {  }
 
     @Override
     public boolean addAll(String... strings) {
@@ -34,14 +30,10 @@ public class AgiSoftList implements ObservableList<String> {
     }
 
     @Override
-    public boolean setAll(String... strings) {
-        throw new UnsupportedOperationException("Not implemented for this kind of list.");
-    }
+    public boolean setAll(String... strings) { return false; }
 
     @Override
-    public boolean setAll(Collection<? extends String> collection) {
-        throw new UnsupportedOperationException("Not implemented for this kind of list.");
-    }
+    public boolean setAll(Collection<? extends String> collection) { return false; }
 
     @Override
     public boolean removeAll(String... strings) {
@@ -54,9 +46,7 @@ public class AgiSoftList implements ObservableList<String> {
     }
 
     @Override
-    public void remove(int i, int i1) {
-        throw new UnsupportedOperationException("Not implemented for this kind of list.");
-    }
+    public void remove(int i, int i1) {  }
 
     @Override
     public int size() {
@@ -186,13 +176,9 @@ public class AgiSoftList implements ObservableList<String> {
     }
 
     @Override
-    public void addListener(InvalidationListener invalidationListener) {
-        throw new UnsupportedOperationException("Not implemented for this kind of list.");
-    }
+    public void addListener(InvalidationListener invalidationListener) {  }
 
     @Override
-    public void removeListener(InvalidationListener invalidationListener) {
-        throw new UnsupportedOperationException("Not implemented for this kind of list.");
-    }
+    public void removeListener(InvalidationListener invalidationListener) {  }
 
 }

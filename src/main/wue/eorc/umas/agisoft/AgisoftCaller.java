@@ -7,7 +7,7 @@ import javafx.scene.layout.StackPane;
 import javafx.util.Pair;
 import wue.eorc.umas.controller.listeners.AgisoftCallbackListener;
 import wue.eorc.umas.controller.listeners.AgisoftQueueListener;
-import wue.eorc.umas.enums.AgisoftTask;
+import wue.eorc.umas.enums.agisoft.AgisoftTask;
 import wue.eorc.umas.enums.Setting;
 import wue.eorc.umas.enums.WorkflowType;
 import wue.eorc.umas.exception.UMASException;

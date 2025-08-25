@@ -3,7 +3,6 @@ package wue.eorc.umas.controller.scenes.views.panes.components;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
@@ -15,7 +14,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Pair;
 import wue.eorc.umas.agisoft.AgisoftCaller;
-import wue.eorc.umas.enums.AgisoftTaskSetting;
+import wue.eorc.umas.enums.agisoft.AgisoftTaskSetting;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.controller.scenes.views.dialogs.AgisoftParamController;
 import wue.eorc.umas.controller.scenes.views.dialogs.DynamicDialogController;
@@ -23,17 +22,17 @@ import wue.eorc.umas.controller.scenes.views.panes.ShowProcessingController;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.WorkflowType;
 import wue.eorc.umas.exception.UMASException;
+import wue.eorc.umas.models.AgiSoftTaskBlueprint;
 import wue.eorc.umas.models.Flight;
 import wue.eorc.umas.utils.DirectoryUtils;
 import wue.eorc.umas.utils.ItemSearcher;
 
-import javax.swing.text.html.parser.Entity;
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 import java.util.Optional;
 
-import static wue.eorc.umas.enums.AgisoftTask.*;
+import static wue.eorc.umas.enums.agisoft.AgisoftTask.*;
 
 public class ProcessActionsPreparer {
 
@@ -172,7 +171,7 @@ public class ProcessActionsPreparer {
         alignPhotos.setOnMouseClicked(mouseEvent -> {
             if(mouseEvent.getButton() == MouseButton.PRIMARY){
                 agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                        this.workflowType, retrieveChoice(AgisoftTaskSetting.ALIGN_IMAGES.getParameters()));
+                        this.workflowType, retrieveChoice(AgisoftTaskSetting.ALIGN_IMAGES.getBlueprints()));
 
             }else if(mouseEvent.getButton() == MouseButton.SECONDARY){
                 //TODO open settings window
@@ -198,7 +197,7 @@ public class ProcessActionsPreparer {
                     dialog.setTitle("Modify Parameters");
 
                     try{
-                        parameterController.init(parameterPane, display, dialog, AgisoftTaskSetting.ALIGN_IMAGES.getParameters());
+                        parameterController.init(parameterPane, display, dialog, AgisoftTaskSetting.ALIGN_IMAGES.getBlueprints());
                     }catch (UMASException e){
                         UMASException.throwWindow(ErrorType.INTERNAL, "Could not open the flight dialog! Please restart the application.");
                     }
@@ -305,14 +304,15 @@ public class ProcessActionsPreparer {
         return workflowPane;
     }
 
-    public HashMap<String, String> retrieveChoice(HashMap<String, Node> choices) {
+    public HashMap<String, String> retrieveChoice(List<AgiSoftTaskBlueprint> blueprints) {
         HashMap<String, String> choicesMap = new HashMap<>();
 
-        for(Map.Entry<String, Node> entry : choices.entrySet()){
-            if(entry instanceof ComboBox<?>){
-                choicesMap.put(entry.getKey(), ((ComboBox<?>) entry).getSelectionModel().getSelectedItem().toString());
-            } else if(entry instanceof CheckBox){
-                choicesMap.put(entry.getKey(), ((CheckBox) entry).isSelected() ? "True" : "False");
+        for(AgiSoftTaskBlueprint blueprint : blueprints){
+            if(blueprint.getNode() instanceof ComboBox<?>){
+                ((ComboBox<?>) blueprint.getNode()).getSelectionModel().select(blueprint.getDefault());
+
+            } else if(blueprint.getNode() instanceof CheckBox){
+                choicesMap.put(blueprint.getDescription(), ((CheckBox) blueprint.getNode()).isSelected() ? "True" : "False");
             }
         }
 
