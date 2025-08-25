@@ -66,7 +66,7 @@ public class ProcessActionsPreparer {
 
     public void setupWorkflowActions() throws UMASException {
         switch (this.workflowType){
-            case RGB -> {
+            case RGB, MULTISPECTRAL -> {
                 setupAddPhotos();
                 setupSetBrightness();
                 setupAlignPhotos();
@@ -83,7 +83,6 @@ public class ProcessActionsPreparer {
             case IR -> {}
             case LIDAR -> {}
             case HYPERSPECTRAL -> {}
-            case MULTISPECTRAL -> {}
         }
     }
 

@@ -158,24 +158,22 @@ public class ShowProcessingController implements ViewController, AgisoftQueueLis
     }
 
     @Override
-    public void enqueue(AgisoftTask agisoftTask) {
-        Platform.runLater(() -> {
-            processingListView.getItems().add(agisoftTask.name());
-        });
+    public void enqueue(WorkflowType workflowType, AgisoftTask agisoftTask) {
+        Platform.runLater(() -> processingListView.getItems().add(workflowType.name() + " - " + agisoftTask.name()));
     }
 
     @Override
-    public void started(AgisoftTask agisoftTask) {
+    public void started(WorkflowType workflowType, AgisoftTask agisoftTask) {
         Platform.runLater(() -> {
             try{
                 processingListView.getItems().removeFirst();
             }catch(NoSuchElementException ignored){}
-            currentlyProcessing.textProperty().set(agisoftTask.name());
+            currentlyProcessing.textProperty().set(workflowType.name() + " - " + agisoftTask.name());
         });
     }
 
     @Override
-    public void finish() {
+    public void finish(WorkflowType workflowType, AgisoftTask agisoftTask) {
         Platform.runLater(() -> {
             if(!processingListView.getItems().isEmpty()){
                 currentlyProcessing.textProperty().set(processingListView.getItems().get(0));
@@ -187,7 +185,7 @@ public class ShowProcessingController implements ViewController, AgisoftQueueLis
     }
 
     @Override
-    public void callback(Pane source, AgisoftTask task, boolean result) throws UMASException {
+    public void callback(Pane source, WorkflowType workflowType, AgisoftTask task, boolean result) throws UMASException {
         switch (task){
             case ADD_PHOTOS_CHECK, ALIGN_IMAGES_CHECK, OPTIMIZE_CAMERAS_CHECK, BUILD_DEM_CHECK, BUILD_ORTHOMOSAIC_CHECK,
                  EXPORT_DEM_CHECK, EXPORT_ORTHOMOSAIC_CHECK, BUILD_POINT_CLOUD_CHECK, SET_BRIGHTNESS_CHECK,

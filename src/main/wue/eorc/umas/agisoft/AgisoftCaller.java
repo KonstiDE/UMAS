@@ -44,7 +44,7 @@ public class AgisoftCaller {
         pb.redirectErrorStream(true);
         Process p = pb.start();
 
-        Pair<AgisoftTask, String> success = watchForSignal("vn: ", p.getInputStream(), null, AgisoftTask.CREATE_PROJECT, null);
+        Pair<AgisoftTask, String> success = watchForSignal("vn: ", p.getInputStream(), null, null, AgisoftTask.CREATE_PROJECT, null);
 
         int exitCode = p.waitFor();
 
@@ -60,7 +60,7 @@ public class AgisoftCaller {
             pb.redirectErrorStream(true);
             Process p = pb.start();
 
-            Pair<AgisoftTask, String> versionNumber = watchForSignal("vn:", p.getInputStream(), null, AgisoftTask.CHECK_VERSION, null);
+            Pair<AgisoftTask, String> versionNumber = watchForSignal("vn:", p.getInputStream(), null, null, AgisoftTask.CHECK_VERSION, null);
 
             int exitCode = p.waitFor();
 
@@ -80,7 +80,7 @@ public class AgisoftCaller {
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-demFile", demFile, "-orthoFile", orthoFile,
                 "-reportFile", reportFile, "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.CHECK_CHUNK, anchorPane, pb, true);
+        enqueue(workflowType, AgisoftTask.CHECK_CHUNK, anchorPane, pb, true);
     }
 
     public void addPhotosCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
@@ -90,7 +90,7 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.ADD_PHOTOS_CHECK, stackPane, pb, true);
+        enqueue(workflowType, AgisoftTask.ADD_PHOTOS_CHECK, stackPane, pb, true);
     }
 
     public void addPhotos(StackPane stackPane, String psxFile, List<String> folders, WorkflowType workflowType){
@@ -100,7 +100,7 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r", filePath.toFile().getAbsolutePath(),
                 "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType), "-photo_folder", folders.size() > 1 ? String.join(",", folders) : folders.get(0));
 
-        enqueue(AgisoftTask.ADD_PHOTOS, stackPane, pb, true);
+        enqueue(workflowType, AgisoftTask.ADD_PHOTOS, stackPane, pb, true);
         addPhotosCheck(stackPane, psxFile, workflowType);
     }
 
@@ -111,7 +111,7 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.SET_BRIGHTNESS_CHECK, stackPane, pb, true);
+        enqueue(workflowType, AgisoftTask.SET_BRIGHTNESS_CHECK, stackPane, pb, true);
     }
 
     public void setBrightness(StackPane stackPane, String psxFile, int brightness, int contrast, WorkflowType workflowType){
@@ -121,7 +121,7 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-brightness", String.valueOf(brightness), "-contrast", String.valueOf(contrast), "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.SET_BRIGHTNESS, stackPane, pb, false);
+        enqueue(workflowType, AgisoftTask.SET_BRIGHTNESS, stackPane, pb, false);
         setBrightnessCheck(stackPane, psxFile, workflowType);
     }
 
@@ -132,7 +132,7 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.ALIGN_IMAGES_CHECK, stackPane, pb, true);
+        enqueue(workflowType, AgisoftTask.ALIGN_IMAGES_CHECK, stackPane, pb, true);
     }
 
     public void alignPhotos(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams){
@@ -142,7 +142,7 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.ALIGN_IMAGES, stackPane, pb, false);
+        enqueue(workflowType, AgisoftTask.ALIGN_IMAGES, stackPane, pb, false);
         alignPhotosCheck(stackPane, psxFile, workflowType);
     }
 
@@ -153,7 +153,7 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.OPTIMIZE_CAMERAS_CHECK, stackPane, pb, true);
+        enqueue(workflowType, AgisoftTask.OPTIMIZE_CAMERAS_CHECK, stackPane, pb, true);
     }
 
     public void optimizeCameras(StackPane stackPane, String psxFile, WorkflowType workflowType){
@@ -163,7 +163,7 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.OPTIMIZE_CAMERAS, stackPane, pb, false);
+        enqueue(workflowType, AgisoftTask.OPTIMIZE_CAMERAS, stackPane, pb, false);
         optimizeCamerasCheck(stackPane, psxFile, workflowType);
     }
 
@@ -174,7 +174,7 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.BUILD_POINT_CLOUD_CHECK, stackPane, pb, true);
+        enqueue(workflowType, AgisoftTask.BUILD_POINT_CLOUD_CHECK, stackPane, pb, true);
     }
 
     public void buildPointCloud(StackPane stackPane, String psxFile, WorkflowType workflowType){
@@ -184,7 +184,7 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.BUILD_POINT_CLOUD, stackPane, pb, false);
+        enqueue(workflowType, AgisoftTask.BUILD_POINT_CLOUD, stackPane, pb, false);
         buildPointCloudCheck(stackPane, psxFile, workflowType);
     }
 
@@ -195,7 +195,7 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.BUILD_DEM_CHECK, stackPane, pb, true);
+        enqueue(workflowType, AgisoftTask.BUILD_DEM_CHECK, stackPane, pb, true);
     }
 
     public void buildDem(StackPane stackPane, String psxFile, WorkflowType workflowType){
@@ -205,7 +205,7 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.BUILD_DEM, stackPane, pb, false);
+        enqueue(workflowType, AgisoftTask.BUILD_DEM, stackPane, pb, false);
         buildDemCheck(stackPane, psxFile, workflowType);
     }
 
@@ -216,7 +216,7 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.BUILD_ORTHOMOSAIC_CHECK, stackPane, pb, true);
+        enqueue(workflowType, AgisoftTask.BUILD_ORTHOMOSAIC_CHECK, stackPane, pb, true);
     }
 
     public void buildOrthomosaic(StackPane stackPane, String psxFile, WorkflowType workflowType){
@@ -226,7 +226,7 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.BUILD_ORTHOMOSAIC, stackPane, pb, false);
+        enqueue(workflowType, AgisoftTask.BUILD_ORTHOMOSAIC, stackPane, pb, false);
         buildOrthomosaicCheck(stackPane, psxFile, workflowType);
     }
 
@@ -238,7 +238,7 @@ public class AgisoftCaller {
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-demFile", targetFile,
                 "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.EXPORT_DEM_CHECK, stackPane, pb, true);
+        enqueue(workflowType, AgisoftTask.EXPORT_DEM_CHECK, stackPane, pb, true);
 
     }
     public void exportDem(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType){
@@ -249,7 +249,7 @@ public class AgisoftCaller {
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-demFile", targetFile,
                 "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.EXPORT_DEM, stackPane, pb, false);
+        enqueue(workflowType, AgisoftTask.EXPORT_DEM, stackPane, pb, false);
         exportDemCheck(stackPane, psxFile, targetFile, workflowType);
     }
 
@@ -261,7 +261,7 @@ public class AgisoftCaller {
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-orthoFile", targetFile,
                 "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.EXPORT_ORTHOMOSAIC_CHECK, stackPane, pb, true);
+        enqueue(workflowType, AgisoftTask.EXPORT_ORTHOMOSAIC_CHECK, stackPane, pb, true);
 
     }
     public void exportOrtho(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType){
@@ -272,7 +272,7 @@ public class AgisoftCaller {
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-orthoFile", targetFile,
                 "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.EXPORT_ORTHOMOSAIC, stackPane, pb, false);
+        enqueue(workflowType, AgisoftTask.EXPORT_ORTHOMOSAIC, stackPane, pb, false);
         exportOrthoCheck(stackPane, psxFile, targetFile, workflowType);
     }
 
@@ -284,7 +284,7 @@ public class AgisoftCaller {
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-reportFile", targetFile,
                 "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.GENERATE_REPORT_CHECK, stackPane, pb, true);
+        enqueue(workflowType, AgisoftTask.GENERATE_REPORT_CHECK, stackPane, pb, true);
 
     }
     public void generateReport(StackPane stackPane, String psxFile, String targetFile, String flightName, String description, WorkflowType workflowType){
@@ -295,7 +295,7 @@ public class AgisoftCaller {
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-reportFile", targetFile,
                 "-flightName", flightName, "-description", description, "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(AgisoftTask.GENERATE_REPORT, stackPane, pb, false);
+        enqueue(workflowType, AgisoftTask.GENERATE_REPORT, stackPane, pb, false);
         generateReportCheck(stackPane, psxFile, targetFile, workflowType);
 
     }
@@ -318,16 +318,16 @@ public class AgisoftCaller {
     }
 
 
-    private void enqueue(AgisoftTask task, Pane pane, ProcessBuilder pb, boolean nextIfFailed){
-        this.agisoftQueueListener.enqueue(task);
+    private void enqueue(WorkflowType workflowType, AgisoftTask task, Pane pane, ProcessBuilder pb, boolean nextIfFailed){
+        this.agisoftQueueListener.enqueue(workflowType, task);
 
         queue.add(() -> CompletableFuture.supplyAsync(() -> {
-            this.agisoftQueueListener.started(task);
+            this.agisoftQueueListener.started(workflowType, task);
             try{
                 pb.redirectErrorStream(true);
                 Process p = pb.start();
 
-                Pair<AgisoftTask, String> success = watchForSignal("vn:", p.getInputStream(), agisoftCallbackListener, task, pane);
+                Pair<AgisoftTask, String> success = watchForSignal("vn:", p.getInputStream(), agisoftCallbackListener, workflowType, task, pane);
 
                 int exitCode = p.waitFor();
 
@@ -341,12 +341,12 @@ public class AgisoftCaller {
             boolean success = Boolean.parseBoolean(result.getValue());
 
             try {
-                agisoftCallbackListener.callback(pane, result.getKey(), success);
+                agisoftCallbackListener.callback(pane, workflowType, task, success);
             } catch (UMASException e) {
                 throw new RuntimeException(e);
             }
 
-            agisoftQueueListener.finish();
+            agisoftQueueListener.finish(workflowType, result.getKey());
 
             if(success) {
                 isRunning = true;
@@ -369,7 +369,7 @@ public class AgisoftCaller {
     }
 
     // !!!Signal key must be 4 chars long!!!
-    public static Pair<AgisoftTask, String> watchForSignal(String signalKey, InputStream inputStream, AgisoftCallbackListener listener, AgisoftTask task, Pane pane) throws IOException {
+    public static Pair<AgisoftTask, String> watchForSignal(String signalKey, InputStream inputStream, AgisoftCallbackListener listener, WorkflowType workflowType, AgisoftTask task, Pane pane) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -394,7 +394,7 @@ public class AgisoftCaller {
                         return new Pair<>(currentTask, split[2]);
                     }else{
                         if(listener != null && pane != null)
-                            listener.callback(pane, currentTask, Boolean.parseBoolean(split[2]));
+                            listener.callback(pane, workflowType, currentTask, Boolean.parseBoolean(split[2]));
                     }
                 }
             }
