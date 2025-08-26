@@ -77,7 +77,7 @@ public class FileCopier {
     private void copy(List<String> origins, String flightDirectory, Predicate<String> filter, String... baseDest) throws IOException {
         ArrayList<File> filesToCopy = new ArrayList<>();
         for(String absPathString : origins){
-            File[] files = Paths.get(absPathString).toFile().listFiles((_ignored, name) -> filter.test(name));
+            File[] files = Paths.get(absPathString).toFile().listFiles();
             if(files != null){
                 filesToCopy.addAll(Arrays.asList(files));
             }
