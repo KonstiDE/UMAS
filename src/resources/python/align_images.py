@@ -6,7 +6,34 @@ import Metashape as ms
 from utils import get_arg, report_progress, get_chunk
 
 
-def align_photos(file, chunk_lab):
+def align_photos(file, chunk_lab,
+                 accuracy,
+                 generic_preselection,
+                 reference_preselection,
+                 key_point_limit_per_mpx,
+                 tie_point_limit,
+                 exclude_stationary_tie_points,
+                 guided_image_matching,
+                 adaptive_camera_model_fitting):
+
+    if accuracy == "Highest":
+        downscale = 0
+    elif accuracy == "High":
+        downscale = 1
+    elif accuracy == "Medium":
+        downscale = 2
+    elif accuracy == "Low":
+        downscale = 3
+    elif accuracy == "Lowest":
+        downscale = 4
+    else:
+        downscale = 0
+
+    if reference_preselection == "Source":
+        preselection_mode = ms.ReferencePreselectionSource
+    else:
+        preselection_mode = ms.ReferencePreselectionSequential
+
     doc = ms.Document()
 
     doc.open(path=file, read_only=False)
@@ -15,24 +42,25 @@ def align_photos(file, chunk_lab):
 
     if chunk.point_cloud is not None:
         print(f"vd: Chunk {chunk_lab} is already aligned!")
+        print("vn:ALIGN_IMAGES:true")
     else:
         for frame in chunk.frames:
             frame.matchPhotos(
-                downscale=1,  # default 1=high, 2=medium, 3=none
-                generic_preselection=True,
+                downscale=downscale, # default 0=highest, 1=high, 2=medium, 3=low, 4=lowest
+                generic_preselection=bool(generic_preselection),
                 reference_preselection=True,
-                reference_preselection_mode=ms.ReferencePreselectionSource,
+                reference_preselection_mode=preselection_mode,
                 # options: ReferencePreselectionSource, ReferencePreselectionEstimated, ReferencePreselectionSequential
                 filter_mask=False,
                 mask_tiepoints=True,
-                filter_stationary_points=True,
+                filter_stationary_points=bool(exclude_stationary_tie_points),
                 keypoint_limit=40000,
-                keypoint_limit_per_mpx=1000,
-                tiepoint_limit=4000,
+                keypoint_limit_per_mpx=float(key_point_limit_per_mpx),
+                tiepoint_limit=float(tie_point_limit),
                 keep_keypoints=False,
                 # [, pairs]
                 # [,cameras],
-                guided_matching=False,
+                guided_matching=bool(guided_image_matching),
                 reset_matches=False,
                 subdivide_task=True,
                 workitem_size_cameras=20,
@@ -44,7 +72,7 @@ def align_photos(file, chunk_lab):
             chunk.alignCameras(
                 # [cameras][, point_clouds],
                 min_image=2,
-                adaptive_fitting=False,
+                adaptive_fitting=bool(adaptive_camera_model_fitting),
                 reset_alignment=False,
                 subdivide_task=True,
                 progress=report_progress
@@ -57,9 +85,38 @@ def align_photos(file, chunk_lab):
 
 
 if __name__ == '__main__':
+    # accuracy
+    # genericpreselection
+    # referencepreselection
+    # keypointlimitpermpx
+    # tiepointlimit
+    # excludestationarytiepoints
+    # guidedimagematching
+    # adaptivecameramodelfitting
+
     args = sys.argv[1:]
 
     project_file = get_arg(args, "-psxFile")
     chunk_label = get_arg(args, "-chunk_label")
 
-    align_photos(project_file, chunk_label)
+    accuracy = get_arg(args, "-accuracy")
+    generic_preselection = get_arg(args, "-genericpreselection")
+    reference_preselection = get_arg(args, "-referencepreselection")
+    key_point_limit_per_mpx = get_arg(args, "-keypointlimitpermpx")
+    tie_point_limit = get_arg(args, "-tiepointlimit")
+    exclude_stationary_tie_points = get_arg(args, "-excludestationarytiepoints")
+    guided_image_matching = get_arg(args, "-guidedimagematching")
+    adaptive_camera_model_fitting = get_arg(args, "-adaptivecameramodelfitting")
+
+    align_photos(
+        project_file,
+        chunk_label,
+        accuracy,
+        generic_preselection,
+        reference_preselection,
+        key_point_limit_per_mpx,
+        tie_point_limit,
+        exclude_stationary_tie_points,
+        guided_image_matching,
+        adaptive_camera_model_fitting
+    )

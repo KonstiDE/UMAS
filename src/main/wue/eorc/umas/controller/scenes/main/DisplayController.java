@@ -60,7 +60,6 @@ public class DisplayController {
         Dialog<String> dialog = new Dialog<>();
         dialog.setDialogPane(pane);
         dialog.setTitle("Add a new flight");
-        dialog.setResultConverter(trigger::jsonCallback);
 
         try{
             trigger.init(pane, this, dialog);
@@ -79,7 +78,6 @@ public class DisplayController {
         Dialog<String> dialog = new Dialog<>();
         dialog.setDialogPane(pane);
         dialog.setTitle("Settings");
-        dialog.setResultConverter(trigger::jsonCallback);
 
         try{
             trigger.init(pane, this, dialog);

@@ -142,6 +142,11 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
+        for(Map.Entry<String, String> entry : agisoftParams.entrySet()){
+            pb.command().add("-" + entry.getKey());
+            pb.command().add(entry.getValue());
+        }
+
         enqueue(workflowType, AgisoftTask.ALIGN_IMAGES, stackPane, pb, false);
         alignPhotosCheck(stackPane, psxFile, workflowType);
     }

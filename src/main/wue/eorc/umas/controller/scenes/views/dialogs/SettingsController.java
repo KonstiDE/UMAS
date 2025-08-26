@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 public class SettingsController implements StaticDialogController {
 

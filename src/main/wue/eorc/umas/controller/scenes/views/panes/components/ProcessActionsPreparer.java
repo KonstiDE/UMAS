@@ -213,8 +213,6 @@ public class ProcessActionsPreparer {
 
                     agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
                             this.workflowType, retrieveManualChoice(json.orElse(null)));
-
-                    // I receive new parameters here huuuuiiiiiii!!!!
                 });
                 contextMenu.getItems().add(modify);
                 contextMenu.getItems().add(modifyBatch);
