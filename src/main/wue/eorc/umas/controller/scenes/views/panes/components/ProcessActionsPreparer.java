@@ -1,5 +1,7 @@
 package wue.eorc.umas.controller.scenes.views.panes.components;
 
+import com.google.gson.Gson;
+import com.google.gson.reflect.TypeToken;
 import javafx.application.Platform;
 import javafx.geometry.Insets;
 import javafx.scene.Cursor;
@@ -44,6 +46,8 @@ public class ProcessActionsPreparer {
 
     private final DisplayController display;
     private final ShowProcessingController showProcessingController;
+
+    private final Gson gson = new Gson();
 
     public ProcessActionsPreparer(Flight flight, WorkflowType workflowType, DisplayController display, ShowProcessingController showProcessingController, AgisoftCaller agisoftCaller) {
         this.flight = flight;
@@ -171,7 +175,7 @@ public class ProcessActionsPreparer {
         alignPhotos.setOnMouseClicked(mouseEvent -> {
             if(mouseEvent.getButton() == MouseButton.PRIMARY){
                 agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                        this.workflowType, retrieveChoice(AgisoftTaskSetting.ALIGN_IMAGES.getBlueprints()));
+                        this.workflowType, retrieveDefaultChoice(AgisoftTaskSetting.ALIGN_IMAGES.getBlueprints()));
 
             }else if(mouseEvent.getButton() == MouseButton.SECONDARY){
                 //TODO open settings window
@@ -195,6 +199,7 @@ public class ProcessActionsPreparer {
                     Dialog<String> dialog = new Dialog<>();
                     dialog.setDialogPane(parameterPane);
                     dialog.setTitle("Modify Parameters");
+                    dialog.setResultConverter(parameterController::jsonCallback);
 
                     try{
                         parameterController.init(parameterPane, display, dialog, AgisoftTaskSetting.ALIGN_IMAGES.getBlueprints());
@@ -205,6 +210,9 @@ public class ProcessActionsPreparer {
                     Optional<String> json = dialog.showAndWait();
                     dialog.hide();
                     dialog.close();
+
+                    agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
+                            this.workflowType, retrieveManualChoice(json.orElse(null)));
 
                     // I receive new parameters here huuuuiiiiiii!!!!
                 });
@@ -304,19 +312,26 @@ public class ProcessActionsPreparer {
         return workflowPane;
     }
 
-    public HashMap<String, String> retrieveChoice(List<AgiSoftTaskBlueprint> blueprints) {
+    public HashMap<String, String> retrieveDefaultChoice(List<AgiSoftTaskBlueprint> blueprints) {
         HashMap<String, String> choicesMap = new HashMap<>();
 
         for(AgiSoftTaskBlueprint blueprint : blueprints){
             if(blueprint.getNode() instanceof ComboBox<?>){
-                ((ComboBox<?>) blueprint.getNode()).getSelectionModel().select(blueprint.getDefault());
+                choicesMap.put(blueprint.getId(), ((ComboBox<?>) blueprint.getNode()).getItems().get(blueprint.getDefault()).toString());
 
             } else if(blueprint.getNode() instanceof CheckBox){
-                choicesMap.put(blueprint.getDescription(), ((CheckBox) blueprint.getNode()).isSelected() ? "True" : "False");
+                choicesMap.put(blueprint.getId(), ((CheckBox) blueprint.getNode()).isSelected() ? "True" : "False");
+
+            } else if(blueprint.getNode() instanceof TextField){
+                choicesMap.put(blueprint.getId(), ((TextField) blueprint.getNode()).getText());
             }
         }
 
         return choicesMap;
+    }
+
+    public HashMap<String, String> retrieveManualChoice(String json) {
+        return gson.fromJson(json, new TypeToken<HashMap<String, String>>(){}.getType());
     }
 
 }
