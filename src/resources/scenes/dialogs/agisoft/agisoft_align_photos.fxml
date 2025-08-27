@@ -43,25 +43,25 @@
                     </rowConstraints>
                      <children>
                         <Label text="General" />
-                        <CheckBox id="agisoft.genericpreselection" mnemonicParsing="false" prefHeight="17.0" prefWidth="266.0" text="Generic preselection" GridPane.rowIndex="3" />
+                        <CheckBox id="agisoft.alignimages.genericpreselection" mnemonicParsing="false" prefHeight="17.0" prefWidth="266.0" text="Generic preselection" GridPane.rowIndex="3" />
                         <Label text="Accuracy" GridPane.rowIndex="2" />
                         <Separator prefWidth="200.0" GridPane.rowIndex="1" />
                         <Separator prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                        <ComboBox id="agisoft.accuracy" prefWidth="200.0" promptText="High" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
-                        <CheckBox id="agisoft.referencepreselection" mnemonicParsing="false" prefHeight="17.0" prefWidth="289.0" text="Reference preselection" GridPane.rowIndex="4" />
-                        <ComboBox id="agisoft.referencepreselection.combo" prefWidth="200.0" promptText="Source" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <ComboBox id="agisoft.alignimages.accuracy" prefWidth="200.0" promptText="High" GridPane.columnIndex="1" GridPane.halignment="LEFT" GridPane.rowIndex="2" />
+                        <CheckBox id="agisoft.alignimages.referencepreselection" mnemonicParsing="false" prefHeight="17.0" prefWidth="289.0" text="Reference preselection" GridPane.rowIndex="4" />
+                        <ComboBox id="agisoft.alignimages.referencepreselection.combo" prefWidth="200.0" promptText="Source" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         <Label text="Advanced" GridPane.rowIndex="6" />
                         <Separator prefWidth="200.0" GridPane.rowIndex="7" />
                         <Separator prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                        <Label text="Key point limit per Mpx" GridPane.rowIndex="8" />
+                        <Label id="agisoft.alignimages.keypointlimit.label" text="Key point limit per Mpx" GridPane.rowIndex="8" />
                         <Label text="Tie point limit" GridPane.rowIndex="9" />
                         <Label text="Apply masks to" GridPane.rowIndex="10" />
-                        <CheckBox id="agisoft.excludestationarytiepoints" mnemonicParsing="false" text="Exclude stationary tie points" GridPane.rowIndex="11" />
-                        <CheckBox id="agisoft.guidedimagematching" mnemonicParsing="false" text="Guided image matching" GridPane.rowIndex="12" />
-                        <CheckBox id="agisoft.adaptivecameramodelfitting" mnemonicParsing="false" text="Adaptive camera model fitting" GridPane.rowIndex="13" />
-                        <TextField id="agisoft.keypointlimit" promptText="4,000" text="4,000" GridPane.columnIndex="1" GridPane.rowIndex="8" />
-                        <TextField id="agisoft.tiepointlimit" promptText="1,000" text="1,000" GridPane.columnIndex="1" GridPane.rowIndex="9" />
-                        <ComboBox id="agisoft.applymasksto" disable="true" prefWidth="200.0" promptText="None" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+                        <CheckBox id="agisoft.alignimages.excludestationarytiepoints" mnemonicParsing="false" text="Exclude stationary tie points" GridPane.rowIndex="11" />
+                        <CheckBox id="agisoft.alignimages.guidedimagematching" mnemonicParsing="false" text="Guided image matching" GridPane.rowIndex="12" />
+                        <CheckBox id="agisoft.alignimages.adaptivecameramodelfitting" mnemonicParsing="false" text="Adaptive camera model fitting" GridPane.rowIndex="13" />
+                        <TextField id="agisoft.alignimages.keypointlimit" promptText="4,000" text="4,000" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                        <TextField id="agisoft.alignimages.tiepointlimit" promptText="1,000" text="1,000" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                        <ComboBox id="agisoft.alignimages.applymasksto" disable="true" prefWidth="200.0" promptText="None" GridPane.columnIndex="1" GridPane.rowIndex="10" />
                      </children>
                   </GridPane>
                </children>

@@ -19,15 +19,12 @@ import javafx.util.Pair;
 import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
 import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.AlignImagesController;
-import wue.eorc.umas.enums.agisoft.AgisoftTaskSetting;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
-import wue.eorc.umas.controller.scenes.views.dialogs.AgisoftParamController;
-import wue.eorc.umas.controller.scenes.views.dialogs.DynamicDialogController;
 import wue.eorc.umas.controller.scenes.views.panes.ShowProcessingController;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.WorkflowType;
+import wue.eorc.umas.enums.agisoft.AgisoftParameterSet;
 import wue.eorc.umas.exception.UMASException;
-import wue.eorc.umas.models.AgiSoftTaskBlueprint;
 import wue.eorc.umas.models.Flight;
 import wue.eorc.umas.utils.DirectoryUtils;
 import wue.eorc.umas.utils.ItemSearcher;
@@ -178,7 +175,7 @@ public class ProcessActionsPreparer {
         alignPhotos.setOnMouseClicked(mouseEvent -> {
             if(mouseEvent.getButton() == MouseButton.PRIMARY){
                 agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                        this.workflowType, retrieveDefaultChoice(AgisoftTaskSetting.ALIGN_IMAGES.getBlueprints()));
+                        this.workflowType, AgisoftParameterSet.ALIGN_IMAGES.getDefaultChoices());
 
             }else if(mouseEvent.getButton() == MouseButton.SECONDARY){
                 //TODO open settings window
@@ -313,24 +310,6 @@ public class ProcessActionsPreparer {
 
     public AnchorPane getWorkflowPane() {
         return workflowPane;
-    }
-
-    public HashMap<String, String> retrieveDefaultChoice(List<AgiSoftTaskBlueprint> blueprints) {
-        HashMap<String, String> choicesMap = new HashMap<>();
-
-        for(AgiSoftTaskBlueprint blueprint : blueprints){
-            if(blueprint.getNode() instanceof ComboBox<?>){
-                choicesMap.put(blueprint.getId(), ((ComboBox<?>) blueprint.getNode()).getItems().get(blueprint.getDefault()).toString());
-
-            } else if(blueprint.getNode() instanceof CheckBox){
-                choicesMap.put(blueprint.getId(), ((CheckBox) blueprint.getNode()).isSelected() ? "True" : "False");
-
-            } else if(blueprint.getNode() instanceof TextField){
-                choicesMap.put(blueprint.getId(), ((TextField) blueprint.getNode()).getText());
-            }
-        }
-
-        return choicesMap;
     }
 
     public HashMap<String, String> retrieveManualChoice(String json) {

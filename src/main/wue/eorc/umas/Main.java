@@ -40,7 +40,7 @@ public class Main extends Application {
         SceneLoader loader = new SceneLoader(this.getClass().getClassLoader());
 
         VBox root = (VBox) loader.getScene("main");
-        new RootController(root, loader);
+        RootController rootController = new RootController(root, loader);
 
         Scene scene = new Scene(root, 1024, 720);
 
@@ -65,8 +65,16 @@ public class Main extends Application {
                 Objects.requireNonNull(this.getClass().getResourceAsStream("icon.ac"))
         )); */
 
-        primaryStage.setScene(scene);
-        primaryStage.show();
+        //primaryStage.setScene(scene);
+        //primaryStage.show();
+
+        DialogPane parameterPane = (DialogPane) loader.getScene("agisoft_align_photos");
+        StaticDialogController controller = new AlignImagesController();
+
+        Dialog<String> dialog = new UMASDialog(parameterPane, "Align Images", false, true);
+        controller.init(parameterPane, rootController.getDisplayController(), dialog);
+        dialog.setResultConverter(controller::jsonCallback);
+        Optional<String> json = dialog.showAndWait();
 
     }
 }
