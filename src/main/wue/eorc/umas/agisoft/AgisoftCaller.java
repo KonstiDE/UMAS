@@ -141,11 +141,7 @@ public class AgisoftCaller {
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
-
-        for(Map.Entry<String, String> entry : agisoftParams.entrySet()){
-            pb.command().add("-" + entry.getKey());
-            pb.command().add(entry.getValue());
-        }
+        extendProcessBuilder(pb, agisoftParams);
 
         enqueue(workflowType, AgisoftTask.ALIGN_IMAGES, stackPane, pb, false);
         alignPhotosCheck(stackPane, psxFile, workflowType);
@@ -379,7 +375,7 @@ public class AgisoftCaller {
             String line;
             while ((line = reader.readLine()) != null) {
                 System.out.println(line);
-                if(listener != null && line.startsWith("vp: ") || line.startsWith("xvp: ")) {
+                if(listener != null && (line.startsWith("vp: ") || line.startsWith("xvp: "))) {
                     String finalLine = line;
                     Platform.runLater(() -> {
                         try{
@@ -420,6 +416,13 @@ public class AgisoftCaller {
 
     private String chunkLabel(WorkflowType workflowType){
         return workflowType.name();
+    }
+
+    private void extendProcessBuilder(ProcessBuilder pb, HashMap<String, String> agisoftParams){
+        for(Map.Entry<String, String> entry : agisoftParams.entrySet()){
+            pb.command().add("-" + entry.getKey());
+            pb.command().add(entry.getValue());
+        }
     }
 
 }

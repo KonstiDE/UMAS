@@ -6,12 +6,15 @@ import java.util.HashMap;
 import java.util.List;
 
 public enum AgisoftParameterSet {
+
     ALIGN_IMAGES(
             Arrays.asList(AlignImages.values()),
             new HashMap<>(){{
                 put("accuracy", "High");
                 put("genericpreselection", "True");
-                put("referencepreselection", "Source");
+                put("referencepreselection", "True");
+                put("referencepreselectioncombo", "Source");
+                put("keypointlimit", "1");
                 put("keypointlimitpermpx", "4000");
                 put("tiepointlimit", "1000");
                 put("excludestationarytiepoints", "True");

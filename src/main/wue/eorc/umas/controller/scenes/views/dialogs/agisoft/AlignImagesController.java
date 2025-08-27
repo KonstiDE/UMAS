@@ -1,9 +1,6 @@
 package wue.eorc.umas.controller.scenes.views.dialogs.agisoft;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import com.google.gson.Gson;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
@@ -11,45 +8,59 @@ import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
 import wue.eorc.umas.enums.agisoft.AlignImages;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.utils.AgisoftParamInitiator;
+import wue.eorc.umas.utils.GsonTypeTokens;
 import wue.eorc.umas.utils.ItemSearcher;
 
-public class AlignImagesController implements StaticDialogController {
+import java.util.HashMap;
 
-    private final String prefix = "agisoft.alignimages.";
+public class AlignImagesController implements StaticDialogController {
 
     private int keyPointLimitSave = 1;
     private int keyPointLimitPerMpxSave = 4000;
 
+    private ComboBox<String> accuracy;
+    private CheckBox genericPreselection;
+    private CheckBox referencePreselection;
+    private ComboBox<String> referencePreselectionCombo;
+    private TextField keyPointLimit;
+    private Label keyPointLimitLabel;
+    private TextField tiePointLimit;
+    private CheckBox excludeTiePoints;
+    private CheckBox guidedMatching;
+    private CheckBox adaptiveFitting;
+
     @Override
     public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
-        ComboBox<String> accuracy = ItemSearcher.getGenericControlById(prefix + "accuracy", pane, ComboBox.class, String.class);
+        String prefix = "agisoft.alignimages.";
+
+        accuracy = ItemSearcher.getGenericControlById(prefix + "accuracy", pane, ComboBox.class, String.class);
         AgisoftParamInitiator.initComboBox(accuracy, AlignImages.ACCURACY);
 
-        CheckBox genericPreselection = ItemSearcher.getItemById(prefix + "genericpreselection", pane, CheckBox.class);
+        genericPreselection = ItemSearcher.getItemById(prefix + "genericpreselection", pane, CheckBox.class);
         AgisoftParamInitiator.initCheckBox(genericPreselection, AlignImages.GENERIC_PRESELECTION);
 
-        CheckBox referencePreselection = ItemSearcher.getItemById(prefix + "referencepreselection", pane, CheckBox.class);
+        referencePreselection = ItemSearcher.getItemById(prefix + "referencepreselection", pane, CheckBox.class);
         AgisoftParamInitiator.initCheckBox(referencePreselection, AlignImages.REFERENCE_PRESELECTION);
 
-        ComboBox<String> referencePreselectionCombo = ItemSearcher.getGenericControlById(prefix + "referencepreselection.combo", pane, ComboBox.class, String.class);
+        referencePreselectionCombo = ItemSearcher.getGenericControlById(prefix + "referencepreselection.combo", pane, ComboBox.class, String.class);
         AgisoftParamInitiator.initComboBox(referencePreselectionCombo, AlignImages.REFERENCE_PRESELECTION_COMBO);
 
-        TextField keyPointLimit = ItemSearcher.getItemById(prefix + "keypointlimit", pane, TextField.class);
+        keyPointLimit = ItemSearcher.getItemById(prefix + "keypointlimit", pane, TextField.class);
         AgisoftParamInitiator.initTextField(keyPointLimit, AlignImages.KEY_POINT_LIMIT_PER_MPX);
 
         Label keyPointLimitLabel = ItemSearcher.getItemById(prefix + "keypointlimit.label", pane, Label.class);
 
 
-        TextField tiePointLimit = ItemSearcher.getItemById(prefix + "tiepointlimit", pane, TextField.class);
+        tiePointLimit = ItemSearcher.getItemById(prefix + "tiepointlimit", pane, TextField.class);
         AgisoftParamInitiator.initTextField(tiePointLimit, AlignImages.TIE_POINT_LIMIT);
 
-        CheckBox excludeTiePoints = ItemSearcher.getItemById(prefix + "excludestationarytiepoints", pane, CheckBox.class);
+        excludeTiePoints = ItemSearcher.getItemById(prefix + "excludestationarytiepoints", pane, CheckBox.class);
         AgisoftParamInitiator.initCheckBox(excludeTiePoints, AlignImages.EXCLUDE_STAT_TIE_POINTS);
 
-        CheckBox guidedMatching = ItemSearcher.getItemById(prefix + "guidedimagematching", pane, CheckBox.class);
+        guidedMatching = ItemSearcher.getItemById(prefix + "guidedimagematching", pane, CheckBox.class);
         AgisoftParamInitiator.initCheckBox(guidedMatching, AlignImages.GUIDED_MATCHING);
 
-        CheckBox adaptiveFitting = ItemSearcher.getItemById(prefix + "adaptivecameramodelfitting", pane, CheckBox.class);
+        adaptiveFitting = ItemSearcher.getItemById(prefix + "adaptivecameramodelfitting", pane, CheckBox.class);
         AgisoftParamInitiator.initCheckBox(adaptiveFitting, AlignImages.ADAPTIVE_MODEL_FITTING);
 
 
@@ -92,7 +103,22 @@ public class AlignImagesController implements StaticDialogController {
     @Override
     public String jsonCallback(ButtonType buttonType) {
         if (buttonType == ButtonType.OK) {
-            return "";
+            Gson gson = new Gson();
+
+            HashMap<String, String> parameterMap = new HashMap<>(){{
+                put("accuracy", accuracy.getSelectionModel().getSelectedItem());
+                put("genericpreselection", genericPreselection.isSelected() ? "True" : "False");
+                put("referencepreselection", referencePreselection.isSelected() ? "True" : "False");
+                put("referencepreselectioncombo", referencePreselectionCombo.getSelectionModel().getSelectedItem());
+                put("keypointlimit", keyPointLimitSave + "");
+                put("keypointlimitpermpx", keyPointLimitPerMpxSave + "");
+                put("tiepointlimit", tiePointLimit.getText());
+                put("excludestationarytiepoints", excludeTiePoints.isSelected() ? "True" : "False");
+                put("guidedimagematching", guidedMatching.isSelected() ? "True" : "False");
+                put("adaptivecameramodelfitting", adaptiveFitting.isSelected() ? "True" : "False");
+            }};
+
+            return gson.toJson(parameterMap, GsonTypeTokens.hashmapToken);
         } else if (buttonType == ButtonType.CANCEL) {
             return null;
         }

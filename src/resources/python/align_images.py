@@ -10,6 +10,8 @@ def align_photos(file, chunk_lab,
                  accuracy,
                  generic_preselection,
                  reference_preselection,
+                 reference_preselection_mode,
+                 key_point_limit,
                  key_point_limit_per_mpx,
                  tie_point_limit,
                  exclude_stationary_tie_points,
@@ -29,10 +31,12 @@ def align_photos(file, chunk_lab,
     else:
         downscale = 0
 
-    if reference_preselection == "Source":
-        preselection_mode = ms.ReferencePreselectionSource
+    if reference_preselection_mode == "Source":
+        reference_preselection_mode = ms.ReferencePreselectionSource
+    elif reference_preselection_mode == "Estimated":
+        reference_preselection_mode = ms.ReferencePreselectionEstimated
     else:
-        preselection_mode = ms.ReferencePreselectionSequential
+        reference_preselection_mode = ms.ReferencePreselectionSequential
 
     doc = ms.Document()
 
@@ -48,20 +52,20 @@ def align_photos(file, chunk_lab,
             frame.matchPhotos(
                 downscale=downscale, # default 0=highest, 1=high, 2=medium, 3=low, 4=lowest
                 generic_preselection=bool(generic_preselection),
-                reference_preselection=True,
-                reference_preselection_mode=preselection_mode,
+                reference_preselection=bool(reference_preselection),
+                reference_preselection_mode=reference_preselection_mode,
                 # options: ReferencePreselectionSource, ReferencePreselectionEstimated, ReferencePreselectionSequential
                 filter_mask=False,
                 mask_tiepoints=True,
                 filter_stationary_points=bool(exclude_stationary_tie_points),
-                keypoint_limit=40000,
+                keypoint_limit=float(key_point_limit),
                 keypoint_limit_per_mpx=float(key_point_limit_per_mpx),
                 tiepoint_limit=float(tie_point_limit),
                 keep_keypoints=False,
                 # [, pairs]
                 # [,cameras],
                 guided_matching=bool(guided_image_matching),
-                reset_matches=False,
+                reset_matches=True,
                 subdivide_task=True,
                 workitem_size_cameras=20,
                 workitem_size_pairs=80,
@@ -85,15 +89,6 @@ def align_photos(file, chunk_lab,
 
 
 if __name__ == '__main__':
-    # accuracy
-    # genericpreselection
-    # referencepreselection
-    # keypointlimitpermpx
-    # tiepointlimit
-    # excludestationarytiepoints
-    # guidedimagematching
-    # adaptivecameramodelfitting
-
     args = sys.argv[1:]
 
     project_file = get_arg(args, "-psxFile")
@@ -102,6 +97,8 @@ if __name__ == '__main__':
     accuracy = get_arg(args, "-accuracy")
     generic_preselection = get_arg(args, "-genericpreselection")
     reference_preselection = get_arg(args, "-referencepreselection")
+    reference_preselection_mode = get_arg(args, "-referencepreselectioncombo")
+    key_point_limit = get_arg(args, "-keypointlimit")
     key_point_limit_per_mpx = get_arg(args, "-keypointlimitpermpx")
     tie_point_limit = get_arg(args, "-tiepointlimit")
     exclude_stationary_tie_points = get_arg(args, "-excludestationarytiepoints")
@@ -114,6 +111,8 @@ if __name__ == '__main__':
         accuracy,
         generic_preselection,
         reference_preselection,
+        reference_preselection_mode,
+        key_point_limit,
         key_point_limit_per_mpx,
         tie_point_limit,
         exclude_stationary_tie_points,

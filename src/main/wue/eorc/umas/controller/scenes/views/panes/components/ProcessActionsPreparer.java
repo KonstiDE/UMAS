@@ -17,6 +17,7 @@ import javafx.scene.layout.StackPane;
 import javafx.stage.StageStyle;
 import javafx.util.Pair;
 import wue.eorc.umas.agisoft.AgisoftCaller;
+import wue.eorc.umas.controller.customs.UMASDialog;
 import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
 import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.AlignImagesController;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
@@ -27,6 +28,7 @@ import wue.eorc.umas.enums.agisoft.AgisoftParameterSet;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.models.Flight;
 import wue.eorc.umas.utils.DirectoryUtils;
+import wue.eorc.umas.utils.GsonTypeTokens;
 import wue.eorc.umas.utils.ItemSearcher;
 
 import java.nio.file.Paths;
@@ -195,20 +197,16 @@ public class ProcessActionsPreparer {
                 modify.setOnAction(event -> {
                     DialogPane parameterPane = (DialogPane)
                             display.getRootController().getSceneLoader().getScene("agisoft_align_photos");
+
                     StaticDialogController controller = new AlignImagesController();
 
-                    Dialog<String> dialog = new Dialog<>();
-                    dialog.setDialogPane(parameterPane);
-                    dialog.initStyle(StageStyle.TRANSPARENT);
-                    dialog.setResultConverter(controller::jsonCallback);
-
-                    try{
-                        controller.init(parameterPane, display, dialog);
-                    }catch (UMASException e){
-                        UMASException.throwWindow(ErrorType.INTERNAL, "Could not open the agisoft dialog! " +
-                                "Please restart the application.");
+                    Dialog<String> dialog = new UMASDialog(parameterPane, "Align Images", true, true);
+                    try {
+                        controller.init(parameterPane, display.getRootController().getDisplayController(), dialog);
+                    } catch (UMASException e) {
+                        throw new RuntimeException(e);
                     }
-
+                    dialog.setResultConverter(controller::jsonCallback);
                     Optional<String> json = dialog.showAndWait();
                     dialog.hide();
                     dialog.close();
@@ -313,7 +311,7 @@ public class ProcessActionsPreparer {
     }
 
     public HashMap<String, String> retrieveManualChoice(String json) {
-        return gson.fromJson(json, new TypeToken<HashMap<String, String>>(){}.getType());
+        return gson.fromJson(json, GsonTypeTokens.hashmapToken);
     }
 
 }
