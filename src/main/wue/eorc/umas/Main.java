@@ -37,7 +37,7 @@ public class Main extends Application {
         Scene scene = new Scene(root, 1024, 720);
 
         // Check settings
-        if(Settings.getSetting(Setting.UITHEME).equals("Dark")){
+        if(Settings.useDarkLayout()){
             scene.getStylesheets().add(Settings.darkMode);
         }
 

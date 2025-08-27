@@ -14,8 +14,11 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.stage.StageStyle;
 import javafx.util.Pair;
 import wue.eorc.umas.agisoft.AgisoftCaller;
+import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
+import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.AlignImagesController;
 import wue.eorc.umas.enums.agisoft.AgisoftTaskSetting;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.controller.scenes.views.dialogs.AgisoftParamController;
@@ -183,6 +186,7 @@ public class ProcessActionsPreparer {
                 // returns a modified version that is then passed to the agisoftCaller alignImages method
                 // However, how can I modify AND batch process. Maybe a second menu option, modify entire batch, and
                 // then everything from the current workflowType gets loaded into the dialog
+                // This idea is nice but it does not work since dialogs elements interact with each other, very annoying
 
                 final ContextMenu contextMenu = new ContextMenu();
                 final MenuItem separator = new SeparatorMenuItem();
@@ -193,18 +197,19 @@ public class ProcessActionsPreparer {
 
                 modify.setOnAction(event -> {
                     DialogPane parameterPane = (DialogPane)
-                            display.getRootController().getSceneLoader().getScene("agisoft_params");
-                    DynamicDialogController parameterController = new AgisoftParamController();
+                            display.getRootController().getSceneLoader().getScene("agisoft_align_photos");
+                    StaticDialogController controller = new AlignImagesController();
 
                     Dialog<String> dialog = new Dialog<>();
                     dialog.setDialogPane(parameterPane);
-                    dialog.setTitle("Modify Parameters");
-                    dialog.setResultConverter(parameterController::jsonCallback);
+                    dialog.initStyle(StageStyle.TRANSPARENT);
+                    dialog.setResultConverter(controller::jsonCallback);
 
                     try{
-                        parameterController.init(parameterPane, display, dialog, AgisoftTaskSetting.ALIGN_IMAGES.getBlueprints());
+                        controller.init(parameterPane, display, dialog);
                     }catch (UMASException e){
-                        UMASException.throwWindow(ErrorType.INTERNAL, "Could not open the flight dialog! Please restart the application.");
+                        UMASException.throwWindow(ErrorType.INTERNAL, "Could not open the agisoft dialog! " +
+                                "Please restart the application.");
                     }
 
                     Optional<String> json = dialog.showAndWait();
