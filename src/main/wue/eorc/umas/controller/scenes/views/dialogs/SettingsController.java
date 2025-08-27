@@ -25,10 +25,6 @@ public class SettingsController implements StaticDialogController {
 
     @Override
     public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
-        if(Settings.useDarkLayout()){
-            pane.getScene().getStylesheets().add(Settings.darkMode);
-        }
-
         ComboBox<String> uiTheme = ItemSearcher.getGenericControlById("settings.uitheme", pane, ComboBox.class, String.class);
         ToggleSwitch fullScreenAtStartup = ItemSearcher.getItemById("settings.fullscreenatstartup", pane, ToggleSwitch.class);
 
@@ -54,7 +50,7 @@ public class SettingsController implements StaticDialogController {
                 display.rootControl.getScene().getStylesheets().clear();
                 display.rootControl.getScene().getStylesheets().add(Settings.darkMode);
 
-                dialog.getDialogPane().getScene().getStylesheets().add(Settings.darkMode);
+                dialog.getDialogPane().getScene().getStylesheets().add(Settings.darkModeDialog);
             }else{
                 display.rootControl.getScene().getStylesheets().clear();
                 dialog.getDialogPane().getScene().getStylesheets().clear();

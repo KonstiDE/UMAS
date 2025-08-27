@@ -5,7 +5,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import wue.eorc.umas.controller.RootController;
+import wue.eorc.umas.controller.customs.UMASDialog;
 import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
+import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.AlignImagesController;
 import wue.eorc.umas.controller.scenes.views.panes.ViewController;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.SplitPanePosition;
@@ -57,9 +59,7 @@ public class DisplayController {
     }
 
     public Flight openFlightDialog(DialogPane pane, StaticDialogController trigger) {
-        Dialog<String> dialog = new Dialog<>();
-        dialog.setDialogPane(pane);
-        dialog.setTitle("Add a new flight");
+        Dialog<String> dialog = new UMASDialog(pane, "New flight", true, false);
 
         try{
             trigger.init(pane, this, dialog);
@@ -75,9 +75,7 @@ public class DisplayController {
     }
 
     public void openSettingsDialog(DialogPane pane, StaticDialogController trigger) {
-        Dialog<String> dialog = new Dialog<>();
-        dialog.setDialogPane(pane);
-        dialog.setTitle("Settings");
+        Dialog<String> dialog = new UMASDialog(pane, "Settings", false, true);
 
         try{
             trigger.init(pane, this, dialog);

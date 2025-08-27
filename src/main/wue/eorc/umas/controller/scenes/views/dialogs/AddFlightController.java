@@ -63,10 +63,6 @@ public class AddFlightController implements StaticDialogController, CopyProgress
 
     @Override
     public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
-        if(Settings.useDarkLayout()){
-            pane.getScene().getStylesheets().add(Settings.darkMode);
-        }
-
         DatePicker datePicker = ItemSearcher.getItemById("addflight.date", pane, DatePicker.class);
         TextField location = ItemSearcher.getItemById("addflight.location", pane, TextField.class);
         TextField aoi = ItemSearcher.getItemById("addflight.aoi", pane, TextField.class);

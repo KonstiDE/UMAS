@@ -1,21 +1,19 @@
 package wue.eorc.umas.controller.customs;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.EventHandler;
-import javafx.scene.Parent;
+import javafx.geometry.Insets;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.text.Font;
 import javafx.stage.StageStyle;
-import wue.eorc.umas.enums.ErrorType;
-import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.Settings;
-import wue.eorc.umas.utils.ItemSearcher;
 
 import java.util.Objects;
 
@@ -33,52 +31,73 @@ public class UMASDialog extends Dialog<String> {
     private double x;
     private double y;
 
-    private final EventHandler<MouseEvent> onPressed = e -> {
-        x = e.getSceneX();
-        y = e.getSceneY();
-    };
-
-    private final EventHandler<MouseEvent> onDrag = e -> {
-        this.setX(e.getScreenX() - x);
-        this.setY(e.getScreenY() - y);
-    };
-
-    public UMASDialog(DialogPane dialogPane) {
+    public UMASDialog(DialogPane dialogPane, String title, boolean shouldDeliver, boolean closeable){
         this.setDialogPane(dialogPane);
-        this.initStyle(StageStyle.UNDECORATED);
 
-        try {
-            ImageView imageView = ItemSearcher.getItemById("umasdialog.close", (Parent) dialogPane.getHeader(), ImageView.class);
+        HBox uiHBox = new HBox();
+        uiHBox.setPadding(new Insets(10));
 
-            imageView.hoverProperty().addListener((observableValue, aBoolean, t1) -> {
+        Label uiTitle = new Label(title);
+        uiTitle.setFont(Font.font(14));
+
+        Pane uiPane = new Pane();
+        HBox.setHgrow(uiPane, Priority.ALWAYS);
+
+        if (closeable){
+            ImageView uiImageView = new ImageView(Settings.useDarkLayout() ? closeInactiveDark : closeInactiveLight);
+            uiImageView.setFitHeight(12);
+            uiImageView.setFitWidth(12);
+
+            uiImageView.hoverProperty().addListener((observableValue, aBoolean, t1) -> {
                 if (t1) {
-                    imageView.setImage(closeActive);
+                    uiImageView.setImage(closeActive);
                 } else {
                     if (Settings.useDarkLayout()){
-                        imageView.setImage(closeInactiveDark);
+                        uiImageView.setImage(closeInactiveDark);
                     }else{
-                        imageView.setImage(closeInactiveLight);
+                        uiImageView.setImage(closeInactiveLight);
                     }
                 }
             });
 
-            imageView.setOnMouseClicked((e) -> {
+            uiImageView.setOnMouseClicked((e) -> {
+                if (!shouldDeliver){
+                    this.setResult("");
+                }
                 this.hide();
                 this.close();
             });
 
-            Pane mainDrag = ItemSearcher.getItemById("umasdialog.drag", (Parent) dialogPane.getHeader(), Pane.class);
-            Label title = ItemSearcher.getItemById("umasdialog.title", (Parent) dialogPane.getHeader(), Label.class);
+            uiHBox.getChildren().addAll(uiTitle, uiPane, uiImageView);
 
-            mainDrag.setOnMousePressed(onPressed);
-            mainDrag.setOnMouseDragged(onDrag);
-
-            title.setOnMousePressed(onPressed);
-            title.setOnMouseDragged(onDrag);
-
-        } catch (UMASException _ignored) {
-            UMASException.throwWindow(ErrorType.INTERNAL, "Could not find closing button.");
+        }else{
+            uiHBox.getChildren().addAll(uiTitle, uiPane);
         }
+
+        this.getDialogPane().setHeader(uiHBox);
+        this.initStyle(StageStyle.UNDECORATED);
+
+        EventHandler<MouseEvent> onDragged = e -> {
+            this.setX(e.getScreenX() - x);
+            this.setY(e.getScreenY() - y);
+        };
+
+        EventHandler<MouseEvent> onPressed = e -> {
+            x = e.getSceneX();
+            y = e.getSceneY();
+        };
+
+        uiTitle.setOnMousePressed(onPressed);
+        uiTitle.setOnMouseDragged(onDragged);
+
+        uiPane.setOnMousePressed(onPressed);
+        uiPane.setOnMouseDragged(onDragged);
+
+        if (Settings.useDarkLayout()){
+            this.getDialogPane().getScene().getStylesheets().add(Settings.darkModeDialog);
+        }
+
+        this.getDialogPane().getScene().getStylesheets().add("styles/window-shadow.css");
     }
 
 }

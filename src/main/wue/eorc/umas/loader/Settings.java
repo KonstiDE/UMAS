@@ -13,6 +13,7 @@ import java.util.Map;
 public class Settings {
 
     public static final String darkMode = "styles/dark-mode.css";
+    public static final String darkModeDialog = "styles/dark-mode-dialog.css";
 
     private static final Gson gson = new Gson();
 

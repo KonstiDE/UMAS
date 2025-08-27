@@ -3,10 +3,17 @@ package wue.eorc.umas;
 import javafx.geometry.Rectangle2D;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import wue.eorc.umas.controller.RootController;
+import wue.eorc.umas.controller.customs.UMASDialog;
+import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
+import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.AlignImagesController;
+import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.Setting;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.ProjectCache;
@@ -15,6 +22,7 @@ import wue.eorc.umas.loader.Settings;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
 public class Main extends Application {
 
