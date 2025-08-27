@@ -58,7 +58,7 @@ public class DisplayController {
     }
 
     public Flight openFlightDialog(DialogPane pane, StaticDialogController trigger) {
-        Dialog<String> dialog = new UMASDialog(pane, "New flight", true, false);
+        Dialog<String> dialog = new UMASDialog(pane, "New flight", true, true);
 
         try{
             trigger.init(pane, this, dialog);

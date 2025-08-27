@@ -1,12 +1,19 @@
 package wue.eorc.umas;
 
+import javafx.event.EventHandler;
+import javafx.event.EventType;
 import javafx.geometry.Rectangle2D;
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.DialogPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
+import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.RootController;
+import wue.eorc.umas.controller.customs.UMASDialog;
+import wue.eorc.umas.controller.scenes.views.dialogs.ClosingController;
 import wue.eorc.umas.enums.Setting;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.ProjectCache;
@@ -15,6 +22,7 @@ import wue.eorc.umas.loader.Settings;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Optional;
 
 public class Main extends Application {
 
@@ -59,6 +67,31 @@ public class Main extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.show();
+
+        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
+            @Override
+            public void handle(WindowEvent windowEvent) {
+                if (AgisoftCaller.isRunning){
+                    DialogPane dialogPane = (DialogPane) loader.getScene("decision_dor_closing");
+                    ClosingController closingController = new ClosingController();
+
+                    UMASDialog closingDialog = new UMASDialog(dialogPane, "Over and out!", true, true);
+                    closingDialog.setResultConverter(closingController::jsonCallback);
+
+                    Optional<String> close = closingDialog.showAndWait();
+                    closingDialog.hide();
+                    closingDialog.close();
+
+                    if (close != null){
+                        // Kill all tasks in queue
+
+                        primaryStage.hide();
+                        primaryStage.close();
+                    }
+
+                }
+            }
+        });
 
     }
 }

@@ -62,7 +62,7 @@ public class UMASDialog extends Dialog<String> {
 
             uiImageView.setOnMouseClicked((e) -> {
                 if (!shouldDeliver){
-                    this.setResult("");
+                    this.setResult(null);
                 }
                 this.hide();
                 this.close();
