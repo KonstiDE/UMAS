@@ -5,11 +5,13 @@
 <?import javafx.scene.control.ButtonType?>
 <?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
@@ -39,7 +41,16 @@
                         <Label text="Contrast" GridPane.rowIndex="3" />
                         <TextField id="agisoft.setbrightness.brightness" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <TextField id="agisoft.setbrightness.contrast" GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                        <Button id="agisoft.setbrightness.estimate" mnemonicParsing="false" prefHeight="25.0" prefWidth="89.0" text="Estimate" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <HBox alignment="CENTER_LEFT" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                           <children>
+                              <Button id="agisoft.setbrightness.estimate" mnemonicParsing="false" prefHeight="25.0" prefWidth="89.0" text="Estimate" />
+                              <ProgressIndicator id="agisoft.setbrightness.progressindicator" prefHeight="30.0" prefWidth="22.0">
+                                 <HBox.margin>
+                                    <Insets left="12.0" />
+                                 </HBox.margin>
+                              </ProgressIndicator>
+                           </children>
+                        </HBox>
                      </children>
                   </GridPane>
                </children>

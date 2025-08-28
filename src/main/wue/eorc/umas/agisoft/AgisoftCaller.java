@@ -127,14 +127,14 @@ public class AgisoftCaller {
         setBrightnessCheck(stackPane, psxFile, workflowType);
     }
 
-    public void setBrightnessEstimate(String psxFile, WorkflowType workflowType){
+    public void setBrightnessEstimate(Pane pane, String psxFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "set_brightness_estimate.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(workflowType, AgisoftTask.SET_BRIGHTNESS_ESTIMATE, null, pb, false);
+        enqueue(workflowType, AgisoftTask.SET_BRIGHTNESS_ESTIMATE, pane, pb, false);
     }
 
     public void alignPhotosCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
@@ -355,7 +355,7 @@ public class AgisoftCaller {
             boolean success = Boolean.parseBoolean(result.getValue());
 
             try {
-                agisoftCallbackListener.callback(pane, workflowType, task, success);
+                agisoftCallbackListener.callback(pane, workflowType, task, result.getValue());
             } catch (UMASException e) {
                 throw new RuntimeException(e);
             }
@@ -408,7 +408,7 @@ public class AgisoftCaller {
                         return new Pair<>(currentTask, split[2]);
                     }else{
                         if(listener != null && pane != null)
-                            listener.callback(pane, workflowType, currentTask, Boolean.parseBoolean(split[2]));
+                            listener.callback(pane, workflowType, currentTask, split[2]);
                     }
                 }
             }

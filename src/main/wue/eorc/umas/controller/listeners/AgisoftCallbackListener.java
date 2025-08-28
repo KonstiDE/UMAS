@@ -7,7 +7,7 @@ import wue.eorc.umas.exception.UMASException;
 
 public interface AgisoftCallbackListener {
 
-    void callback(Pane source, WorkflowType workflowType, AgisoftTask task, boolean result) throws UMASException;
+    void callback(Pane source, WorkflowType workflowType, AgisoftTask task, String result) throws UMASException;
 
     void progress(float f);
 

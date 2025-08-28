@@ -185,7 +185,7 @@ public class ShowProcessingController implements ViewController, AgisoftQueueLis
     }
 
     @Override
-    public void callback(Pane source, WorkflowType workflowType, AgisoftTask task, boolean result) throws UMASException {
+    public void callback(Pane source, WorkflowType workflowType, AgisoftTask task, String result) throws UMASException {
         switch (task){
             case ADD_PHOTOS_CHECK, ALIGN_IMAGES_CHECK, OPTIMIZE_CAMERAS_CHECK, BUILD_DEM_CHECK, BUILD_ORTHOMOSAIC_CHECK,
                  EXPORT_DEM_CHECK, EXPORT_ORTHOMOSAIC_CHECK, BUILD_POINT_CLOUD_CHECK, SET_BRIGHTNESS_CHECK,
@@ -196,12 +196,29 @@ public class ShowProcessingController implements ViewController, AgisoftQueueLis
                 ProgressIndicator indicator = ItemSearcher.getItemById("processing.indicator", workFlowStep, ProgressIndicator.class);
 
                 indicator.setVisible(false);
-                if(result){
+
+                boolean success = Boolean.parseBoolean(result);
+
+                if(success){
                     rectangle.setFill(Colors.PROC_GREEN);
                     //this.showProcessingController.refresh(this.showProcessingController.getProcessingPaneRoot(), display);
                 }else{
                     rectangle.setFill(Colors.PROC_RED);
                 }
+            }
+            case SET_BRIGHTNESS_ESTIMATE -> {
+                TextField brightness = ItemSearcher.getItemById("agisoft.setbrightness.brightness", source, TextField.class);
+                TextField contrast = ItemSearcher.getItemById("agisoft.setbrightness.contrast", source, TextField.class);
+                Button estimate = ItemSearcher.getItemById("agisoft.setbrightness.estimate", source, Button.class);
+                ProgressIndicator indicator = ItemSearcher.getItemById("agisoft.setbrightness.progressindicator", source, ProgressIndicator.class);
+
+                String[] split = result.split("#");
+
+                brightness.setText(split[0]);
+                contrast.setText(split[1]);
+
+                estimate.setDisable(false);
+                indicator.setVisible(false);
             }
         }
     }

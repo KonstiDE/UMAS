@@ -1,10 +1,7 @@
 package wue.eorc.umas.controller.scenes.views.dialogs.agisoft;
 
 import com.google.gson.Gson;
-import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
@@ -23,7 +20,9 @@ public class SetBrightnessController implements StaticDialogController {
 
     private TextField brightness;
     private TextField contrast;
-    private Button estiamte;
+
+    private Button estimate;
+    private ProgressIndicator indicator;
 
     private ProcessActionsPreparer preparer;
 
@@ -41,12 +40,18 @@ public class SetBrightnessController implements StaticDialogController {
         contrast = ItemSearcher.getItemById(prefix + "contrast", pane, TextField.class);
         AgisoftParamInitiator.initTextField(contrast, SetBrightness.CONTRAST);
 
-        estiamte = ItemSearcher.getItemById(prefix + "estimate", pane, Button.class);
-        estiamte.setOnAction(actionEvent -> {
+        indicator = ItemSearcher.getItemById(prefix + "progressindicator", pane, ProgressIndicator.class);
+        indicator.setVisible(false);
+
+        estimate = ItemSearcher.getItemById(prefix + "estimate", pane, Button.class);
+        estimate.setOnAction(actionEvent -> {
             try {
-                preparer.callBrightnessEstimate();
+                estimate.setDisable(true);
+                indicator.setVisible(true);
+                preparer.callBrightnessEstimate(pane);
             } catch (UMASException e) {
-                throw new RuntimeException(e);
+                estimate.setDisable(false);
+                indicator.setVisible(false);
             }
         });
     }

@@ -9,38 +9,55 @@ from utils import get_arg, get_chunk
 def estimate_brightness_and_contrast(psx, chunk_lab):
     doc = ms.Document()
 
-    doc.open(path=psx, read_only=False, ignore_lock=True)
+    doc.open(path=psx, read_only=True)
 
     chunk = get_chunk(doc.chunks, chunk_lab)
 
-    if chunk is not None:
-        for camera in chunk.cameras:
-            if not camera.photo:
-                continue
+    bs = []
+    cs = []
 
-            b, c = estimate(camera.photo)
-            print(f"{camera.label}: Brightness={b:.2f}, Contrast={c:.2f}")
+    if chunk is not None:
+        if len(chunk.cameras) > 10:
+            for index in range(0, len(chunk.cameras), 10):
+                camera = chunk.cameras[index]
+
+                if not camera.photo:
+                    continue
+
+                b, c = estimate(camera.photo)
+                bs.append(b)
+                cs.append(c)
+        else:
+            print("vn:SET_BRIGHTNESS_ESTIMATE:false")
+
+
+
+
+    print(f"vn:SET_BRIGHTNESS_ESTIMATE:{sum(bs) / len(bs)}#{sum(cs) / len(cs)}")
+
+    del doc
 
 
 def estimate(photo):
-    image = photo.image()
+    image = photo.image("8") # image thumbnail
     buf = image.tostring()
 
-    n_channels = image.channels
-    pixels = image.width * image.height
+    n_channels = 3
 
     # compute grayscale brightness per pixel
     gray_vals = []
-    for i in range(0, len(buf), n_channels):
+    count = 0
+    for i in range(0, len(buf), n_channels * 1000):
         r, g, b = buf[i], buf[i+1], buf[i+2]
         gray = (r + g + b) / 3.0
         gray_vals.append(gray)
+        count += 1
 
     # mean brightness
-    mean_brightness = sum(gray_vals) / pixels
+    mean_brightness = sum(gray_vals) / count
 
     # standard deviation = contrast
-    variance = sum((g - mean_brightness) ** 2 for g in gray_vals) / pixels
+    variance = sum((g - mean_brightness) ** 2 for g in gray_vals) / count
     contrast = math.sqrt(variance)
 
     return mean_brightness, contrast

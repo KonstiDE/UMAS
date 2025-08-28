@@ -7,6 +7,7 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.customs.UMASDialog;
@@ -133,8 +134,8 @@ public class ProcessActionsPreparer {
         });
     }
 
-    public void callBrightnessEstimate() throws UMASException {
-        agisoftCaller.setBrightnessEstimate(DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
+    public void callBrightnessEstimate(Pane pane) throws UMASException {
+        agisoftCaller.setBrightnessEstimate(pane, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
     }
 
     private void setupAlignPhotos() throws UMASException {

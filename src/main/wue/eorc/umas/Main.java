@@ -68,28 +68,25 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(WindowEvent windowEvent) {
-                if (AgisoftCaller.isRunning){
-                    DialogPane dialogPane = (DialogPane) loader.getScene("decision_for_closing");
-                    ClosingController closingController = new ClosingController();
+        primaryStage.setOnCloseRequest(windowEvent -> {
+            if (AgisoftCaller.isRunning){
+                DialogPane dialogPane = (DialogPane) loader.getScene("decision_for_closing");
+                ClosingController closingController = new ClosingController();
 
-                    UMASDialog closingDialog = new UMASDialog(dialogPane, "Over and out!", true, true);
-                    closingDialog.setResultConverter(closingController::jsonCallback);
+                UMASDialog closingDialog = new UMASDialog(dialogPane, "Over and out!", true, true);
+                closingDialog.setResultConverter(closingController::jsonCallback);
 
-                    Optional<String> close = closingDialog.showAndWait();
-                    closingDialog.hide();
-                    closingDialog.close();
+                Optional<String> close = closingDialog.showAndWait();
+                closingDialog.hide();
+                closingDialog.close();
 
-                    if (close.isPresent()){
-                        AgisoftCaller.killAll();
+                if (close.isPresent()){
+                    AgisoftCaller.killAll();
 
-                        primaryStage.hide();
-                        primaryStage.close();
-                    }
-
+                    primaryStage.hide();
+                    primaryStage.close();
                 }
+
             }
         });
 
