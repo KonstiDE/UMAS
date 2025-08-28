@@ -10,7 +10,7 @@ from utils import get_arg, report_progress, get_chunk
 def export_dem(psx_file, dem_file, chunk_lab):
     doc = ms.Document()
 
-    doc.open(path=psx_file, read_only=False)
+    doc.open(path=psx_file, read_only=False, ignore_lock=True)
 
     chunk = get_chunk(doc.chunks, chunk_lab)
 

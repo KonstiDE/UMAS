@@ -9,7 +9,7 @@ from utils import get_arg, report_progress
 def add_photos(file, chunk_lab, folders):
     doc = ms.Document()
 
-    doc.open(path=file, read_only=False)
+    doc.open(path=file, read_only=False, ignore_lock=True)
     chunk = doc.addChunk()
     chunk.label = chunk_lab
 

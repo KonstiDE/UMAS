@@ -72,7 +72,7 @@ public class Main extends Application {
             @Override
             public void handle(WindowEvent windowEvent) {
                 if (AgisoftCaller.isRunning){
-                    DialogPane dialogPane = (DialogPane) loader.getScene("decision_dor_closing");
+                    DialogPane dialogPane = (DialogPane) loader.getScene("decision_for_closing");
                     ClosingController closingController = new ClosingController();
 
                     UMASDialog closingDialog = new UMASDialog(dialogPane, "Over and out!", true, true);
@@ -82,8 +82,8 @@ public class Main extends Application {
                     closingDialog.hide();
                     closingDialog.close();
 
-                    if (close != null){
-                        // Kill all tasks in queue
+                    if (close.isPresent()){
+                        AgisoftCaller.killAll();
 
                         primaryStage.hide();
                         primaryStage.close();

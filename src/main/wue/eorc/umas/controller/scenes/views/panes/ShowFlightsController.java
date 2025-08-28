@@ -107,7 +107,7 @@ public class ShowFlightsController implements ViewController {
         add.setOnAction(_ignored -> {
             Flight flight;
             flight = display.openFlightDialog(
-                    (DialogPane) display.getRootController().getSceneLoader().getScene("add_flight"),
+                    (DialogPane) display.getSceneLoader().getScene("add_flight"),
                     new AddFlightController()
             );
 
@@ -322,7 +322,7 @@ public class ShowFlightsController implements ViewController {
                         try {
                             display.switchSceneTo(
                                     SplitPanePosition.RIGHT,
-                                    display.getRootController().getSceneLoader().getScene("show_processing"),
+                                    display.getSceneLoader().getScene("show_processing"),
                                     new ShowProcessingController(flight)
                             );
                         } catch (URISyntaxException e) {

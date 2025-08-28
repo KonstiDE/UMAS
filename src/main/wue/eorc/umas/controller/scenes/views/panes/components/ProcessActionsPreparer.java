@@ -1,28 +1,20 @@
 package wue.eorc.umas.controller.scenes.views.panes.components;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
-import javafx.application.Platform;
-import javafx.geometry.Insets;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.TextField;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
-import javafx.stage.StageStyle;
-import javafx.util.Pair;
 import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.customs.UMASDialog;
 import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
 import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.AlignImagesController;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
+import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.SetBrightnessController;
 import wue.eorc.umas.controller.scenes.views.panes.ShowProcessingController;
-import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.WorkflowType;
 import wue.eorc.umas.enums.agisoft.AgisoftParameterSet;
 import wue.eorc.umas.exception.UMASException;
@@ -33,7 +25,6 @@ import wue.eorc.umas.utils.ItemSearcher;
 
 import java.nio.file.Paths;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Optional;
 
 import static wue.eorc.umas.enums.agisoft.AgisoftTask.*;
@@ -54,13 +45,13 @@ public class ProcessActionsPreparer {
     public ProcessActionsPreparer(Flight flight, WorkflowType workflowType, DisplayController display, ShowProcessingController showProcessingController, AgisoftCaller agisoftCaller) {
         this.flight = flight;
         this.workflowPane = switch (workflowType){
-            case RGB -> (AnchorPane) display.getRootController().getSceneLoader().getScene("rgb_workflow");
-            case RGB_PLUS_MULTISPECTRAL -> (AnchorPane) display.getRootController().getSceneLoader().getScene("rgb_workflow");
-            case IR -> (AnchorPane) display.getRootController().getSceneLoader().getScene("rgb_workflow");
-            case RGB_PLUS_IR -> (AnchorPane) display.getRootController().getSceneLoader().getScene("rgb_workflow");
-            case HYPERSPECTRAL -> (AnchorPane) display.getRootController().getSceneLoader().getScene("rgb_workflow");
-            case LIDAR -> (AnchorPane) display.getRootController().getSceneLoader().getScene("rgb_workflow");
-            case MULTISPECTRAL -> (AnchorPane) display.getRootController().getSceneLoader().getScene("rgb_workflow");
+            case RGB -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
+            case RGB_PLUS_MULTISPECTRAL -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
+            case IR -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
+            case RGB_PLUS_IR -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
+            case HYPERSPECTRAL -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
+            case LIDAR -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
+            case MULTISPECTRAL -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
             case INVALID -> null;
         };
         this.workflowType = workflowType;
@@ -121,53 +112,29 @@ public class ProcessActionsPreparer {
 
         setBrightness.setCursor(Cursor.HAND);
         setBrightness.setOnMouseClicked(_ignored -> {
-            Dialog<Pair<String, String>> dialog = new Dialog<>();
-            dialog.setTitle("Set Parameters");
+            DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene("agisoft_set_brightness"); 
+            Dialog<String> dialog = new UMASDialog(dialogPane, "Set Brightness", true, true);
 
-            ButtonType loginButtonType = new ButtonType("OK", ButtonBar.ButtonData.OK_DONE);
-            dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+            SetBrightnessController controller = new SetBrightnessController(this);
+            try {
+                controller.init(dialogPane, display, dialog);
+            } catch (UMASException e) {
+                throw new RuntimeException(e);
+            }
+            dialog.setResultConverter(controller::jsonCallback);
 
-            GridPane gridPane = new GridPane();
-            gridPane.setHgap(10);
-            gridPane.setVgap(10);
-            gridPane.setPadding(new Insets(20, 150, 10, 10));
-
-            TextField from = new TextField();
-            from.setPromptText("Brightness");
-            TextField to = new TextField();
-            to.setPromptText("Contrast");
-
-            gridPane.add(new Label("Brightness"), 0, 0);
-            gridPane.add(new Label("Contrast"), 1, 0);
-
-            gridPane.add(from, 0, 1);
-            gridPane.add(to, 1, 1);
-
-            dialog.getDialogPane().setContent(gridPane);
-
-            Platform.runLater(from::requestFocus);
-
-            dialog.setResultConverter(dialogButton -> {
-                if (dialogButton == loginButtonType) {
-                    return new Pair<>(from.getText(), to.getText());
-                }
-                return null;
-            });
-
-            Optional<Pair<String, String>> result = dialog.showAndWait();
+            Optional<String> result = dialog.showAndWait();
 
             if(result.isPresent()){
-                try {
-                    int brightness = Integer.parseInt(result.get().getKey());
-                    int contrast = Integer.parseInt(result.get().getValue());
-
-                    agisoftCaller.setBrightness(setBrightness, DirectoryUtils.figureAgisoftFilePath(this.flight), brightness, contrast, this.workflowType);
-                } catch (NumberFormatException e) {
-                    UMASException.throwWindow(ErrorType.USER, "Please provide non-decimal numbers!");
-                }
+                HashMap<String, String> agisoftParameters = gson.fromJson(result.get(), GsonTypeTokens.hashmapToken);
+                agisoftCaller.setBrightness(setBrightness, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType, agisoftParameters);
             }
 
         });
+    }
+
+    public void callBrightnessEstimate() throws UMASException {
+        agisoftCaller.setBrightnessEstimate(DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
     }
 
     private void setupAlignPhotos() throws UMASException {
@@ -196,7 +163,7 @@ public class ProcessActionsPreparer {
 
                 modify.setOnAction(event -> {
                     DialogPane parameterPane = (DialogPane)
-                            display.getRootController().getSceneLoader().getScene("agisoft_align_photos");
+                            display.getSceneLoader().getScene("agisoft_align_photos");
 
                     StaticDialogController controller = new AlignImagesController();
 

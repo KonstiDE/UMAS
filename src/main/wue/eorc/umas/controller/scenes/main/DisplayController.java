@@ -12,6 +12,7 @@ import wue.eorc.umas.controller.scenes.views.panes.ViewController;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.SplitPanePosition;
 import wue.eorc.umas.exception.UMASException;
+import wue.eorc.umas.loader.SceneLoader;
 import wue.eorc.umas.models.Flight;
 
 import java.util.Optional;
@@ -113,5 +114,9 @@ public class DisplayController {
 
     public MapController getMapController() {
         return mapController;
+    }
+
+    public SceneLoader getSceneLoader(){
+        return getRootController().getSceneLoader();
     }
 }

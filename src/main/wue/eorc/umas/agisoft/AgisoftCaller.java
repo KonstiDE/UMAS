@@ -23,6 +23,7 @@ import java.util.concurrent.CompletableFuture;
 public class AgisoftCaller {
 
     public static Queue<Runnable> queue = new LinkedList<>();
+    public static Process currentProcess;
     public static boolean isRunning = false;
 
     private final String snippetsPath = Path.of(Objects.requireNonNull(getClass().getClassLoader().getResource("python")).toURI()).toString();
@@ -114,15 +115,26 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.SET_BRIGHTNESS_CHECK, stackPane, pb, true);
     }
 
-    public void setBrightness(StackPane stackPane, String psxFile, int brightness, int contrast, WorkflowType workflowType){
+    public void setBrightness(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "set_brightness.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-brightness", String.valueOf(brightness), "-contrast", String.valueOf(contrast), "-chunk_label", chunkLabel(workflowType));
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
+        extendProcessBuilder(pb, agisoftParams);
 
         enqueue(workflowType, AgisoftTask.SET_BRIGHTNESS, stackPane, pb, false);
         setBrightnessCheck(stackPane, psxFile, workflowType);
+    }
+
+    public void setBrightnessEstimate(String psxFile, WorkflowType workflowType){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "set_brightness_estimate.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
+
+        enqueue(workflowType, AgisoftTask.SET_BRIGHTNESS_ESTIMATE, null, pb, false);
     }
 
     public void alignPhotosCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
@@ -327,6 +339,7 @@ public class AgisoftCaller {
             try{
                 pb.redirectErrorStream(true);
                 Process p = pb.start();
+                currentProcess = p;
 
                 Pair<AgisoftTask, String> success = watchForSignal("vn:", p.getInputStream(), agisoftCallbackListener, workflowType, task, pane);
 
@@ -405,13 +418,21 @@ public class AgisoftCaller {
         return new Pair<>(AgisoftTask.UNDEFINED, Boolean.FALSE.toString());
     }
 
-    private static synchronized void processNext() {
+    private synchronized void processNext() {
         Runnable nextTask = queue.poll();
         if (nextTask != null) {
             nextTask.run();
         } else {
             isRunning = false;
         }
+    }
+
+    public static void killAll(){
+        for(int i = 0; i < queue.size(); i++){
+            queue.remove();
+        }
+
+        currentProcess.destroy();
     }
 
     private String chunkLabel(WorkflowType workflowType){

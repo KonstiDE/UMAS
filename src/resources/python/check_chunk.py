@@ -118,6 +118,9 @@ def check_chunk(file, demFile, orthoFile, reportFile, chunk_lab):
             print("vn:GENERATE_REPORT_CHECK:false")
             print("vn:CHECK_CHUNK:false")
 
+
+    ms.app.quit()
+
     del doc
 
 

@@ -8,7 +8,7 @@ from utils import get_arg, get_chunk
 def set_brightness(psx, brightness, contrast, chunk_label):
     doc = ms.Document()
 
-    doc.open(path=psx, read_only=False)
+    doc.open(path=psx, read_only=False, ignore_lock=True)
 
     chunk = get_chunk(doc.chunks, chunk_label)
 

@@ -9,7 +9,7 @@ from utils import get_arg, report_progress, get_chunk
 def align_photos_check(file, chunk_lab):
     doc = ms.Document()
 
-    doc.open(path=file, read_only=False)
+    doc.open(path=file, read_only=False, ignore_lock=True)
 
     chunk = get_chunk(doc.chunks, chunk_lab)
 

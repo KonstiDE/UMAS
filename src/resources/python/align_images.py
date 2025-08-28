@@ -39,8 +39,9 @@ def align_photos(file, chunk_lab,
         reference_preselection_mode = ms.ReferencePreselectionSequential
 
     doc = ms.Document()
+    doc.read_only = False
 
-    doc.open(path=file, read_only=False)
+    doc.open(path=file, read_only=False, ignore_lock=True)
 
     chunk = get_chunk(doc.chunks, chunk_lab)
 

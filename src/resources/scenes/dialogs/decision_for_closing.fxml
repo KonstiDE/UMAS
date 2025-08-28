@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<DialogPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="193.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<DialogPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="226.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
     <content>
       <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0">
          <children>
@@ -33,7 +33,7 @@
                               <Font size="15.0" />
                            </font>
                         </Label>
-                        <Label alignment="TOP_LEFT" prefHeight="46.0" prefWidth="448.0" text="However, an Agisoft process was detected that was started by UMAS. Do you still want to proceed to close the application?" wrapText="true" GridPane.rowIndex="2">
+                        <Label alignment="TOP_LEFT" prefHeight="64.0" prefWidth="438.0" text="However, an Agisoft process was detected that was started by UMAS. Do you still want to proceed to close the application?" wrapText="true" GridPane.rowIndex="2">
                            <font>
                               <Font size="15.0" />
                            </font>
