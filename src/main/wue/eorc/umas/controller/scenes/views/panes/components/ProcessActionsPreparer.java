@@ -1,11 +1,14 @@
 package wue.eorc.umas.controller.scenes.views.panes.components;
 
 import com.google.gson.Gson;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -14,10 +17,13 @@ import wue.eorc.umas.controller.customs.UMASDialog;
 import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
 import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.AlignImagesController;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
+import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.OptimizeCamerasController;
 import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.SetBrightnessController;
 import wue.eorc.umas.controller.scenes.views.panes.ShowProcessingController;
 import wue.eorc.umas.enums.WorkflowType;
-import wue.eorc.umas.enums.agisoft.AgisoftParameterSet;
+import wue.eorc.umas.enums.agisoft.AgisoftParameter;
+import wue.eorc.umas.enums.agisoft.AlignImages;
+import wue.eorc.umas.enums.agisoft.OptimizeCameras;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.models.Flight;
 import wue.eorc.umas.utils.DirectoryUtils;
@@ -32,6 +38,13 @@ import static wue.eorc.umas.enums.agisoft.AgisoftTask.*;
 
 public class ProcessActionsPreparer {
 
+    //TODO open settings window
+    // best maybe to start is a dynamic settings dialog that takes in the ALIGN_IMAGES.getParameters() and
+    // returns a modified version that is then passed to the agisoftCaller alignImages method
+    // However, how can I modify AND batch process. Maybe a second menu option, modify entire batch, and
+    // then everything from the current workflowType gets loaded into the dialog
+    // This idea is nice but it does not work since dialogs elements interact with each other, very annoying
+
     private final AgisoftCaller agisoftCaller;
 
     private final Flight flight;
@@ -39,7 +52,6 @@ public class ProcessActionsPreparer {
     private final WorkflowType workflowType;
 
     private final DisplayController display;
-    private final ShowProcessingController showProcessingController;
 
     private final Gson gson = new Gson();
 
@@ -57,7 +69,6 @@ public class ProcessActionsPreparer {
         };
         this.workflowType = workflowType;
         this.display = display;
-        this.showProcessingController = showProcessingController;
         this.agisoftCaller = agisoftCaller;
     }
 
@@ -145,24 +156,10 @@ public class ProcessActionsPreparer {
         alignPhotos.setOnMouseClicked(mouseEvent -> {
             if(mouseEvent.getButton() == MouseButton.PRIMARY){
                 agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                        this.workflowType, AgisoftParameterSet.ALIGN_IMAGES.getDefaultChoices());
+                        this.workflowType, getDefaultParameters(AlignImages.values()));
 
             }else if(mouseEvent.getButton() == MouseButton.SECONDARY){
-                //TODO open settings window
-                // best maybe to start is a dynamic settings dialog that takes in the ALIGN_IMAGES.getParameters() and
-                // returns a modified version that is then passed to the agisoftCaller alignImages method
-                // However, how can I modify AND batch process. Maybe a second menu option, modify entire batch, and
-                // then everything from the current workflowType gets loaded into the dialog
-                // This idea is nice but it does not work since dialogs elements interact with each other, very annoying
-
-                final ContextMenu contextMenu = new ContextMenu();
-                final MenuItem separator = new SeparatorMenuItem();
-
-                final MenuItem modify = new MenuItem("Modify");
-                final MenuItem modifyBatch = new MenuItem("Modify Batch");
-                final MenuItem runBatch = new MenuItem("Run Batch");
-
-                modify.setOnAction(event -> {
+                setupModificationDialog(mouseEvent, event -> {
                     DialogPane parameterPane = (DialogPane)
                             display.getSceneLoader().getScene("agisoft_align_photos");
 
@@ -179,14 +176,11 @@ public class ProcessActionsPreparer {
                     dialog.hide();
                     dialog.close();
 
-                    agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                            this.workflowType, retrieveManualChoice(json.orElse(null)));
+                    if (json.isPresent()){
+                        agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
+                                this.workflowType, retrieveManualChoice(json.orElse(null)));
+                    }
                 });
-                contextMenu.getItems().add(modify);
-                contextMenu.getItems().add(modifyBatch);
-                contextMenu.getItems().add(separator);
-                contextMenu.getItems().add(runBatch);
-                contextMenu.show(getWorkflowPane().getScene().getWindow(), mouseEvent.getScreenX(), mouseEvent.getScreenY());
 
             }
         });
@@ -196,8 +190,35 @@ public class ProcessActionsPreparer {
         StackPane optimizeCameras = ItemSearcher.getItemById("processing." + OPTIMIZE_CAMERAS, this.workflowPane, StackPane.class);
 
         optimizeCameras.setCursor(Cursor.HAND);
-        optimizeCameras.setOnMouseClicked(_ignored -> {
-            agisoftCaller.optimizeCameras(optimizeCameras, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
+        optimizeCameras.setOnMouseClicked(mouseEvent -> {
+            if(mouseEvent.getButton() == MouseButton.PRIMARY) {
+                agisoftCaller.optimizeCameras(optimizeCameras, DirectoryUtils.figureAgisoftFilePath(this.flight),
+                        this.workflowType, getDefaultParameters(OptimizeCameras.values()));
+
+            }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
+                setupModificationDialog(mouseEvent, event -> {
+                    DialogPane parameterPane = (DialogPane)
+                            display.getSceneLoader().getScene("agisoft_optimize_cameras");
+
+                    OptimizeCamerasController controller = new OptimizeCamerasController();
+
+                    Dialog<String> dialog = new UMASDialog(parameterPane, "Optimize Camera Alignment", true, true);
+                    try {
+                        controller.init(parameterPane, display.getRootController().getDisplayController(), dialog);
+                    } catch (UMASException e) {
+                        throw new RuntimeException(e);
+                    }
+                    dialog.setResultConverter(controller::jsonCallback);
+                    Optional<String> json = dialog.showAndWait();
+                    dialog.hide();
+                    dialog.close();
+
+                    if (json.isPresent()){
+                        agisoftCaller.optimizeCameras(optimizeCameras, DirectoryUtils.figureAgisoftFilePath(this.flight),
+                                this.workflowType, retrieveManualChoice(json.orElse(null)));
+                    }
+                });
+            }
         });
     }
 
@@ -280,6 +301,32 @@ public class ProcessActionsPreparer {
 
     public HashMap<String, String> retrieveManualChoice(String json) {
         return gson.fromJson(json, GsonTypeTokens.hashmapToken);
+    }
+
+    public void setupModificationDialog(MouseEvent mouseEvent, EventHandler<ActionEvent> eventHandler){
+        final ContextMenu contextMenu = new ContextMenu();
+        final MenuItem separator = new SeparatorMenuItem();
+
+        final MenuItem modify = new MenuItem("Modify");
+        final MenuItem modifyBatch = new MenuItem("Modify Batch");
+        final MenuItem runBatch = new MenuItem("Run Batch");
+
+        modify.setOnAction(eventHandler);
+        contextMenu.getItems().add(modify);
+        contextMenu.getItems().add(modifyBatch);
+        contextMenu.getItems().add(separator);
+        contextMenu.getItems().add(runBatch);
+        contextMenu.show(getWorkflowPane().getScene().getWindow(), mouseEvent.getScreenX(), mouseEvent.getScreenY());
+    }
+
+    public HashMap<String, String> getDefaultParameters(AgisoftParameter[] agisoftParameters) {
+        HashMap<String, String> parameters = new HashMap<>();
+
+        for(AgisoftParameter parameter : agisoftParameters){
+            parameters.put(parameter.getId(), parameter.getChoices().get(parameter.getDefaultIndex()));
+        }
+
+        return parameters;
     }
 
 }

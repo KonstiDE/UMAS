@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ButtonType?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.DialogPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+
+<DialogPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="419.0" prefWidth="480.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1">
+    <content>
+      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="200.0" prefWidth="320.0">
+         <children>
+            <VBox layoutX="20.0" layoutY="20.0" prefHeight="388.0" prefWidth="460.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <GridPane alignment="CENTER">
+                    <columnConstraints>
+                      <ColumnConstraints hgrow="SOMETIMES" maxWidth="276.0" minWidth="10.0" prefWidth="276.0" />
+                      <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="219.0" minWidth="10.0" prefWidth="200.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                     <children>
+                        <Label text="General" />
+                        <Separator prefWidth="200.0" GridPane.rowIndex="1" />
+                        <Separator prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label text="Advanced" GridPane.rowIndex="8" />
+                        <Separator prefWidth="200.0" GridPane.rowIndex="9" />
+                        <Separator prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+                        <CheckBox id="agisoft.optimizecameras.fitf" mnemonicParsing="false" text="Fit f" GridPane.rowIndex="2" />
+                        <CheckBox id="agisoft.optimizecameras.fitk1" mnemonicParsing="false" text="Fit k1" GridPane.rowIndex="3" />
+                        <CheckBox id="agisoft.optimizecameras.fitk2" mnemonicParsing="false" text="Fit k2" GridPane.rowIndex="4" />
+                        <CheckBox id="agisoft.optimizecameras.fitk3" mnemonicParsing="false" text="Fit k3" GridPane.rowIndex="5" />
+                        <CheckBox id="agisoft.optimizecameras.fitk4" mnemonicParsing="false" text="Fit k4" GridPane.rowIndex="6" />
+                        <CheckBox id="agisoft.optimizecameras.fitcxcy" mnemonicParsing="false" text="Fit cx, cy" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <CheckBox id="agisoft.optimizecameras.fitp1" mnemonicParsing="false" text="Fit p1" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <CheckBox id="agisoft.optimizecameras.fitp2" mnemonicParsing="false" text="Fit p2" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <CheckBox id="agisoft.optimizecameras.fitb1" mnemonicParsing="false" text="Fit b1" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                        <CheckBox id="agisoft.optimizecameras.fitb2" mnemonicParsing="false" text="Fit b2" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+                        <CheckBox id="agisoft.optimizecameras.adaptivecameramodelfitting" mnemonicParsing="false" text="Adaptive camera model fitting" GridPane.rowIndex="10" />
+                        <CheckBox id="agisoft.optimizecameras.estimatetiepointcovariance" mnemonicParsing="false" text="Estimate tie point covariance" GridPane.rowIndex="11" />
+                        <CheckBox id="agisoft.optimizecameras.fitadditionalcorrections" mnemonicParsing="false" text="Fit additional corrections" GridPane.rowIndex="12" />
+                     </children>
+                  </GridPane>
+               </children>
+               <padding>
+                  <Insets left="12.0" />
+               </padding>
+            </VBox>
+         </children></AnchorPane>
+    </content>
+   <buttonTypes>
+      <ButtonType fx:constant="OK" />
+      <ButtonType fx:constant="CANCEL" />
+   </buttonTypes>
+</DialogPane>

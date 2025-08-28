@@ -169,12 +169,13 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.OPTIMIZE_CAMERAS_CHECK, stackPane, pb, true);
     }
 
-    public void optimizeCameras(StackPane stackPane, String psxFile, WorkflowType workflowType){
+    public void optimizeCameras(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "optimize_cameras.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
+        extendProcessBuilder(pb, agisoftParams);
 
         enqueue(workflowType, AgisoftTask.OPTIMIZE_CAMERAS, stackPane, pb, false);
         optimizeCamerasCheck(stackPane, psxFile, workflowType);

@@ -1,7 +1,5 @@
 package wue.eorc.umas;
 
-import javafx.event.EventHandler;
-import javafx.event.EventType;
 import javafx.geometry.Rectangle2D;
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -9,7 +7,6 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.RootController;
 import wue.eorc.umas.controller.customs.UMASDialog;
@@ -63,7 +60,7 @@ public class Main extends Application {
 
         /*primaryStage.getIcons().add(new Image(
                 Objects.requireNonNull(this.getClass().getResourceAsStream("icon.ac"))
-        )); */
+        ));*/
 
         primaryStage.setScene(scene);
         primaryStage.show();
