@@ -47,6 +47,4 @@ public enum OptimizeCameras implements AgisoftParameter {
         return defaultIndex;
     }
 
-
-
 }

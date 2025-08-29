@@ -17,12 +17,14 @@ import wue.eorc.umas.controller.customs.UMASDialog;
 import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
 import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.AlignImagesController;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
+import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.BuildPointCloudController;
 import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.OptimizeCamerasController;
 import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.SetBrightnessController;
 import wue.eorc.umas.controller.scenes.views.panes.ShowProcessingController;
 import wue.eorc.umas.enums.WorkflowType;
 import wue.eorc.umas.enums.agisoft.AgisoftParameter;
 import wue.eorc.umas.enums.agisoft.AlignImages;
+import wue.eorc.umas.enums.agisoft.BuildPointCloud;
 import wue.eorc.umas.enums.agisoft.OptimizeCameras;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.models.Flight;
@@ -167,7 +169,7 @@ public class ProcessActionsPreparer {
 
                     Dialog<String> dialog = new UMASDialog(parameterPane, "Align Images", true, true);
                     try {
-                        controller.init(parameterPane, display.getRootController().getDisplayController(), dialog);
+                        controller.init(parameterPane, display, dialog);
                     } catch (UMASException e) {
                         throw new RuntimeException(e);
                     }
@@ -204,7 +206,7 @@ public class ProcessActionsPreparer {
 
                     Dialog<String> dialog = new UMASDialog(parameterPane, "Optimize Camera Alignment", true, true);
                     try {
-                        controller.init(parameterPane, display.getRootController().getDisplayController(), dialog);
+                        controller.init(parameterPane, display, dialog);
                     } catch (UMASException e) {
                         throw new RuntimeException(e);
                     }
@@ -226,8 +228,35 @@ public class ProcessActionsPreparer {
         StackPane buildPointCloud = ItemSearcher.getItemById("processing." + BUILD_POINT_CLOUD, this.workflowPane, StackPane.class);
 
         buildPointCloud.setCursor(Cursor.HAND);
-        buildPointCloud.setOnMouseClicked(_ignored -> {
-            agisoftCaller.buildPointCloud(buildPointCloud, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
+        buildPointCloud.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY){
+                agisoftCaller.buildPointCloud(buildPointCloud, DirectoryUtils.figureAgisoftFilePath(this.flight),
+                        this.workflowType, getDefaultParameters(BuildPointCloud.values()));
+
+            }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
+                setupModificationDialog(mouseEvent, event -> {
+                    DialogPane parameterPane = (DialogPane)
+                            display.getSceneLoader().getScene("agisoft_build_point_cloud");
+
+                    BuildPointCloudController controller = new BuildPointCloudController();
+
+                    Dialog<String> dialog = new UMASDialog(parameterPane, "Build Dense (Point) Cloud", true, true);
+                    try {
+                        controller.init(parameterPane, display, dialog);
+                    } catch (UMASException e) {
+                        throw new RuntimeException(e);
+                    }
+                    dialog.setResultConverter(controller::jsonCallback);
+                    Optional<String> json = dialog.showAndWait();
+                    dialog.hide();
+                    dialog.close();
+
+                    if (json.isPresent()){
+                        agisoftCaller.buildPointCloud(buildPointCloud, DirectoryUtils.figureAgisoftFilePath(this.flight),
+                                this.workflowType, retrieveManualChoice(json.orElse(null)));
+                    }
+                });
+            }
         });
     }
 
@@ -235,8 +264,12 @@ public class ProcessActionsPreparer {
         StackPane buildDem = ItemSearcher.getItemById("processing." + BUILD_DEM, this.workflowPane, StackPane.class);
 
         buildDem.setCursor(Cursor.HAND);
-        buildDem.setOnMouseClicked(_ignored -> {
-            agisoftCaller.buildDem(buildDem, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
+        buildDem.setOnMouseClicked(mouseEvent -> {
+            if(mouseEvent.getButton() == MouseButton.PRIMARY){
+                agisoftCaller.buildDem(buildDem, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
+            }else{
+
+            }
         });
     }
 

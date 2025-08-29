@@ -18,6 +18,12 @@ def align_photos(file, chunk_lab,
                  guided_image_matching,
                  adaptive_camera_model_fitting):
 
+    # Highest = 0
+    # High = 1
+    # Medium = 2
+    # Low = 4
+    # Lowest = 8
+
     if accuracy == "Highest":
         downscale = 0
     elif accuracy == "High":
@@ -25,9 +31,9 @@ def align_photos(file, chunk_lab,
     elif accuracy == "Medium":
         downscale = 2
     elif accuracy == "Low":
-        downscale = 3
-    elif accuracy == "Lowest":
         downscale = 4
+    elif accuracy == "Lowest":
+        downscale = 8
     else:
         downscale = 0
 
@@ -51,11 +57,10 @@ def align_photos(file, chunk_lab,
     else:
         for frame in chunk.frames:
             frame.matchPhotos(
-                downscale=downscale, # default 0=highest, 1=high, 2=medium, 3=low, 4=lowest
+                downscale=downscale,
                 generic_preselection=bool(generic_preselection),
                 reference_preselection=bool(reference_preselection),
                 reference_preselection_mode=reference_preselection_mode,
-                # options: ReferencePreselectionSource, ReferencePreselectionEstimated, ReferencePreselectionSequential
                 filter_mask=False,
                 mask_tiepoints=True,
                 filter_stationary_points=bool(exclude_stationary_tie_points),

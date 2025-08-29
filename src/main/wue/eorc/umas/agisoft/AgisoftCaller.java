@@ -191,12 +191,13 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.BUILD_POINT_CLOUD_CHECK, stackPane, pb, true);
     }
 
-    public void buildPointCloud(StackPane stackPane, String psxFile, WorkflowType workflowType){
+    public void buildPointCloud(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "build_point_cloud.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
+        extendProcessBuilder(pb, agisoftParams);
 
         enqueue(workflowType, AgisoftTask.BUILD_POINT_CLOUD, stackPane, pb, false);
         buildPointCloudCheck(stackPane, psxFile, workflowType);
