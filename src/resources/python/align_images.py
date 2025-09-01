@@ -3,7 +3,7 @@ import sys
 
 import Metashape as ms
 
-from utils import get_arg, report_progress, get_chunk
+from utils import get_arg, report_progress, get_chunk, rb
 
 
 def align_photos(file, chunk_lab,
@@ -58,19 +58,19 @@ def align_photos(file, chunk_lab,
         for frame in chunk.frames:
             frame.matchPhotos(
                 downscale=downscale,
-                generic_preselection=bool(generic_preselection),
-                reference_preselection=bool(reference_preselection),
+                generic_preselection=rb(generic_preselection),
+                reference_preselection=rb(reference_preselection),
                 reference_preselection_mode=reference_preselection_mode,
                 filter_mask=False,
                 mask_tiepoints=True,
-                filter_stationary_points=bool(exclude_stationary_tie_points),
+                filter_stationary_points=rb(exclude_stationary_tie_points),
                 keypoint_limit=float(key_point_limit),
                 keypoint_limit_per_mpx=float(key_point_limit_per_mpx),
                 tiepoint_limit=float(tie_point_limit),
                 keep_keypoints=False,
                 # [, pairs]
                 # [,cameras],
-                guided_matching=bool(guided_image_matching),
+                guided_matching=rb(guided_image_matching),
                 reset_matches=True,
                 subdivide_task=True,
                 workitem_size_cameras=20,
@@ -82,7 +82,7 @@ def align_photos(file, chunk_lab,
             chunk.alignCameras(
                 # [cameras][, point_clouds],
                 min_image=2,
-                adaptive_fitting=bool(adaptive_camera_model_fitting),
+                adaptive_fitting=rb(adaptive_camera_model_fitting),
                 reset_alignment=False,
                 subdivide_task=True,
                 progress=report_progress

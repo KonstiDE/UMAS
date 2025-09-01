@@ -4,7 +4,7 @@ import sys
 import Metashape
 import Metashape as ms
 
-from utils import get_arg, report_progress, get_chunk
+from utils import get_arg, report_progress, get_chunk, rb
 
 
 def build_point_cloud(file, chunk_lab, quality, depthFiltering, reuseDepthMaps,
@@ -54,7 +54,7 @@ def build_point_cloud(file, chunk_lab, quality, depthFiltering, reuseDepthMaps,
             downscale=quality_mode,
             filter_mode=filter_mode,
             # [, cameras],
-            reuse_depth=bool(reuseDepthMaps),
+            reuse_depth=rb(reuseDepthMaps),
             max_neighbors=16,
             subdivide_task=True,
             workitem_size_cameras=20,
@@ -63,8 +63,8 @@ def build_point_cloud(file, chunk_lab, quality, depthFiltering, reuseDepthMaps,
         )
 
         chunk.buildDenseCloud(
-            point_colors=bool(calculatePointColors),
-            point_confidence=bool(calculatePointConfidence),
+            point_colors=rb(calculatePointColors),
+            point_confidence=rb(calculatePointConfidence),
             keep_depth=True,
             max_neighbors=100,
             subdivide_task=True,

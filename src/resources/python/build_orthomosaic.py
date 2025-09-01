@@ -4,7 +4,7 @@ import sys
 import Metashape
 import Metashape as ms
 
-from utils import get_arg, report_progress, get_chunk
+from utils import get_arg, report_progress, get_chunk, rb
 
 
 def build_ortho(file, chunk_lab, surface, blending_mode, refine_seamlines, enable_hole_filling,
@@ -38,10 +38,10 @@ def build_ortho(file, chunk_lab, surface, blending_mode, refine_seamlines, enabl
             chunk.buildOrthomosaic(
                 surface_data=surface_mode,
                 blending_mode=blending, # options: AverageBlending, MosaicBlending, (MinBlending, MaxBlending,) DisabledBlending,
-                fill_holes=bool(enable_hole_filling),
-                ghosting_filter=bool(enable_ghosting_filter),
-                cull_faces=bool(enable_backface_culling),
-                refine_seamlines=bool(refine_seamlines),
+                fill_holes=rb(enable_hole_filling),
+                ghosting_filter=rb(enable_ghosting_filter),
+                cull_faces=rb(enable_backface_culling),
+                refine_seamlines=rb(refine_seamlines),
                 # [, projection ]
                 # [, region],
                 resolution=0,

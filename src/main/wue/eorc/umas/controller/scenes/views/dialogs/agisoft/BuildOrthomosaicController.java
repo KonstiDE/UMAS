@@ -5,16 +5,21 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
+import wue.eorc.umas.controller.customs.UMASDialog;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
+import wue.eorc.umas.controller.scenes.views.dialogs.CoordinateSelector;
 import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
+import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.agisoft.BuildDem;
 import wue.eorc.umas.enums.agisoft.BuildOrthomosaic;
 import wue.eorc.umas.exception.UMASException;
+import wue.eorc.umas.models.CoordinateSystem;
 import wue.eorc.umas.utils.AgisoftParamInitiator;
 import wue.eorc.umas.utils.GsonTypeTokens;
 import wue.eorc.umas.utils.ItemSearcher;
 
 import java.util.HashMap;
+import java.util.Optional;
 
 public class BuildOrthomosaicController implements StaticDialogController {
 
@@ -38,7 +43,29 @@ public class BuildOrthomosaicController implements StaticDialogController {
         AgisoftParamInitiator.initLabel(epsgLabel, BuildDem.COORDINATE_SYSTEM);
 
         epsgSelect = ItemSearcher.getItemById(prefix + "epsgselect", pane, Button.class);
+        epsgSelect.setOnAction(ae -> {
+            DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene("coordinate_system_select");
+            Dialog<String> coordinateDialog = new UMASDialog(dialogPane, "Select coordinate system", true, true);
+            CoordinateSelector controller = new CoordinateSelector();
 
+            try {
+                controller.init(dialogPane, display, coordinateDialog);
+            } catch (UMASException e) {
+                UMASException.throwWindow(ErrorType.INTERNAL, "Could not setup coordinate dialog. The system " +
+                        "will fallback to EPSG:4326.");
+            }
+            coordinateDialog.setResultConverter(controller::jsonCallback);
+
+            Optional<String> result = coordinateDialog.showAndWait();
+            coordinateDialog.hide();
+            coordinateDialog.close();
+
+            if (result.isPresent()){
+                CoordinateSystem coordinateSystem = CoordinateSelector.fromString(controller.toString());
+
+                epsgLabel.setText(coordinateSystem.id());
+            }
+        });
 
         surface = ItemSearcher.getGenericControlById(prefix + "surface", pane, ComboBox.class, String.class);
         AgisoftParamInitiator.initComboBox(surface, BuildOrthomosaic.SURFACE);

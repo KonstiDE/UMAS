@@ -332,11 +332,40 @@ public class ProcessActionsPreparer {
         StackPane exportDem = ItemSearcher.getItemById("processing." + EXPORT_DEM, this.workflowPane, StackPane.class);
 
         exportDem.setCursor(Cursor.HAND);
-        exportDem.setOnMouseClicked(_ignored -> {
-            agisoftCaller.exportDem(exportDem, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
-                    DirectoryUtils.figureExportPath(this.flight),
-                    this.flight.getExportDemName()
-            ).toFile().getAbsolutePath(), this.workflowType);
+        exportDem.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+                agisoftCaller.exportDem(exportDem, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
+                        DirectoryUtils.figureExportPath(this.flight),
+                        this.flight.getExportDemName()
+                ).toFile().getAbsolutePath(), this.workflowType, getDefaultParameters(ExportDem.values()));
+
+            } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                setupModificationDialog(mouseEvent, event -> {
+                    DialogPane parameterPane = (DialogPane)
+                            display.getSceneLoader().getScene("agisoft_export_dem");
+
+                    ExportDemController controller = new ExportDemController();
+
+                    Dialog<String> dialog = new UMASDialog(parameterPane, "Export DEM - TIFF", true, true);
+                    try {
+                        controller.init(parameterPane, display, dialog);
+                    } catch (UMASException e) {
+                        throw new RuntimeException(e);
+                    }
+                    dialog.setResultConverter(controller::jsonCallback);
+
+                    Optional<String> json = dialog.showAndWait();
+                    dialog.hide();
+                    dialog.close();
+
+                    if (json.isPresent()){
+                        agisoftCaller.exportDem(exportDem, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
+                                DirectoryUtils.figureExportPath(this.flight),
+                                this.flight.getExportDemName()
+                        ).toFile().getAbsolutePath(), this.workflowType, retrieveManualChoice(json.orElse(null)));
+                    }
+                });
+            }
         });
     }
 
@@ -344,11 +373,41 @@ public class ProcessActionsPreparer {
         StackPane exportOrtho = ItemSearcher.getItemById("processing." + EXPORT_ORTHOMOSAIC, this.workflowPane, StackPane.class);
 
         exportOrtho.setCursor(Cursor.HAND);
-        exportOrtho.setOnMouseClicked(_ignored -> {
-            agisoftCaller.exportOrtho(exportOrtho, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
-                    DirectoryUtils.figureExportPath(this.flight),
-                    this.flight.getExportOrthomosaicName()
-            ).toFile().getAbsolutePath(), this.workflowType);
+        exportOrtho.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY) {
+
+                agisoftCaller.exportOrtho(exportOrtho, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
+                        DirectoryUtils.figureExportPath(this.flight),
+                        this.flight.getExportOrthomosaicName()
+                ).toFile().getAbsolutePath(), this.workflowType, getDefaultParameters(ExportOrthomosaic.values()));
+
+            } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                setupModificationDialog(mouseEvent, event -> {
+                    DialogPane parameterPane = (DialogPane)
+                            display.getSceneLoader().getScene("agisoft_export_orthomosaic");
+
+                    ExportOrthomosaicController controller = new ExportOrthomosaicController();
+
+                    Dialog<String> dialog = new UMASDialog(parameterPane, "Export Orthomosaic - TIFF", true, true);
+                    try {
+                        controller.init(parameterPane, display, dialog);
+                    } catch (UMASException e) {
+                        throw new RuntimeException(e);
+                    }
+                    dialog.setResultConverter(controller::jsonCallback);
+
+                    Optional<String> json = dialog.showAndWait();
+                    dialog.hide();
+                    dialog.close();
+
+                    if (json.isPresent()){
+                        agisoftCaller.exportOrtho(exportOrtho, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
+                                DirectoryUtils.figureExportPath(this.flight),
+                                this.flight.getExportDemName()
+                        ).toFile().getAbsolutePath(), this.workflowType, retrieveManualChoice(json.orElse(null)));
+                    }
+                });
+            }
         });
     }
 

@@ -4,27 +4,40 @@ import sys
 import Metashape
 import Metashape as ms
 
-from utils import get_arg, report_progress, get_chunk
+from utils import get_arg, report_progress, get_chunk, rb
 
 
-def export_dem(psx_file, dem_file, chunk_lab):
+def export_dem(psx_file, dem_file, chunk_lab, coordinate_system, raster_transform, no_data_value, write_kml,
+               write_world_file, write_tile_scheme, image_description, write_tiled_tiff, generate_tiff_overviews,
+               write_big_tiff_file):
+
     doc = ms.Document()
 
     doc.open(path=psx_file, read_only=False, ignore_lock=True)
 
     chunk = get_chunk(doc.chunks, chunk_lab)
 
+    if raster_transform == "None":
+        raster_transform_mode = ms.RasterTransformNone
+    elif raster_transform == "Palette":
+        raster_transform_mode = ms.RasterTransformPalette
+    else:
+        raster_transform_mode = ms.RasterTransformNone
+
     if chunk is not None:
         if os.path.exists(dem_file):
             print("vd: This DEM file already exists!")
         else:
+            projection = Metashape.OrthoProjection()
+            projection.crs = ms.CoordinateSystem(coordinate_system)
+
             if chunk.elevation is not None:
                 chunk.exportRaster(
                     path=dem_file,
                     format=Metashape.RasterFormatTiles,
                     image_format=Metashape.ImageFormatNone,
-                    raster_transform=Metashape.RasterTransformNone,
-                    # [, projection ]
+                    raster_transform=raster_transform_mode,
+                    projection=projection,
                     # [, region ],
                     resolution=0,
                     resolution_x=0,
@@ -35,12 +48,12 @@ def export_dem(psx_file, dem_file, chunk_lab):
                     width=0,
                     height=0,
                     # [, world_transform ],
-                    nodata_value=-32767,
-                    save_kml=False,
-                    save_world=False,
-                    save_scheme=False,
+                    nodata_value=no_data_value,
+                    save_kml=rb(write_kml),
+                    save_world=rb(write_world_file),
+                    save_scheme=rb(write_tile_scheme),
                     save_alpha=False,  # changed to False
-                    image_description='',
+                    image_description=image_description,
                     # [, image_compression ],
                     network_links=True,
                     global_profile=False,
@@ -79,4 +92,17 @@ if __name__ == '__main__':
     target_file = get_arg(args, "-demFile")
     chunk_label = get_arg(args, "-chunk_label")
 
-    export_dem(project_file, target_file, chunk_label)
+    coordinate_system = get_arg(args, "-coordinatesystem")
+    raster_transform = get_arg(args, "-rastertransform")
+    no_data_value = get_arg(args, "-nodatavalue")
+    write_kml = get_arg(args, "-writekml")
+    write_world_file = get_arg(args, "-writeworldfile")
+    write_tile_scheme = get_arg(args, "-writetilescheme")
+    image_description = get_arg(args, "-imagedescription")
+    write_tiled_tiff = get_arg(args, "-writetiledtiff")
+    generate_tiff_overviews = get_arg(args, "-generatetiffoverviews")
+    write_big_tiff_file = get_arg(args, "-writebigtifffile")
+
+    export_dem(project_file, target_file, chunk_label, coordinate_system, raster_transform, no_data_value, write_kml,
+               write_world_file, write_tile_scheme, image_description, write_tiled_tiff, generate_tiff_overviews,
+               write_big_tiff_file)

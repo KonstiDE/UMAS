@@ -258,13 +258,14 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.EXPORT_DEM_CHECK, stackPane, pb, true);
 
     }
-    public void exportDem(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType){
+    public void exportDem(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType, HashMap<String, String> agisoftParams){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "export_dem.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-demFile", targetFile,
                 "-chunk_label", chunkLabel(workflowType));
+        extendProcessBuilder(pb, agisoftParams);
 
         enqueue(workflowType, AgisoftTask.EXPORT_DEM, stackPane, pb, false);
         exportDemCheck(stackPane, psxFile, targetFile, workflowType);
@@ -281,13 +282,14 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.EXPORT_ORTHOMOSAIC_CHECK, stackPane, pb, true);
 
     }
-    public void exportOrtho(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType){
+    public void exportOrtho(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType, HashMap<String, String> agisoftParams){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "export_orthomosaic.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-orthoFile", targetFile,
                 "-chunk_label", chunkLabel(workflowType));
+        extendProcessBuilder(pb, agisoftParams);
 
         enqueue(workflowType, AgisoftTask.EXPORT_ORTHOMOSAIC, stackPane, pb, false);
         exportOrthoCheck(stackPane, psxFile, targetFile, workflowType);

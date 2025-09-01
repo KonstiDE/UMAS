@@ -8,5 +8,8 @@ def get_chunk(cs, l):
 
     return None
 
+def rb(s):
+    return "True" in s
+
 def report_progress(f):
     print("vp: {}".format(str(f)))

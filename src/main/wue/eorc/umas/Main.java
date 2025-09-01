@@ -11,6 +11,7 @@ import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.RootController;
 import wue.eorc.umas.controller.customs.UMASDialog;
 import wue.eorc.umas.controller.scenes.views.dialogs.ClosingController;
+import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.ExportOrthomosaicController;
 import wue.eorc.umas.enums.Setting;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.ProjectCache;
@@ -65,17 +66,17 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-//        DialogPane dialogPane1 = (DialogPane) loader.getScene("coordinate_system_select");
-//        CoordinateSelector coordinateSelector = new CoordinateSelector();
-//
-//        UMASDialog dialog = new UMASDialog(dialogPane1, "Select a coordinate system", true, true);
-//        dialog.setResultConverter(coordinateSelector::jsonCallback);
-//
-//        coordinateSelector.init(dialogPane1, rootController.getDisplayController(), dialog);
-//
-//        Optional<String> close1 = dialog.showAndWait();
-//        dialog.hide();
-//        dialog.close();
+        /*DialogPane dialogPane1 = (DialogPane) loader.getScene("agisoft_export_orthomosaic");
+        ExportOrthomosaicController coordinateSelector = new ExportOrthomosaicController();
+
+        UMASDialog dialog = new UMASDialog(dialogPane1, "Export Orthomosaic", true, true);
+        dialog.setResultConverter(coordinateSelector::jsonCallback);
+
+        coordinateSelector.init(dialogPane1, rootController.getDisplayController(), dialog);
+
+        Optional<String> close1 = dialog.showAndWait();
+        dialog.hide();
+        dialog.close();*/
 
         primaryStage.setOnCloseRequest(windowEvent -> {
             if (AgisoftCaller.isRunning){
