@@ -19,19 +19,19 @@ def export_orthomosaic(psx_file, ortho_file, chunk_lab, coordinate_system, backg
     chunk = get_chunk(doc.chunks, chunk_lab)
 
     compression = Metashape.ImageCompression()
-    compression.tiled_tiff = rb(write_tiled_tiff)
+    compression.tiff_tiled = rb(write_tiled_tiff)
     compression.tiff_overviews = rb(generate_tiff_overviews)
 
     if tiff_compression == "LZW":
-        compression.tiff_compression = ms.TiffCompressionLZW
+        compression.tiff_compression = ms.ImageCompression.TiffCompressionLZW
     elif tiff_compression == "JPEG":
-        compression.tiff_compression = ms.TiffCompressionJPEG
+        compression.tiff_compression = ms.ImageCompression.TiffCompressionJPEG
     elif tiff_compression == "Packbits":
-        compression.tiff_compression = ms.TiffCompressionPackbits
+        compression.tiff_compression = ms.ImageCompression.TiffCompressionPackbits
     elif tiff_compression == "Deflate":
-        compression.tiff_compression = ms.TiffCompressionDeflate
+        compression.tiff_compression = ms.ImageCompression.TiffCompressionDeflate
     else:
-        compression.tiff_compression = ms.TiffCompressionLZW
+        compression.tiff_compression = ms.ImageCompression.TiffCompressionLZW
 
     compression.jpeg_quality = int(jpeg_quality)
 
@@ -44,7 +44,7 @@ def export_orthomosaic(psx_file, ortho_file, chunk_lab, coordinate_system, backg
     if chunk is not None:
         if os.path.exists(ortho_file):
             print("vd: This ORTHOMOSAIC file already exists!")
-            del doc
+
         else:
             projection = Metashape.OrthoProjection()
             projection.crs = ms.CoordinateSystem(coordinate_system)
@@ -125,4 +125,5 @@ if __name__ == '__main__':
 
     export_orthomosaic(project_file, target_file, chunk_label, coordinate_system, background_color, write_kml,
                        write_world_file, write_tile_scheme, image_description, write_tiled_tiff,
-                       generate_tiff_overviews, write_big_tiff_file, save_alpha_channel)
+                       generate_tiff_overviews, write_big_tiff_file, save_alpha_channel, tiff_compression,
+                       jpeg_quality)

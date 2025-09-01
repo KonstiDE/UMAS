@@ -1,5 +1,7 @@
 package wue.eorc.umas.enums;
 
+import wue.eorc.umas.enums.agisoft.AgisoftTask;
+
 import java.util.*;
 
 public enum WorkflowType {
@@ -53,6 +55,16 @@ public enum WorkflowType {
             }
         }
         return workflowTypes;
+    }
+
+    public static List<AgisoftTask> getAgisoftTasksForWorkflowType(WorkflowType workflowType){
+        if (workflowType == RGB){
+            return List.of(AgisoftTask.ADD_PHOTOS, AgisoftTask.SET_BRIGHTNESS, AgisoftTask.ALIGN_IMAGES,
+                    AgisoftTask.OPTIMIZE_CAMERAS, AgisoftTask.BUILD_POINT_CLOUD, AgisoftTask.BUILD_DEM,
+                    AgisoftTask.BUILD_ORTHOMOSAIC, AgisoftTask.EXPORT_DEM, AgisoftTask.EXPORT_ORTHOMOSAIC,
+                    AgisoftTask.GENERATE_REPORT);
+        }
+        return null;
     }
 
 }

@@ -105,12 +105,17 @@ public class ProcessActionsPreparer {
         StackPane addPhotos = ItemSearcher.getItemById("processing." + ADD_PHOTOS, this.workflowPane, StackPane.class);
 
         addPhotos.setCursor(Cursor.HAND);
-        addPhotos.setOnMouseClicked(_ignored -> {
-            agisoftCaller.addPhotos(addPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                    this.flight.getImageTypes().keySet().stream()
-                            .filter(i -> this.workflowType.getImageTypes().contains(i))
-                            .map(i -> this.flight.getImageTypes().get(i)).toList(),
-                    this.workflowType);
+        addPhotos.setOnMouseClicked(mouseEvent -> {
+            if(mouseEvent.getButton() == MouseButton.PRIMARY){
+                agisoftCaller.addPhotos(addPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
+                        this.flight.getImageTypes().keySet().stream()
+                                .filter(i -> this.workflowType.getImageTypes().contains(i))
+                                .map(i -> this.flight.getImageTypes().get(i)).toList(),
+                        this.workflowType);
+
+            }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
+
+            }
         });
 
     }
@@ -403,7 +408,7 @@ public class ProcessActionsPreparer {
                     if (json.isPresent()){
                         agisoftCaller.exportOrtho(exportOrtho, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
                                 DirectoryUtils.figureExportPath(this.flight),
-                                this.flight.getExportDemName()
+                                this.flight.getExportOrthomosaicName()
                         ).toFile().getAbsolutePath(), this.workflowType, retrieveManualChoice(json.orElse(null)));
                     }
                 });
@@ -450,12 +455,22 @@ public class ProcessActionsPreparer {
         final MenuItem runBatch = new MenuItem("Run Batch");
 
         modify.setOnAction(eventHandler);
+        modifyBatch.setOnAction(handleModifyBatch);
+
         contextMenu.getItems().add(modify);
         contextMenu.getItems().add(modifyBatch);
         contextMenu.getItems().add(separator);
         contextMenu.getItems().add(runBatch);
         contextMenu.show(getWorkflowPane().getScene().getWindow(), mouseEvent.getScreenX(), mouseEvent.getScreenY());
     }
+
+    public EventHandler<ActionEvent> handleModifyBatch = new EventHandler<ActionEvent>() {
+        @Override
+        public void handle(ActionEvent actionEvent) {
+
+        }
+    };
+
 
     public HashMap<String, String> getDefaultParameters(AgisoftParameter[] agisoftParameters) {
         HashMap<String, String> parameters = new HashMap<>();
