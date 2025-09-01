@@ -235,12 +235,13 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.BUILD_ORTHOMOSAIC_CHECK, stackPane, pb, true);
     }
 
-    public void buildOrthomosaic(StackPane stackPane, String psxFile, WorkflowType workflowType){
+    public void buildOrthomosaic(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "build_orthomosaic.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
+        extendProcessBuilder(pb, agisoftParams);
 
         enqueue(workflowType, AgisoftTask.BUILD_ORTHOMOSAIC, stackPane, pb, false);
         buildOrthomosaicCheck(stackPane, psxFile, workflowType);

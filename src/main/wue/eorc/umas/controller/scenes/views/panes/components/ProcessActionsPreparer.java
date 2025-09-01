@@ -295,8 +295,36 @@ public class ProcessActionsPreparer {
         StackPane buildOrthomosaic = ItemSearcher.getItemById("processing." + BUILD_ORTHOMOSAIC, this.workflowPane, StackPane.class);
 
         buildOrthomosaic.setCursor(Cursor.HAND);
-        buildOrthomosaic.setOnMouseClicked(_ignored -> {
-            agisoftCaller.buildOrthomosaic(buildOrthomosaic, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
+        buildOrthomosaic.setOnMouseClicked(mouseEvent -> {
+            if(mouseEvent.getButton() == MouseButton.PRIMARY){
+                agisoftCaller.buildOrthomosaic(buildOrthomosaic, DirectoryUtils.figureAgisoftFilePath(this.flight),
+                        this.workflowType, getDefaultParameters(BuildOrthomosaic.values()));
+
+            }else{
+                setupModificationDialog(mouseEvent, event -> {
+                    DialogPane parameterPane = (DialogPane)
+                            display.getSceneLoader().getScene("agisoft_build_orthomosaic");
+
+                    BuildOrthomosaicController controller = new BuildOrthomosaicController();
+
+                    Dialog<String> dialog = new UMASDialog(parameterPane, "Build Orthomosaic", true, true);
+                    try {
+                        controller.init(parameterPane, display, dialog);
+                    } catch (UMASException e) {
+                        throw new RuntimeException(e);
+                    }
+                    dialog.setResultConverter(controller::jsonCallback);
+
+                    Optional<String> json = dialog.showAndWait();
+                    dialog.hide();
+                    dialog.close();
+
+                    if (json.isPresent()){
+                        agisoftCaller.buildOrthomosaic(buildOrthomosaic, DirectoryUtils.figureAgisoftFilePath(this.flight),
+                                this.workflowType, retrieveManualChoice(json.orElse(null)));
+                    }
+                });
+            }
         });
     }
 

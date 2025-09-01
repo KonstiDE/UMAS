@@ -31,8 +31,8 @@ public class BuildDemController implements StaticDialogController {
 
     @Override
     public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
-        String prefix = "agisoft.builddem."
-;
+        String prefix = "agisoft.builddem.";
+
         epsgLabel = ItemSearcher.getItemById(prefix + "epsglabel", pane, Label.class);
         AgisoftParamInitiator.initLabel(epsgLabel, BuildDem.COORDINATE_SYSTEM);
 

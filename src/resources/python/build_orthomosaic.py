@@ -7,24 +7,41 @@ import Metashape as ms
 from utils import get_arg, report_progress, get_chunk
 
 
-def build_ortho(file, chunk_lab):
+def build_ortho(file, chunk_lab, surface, blending_mode, refine_seamlines, enable_hole_filling,
+                enable_ghosting_filter, enable_backface_culling):
+
     doc = ms.Document()
 
     doc.open(path=file, read_only=False, ignore_lock=True)
 
     chunk = get_chunk(doc.chunks, chunk_lab)
 
+    if surface == "DEM":
+        surface_mode = ms.ElevationData
+    else:
+        surface_mode = ms.ElevationData
+
+    if belnding_mode == "Mosaic (default)":
+        blending = ms.MosaicBlending
+    elif blending_mode == "Average":
+        blending = ms.AverageBlending
+    elif blending_mode == "Diabled":
+        blending = ms.DisabledBlending
+    else:
+        blending = ms.MosaicBlending
+
+
     if chunk is not None:
         if chunk.orthomosaic is not None:
             print(f"vd: Chunk {chunk_lab} already has a orthomosaic!")
         else:
             chunk.buildOrthomosaic(
-                surface_data=Metashape.ElevationData,
-                blending_mode=Metashape.MosaicBlending, # options: AverageBlending, MosaciBlending, MinBlending, MaxBlending, DisabledBlending,
-                fill_holes=True,
-                ghosting_filter=False,
-                cull_faces=False,
-                refine_seamlines=False,
+                surface_data=surface_mode,
+                blending_mode=blending, # options: AverageBlending, MosaicBlending, (MinBlending, MaxBlending,) DisabledBlending,
+                fill_holes=bool(enable_hole_filling),
+                ghosting_filter=bool(enable_ghosting_filter),
+                cull_faces=bool(enable_backface_culling),
+                refine_seamlines=bool(refine_seamlines),
                 # [, projection ]
                 # [, region],
                 resolution=0,
@@ -56,4 +73,13 @@ if __name__ == '__main__':
     project_file = get_arg(args, "-psxFile")
     chunk_label = get_arg(args, "-chunk_label")
 
-    build_ortho(project_file, chunk_label)
+    surface = get_arg(args, "-surface")
+    belnding_mode = get_arg(args, "-blendingmode")
+
+    refine_seamlines = get_arg(args, "-refineseamlines")
+    enable_hole_filling = get_arg(args, "-enableholefilling")
+    enable_ghosting_filter = get_arg(args, "-enableghostingfilter")
+    enable_backface_culling = get_arg(args, "-enablebackfaceculling")
+
+    build_ortho(project_file, chunk_label, surface, belnding_mode, refine_seamlines, enable_hole_filling,
+                enable_ghosting_filter, enable_backface_culling)

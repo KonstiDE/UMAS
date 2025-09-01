@@ -1,6 +1,5 @@
 package wue.eorc.umas.enums.agisoft;
 
-import java.util.HashMap;
 import java.util.List;
 
 public enum AlignImages implements AgisoftParameter {

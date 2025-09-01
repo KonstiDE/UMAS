@@ -79,11 +79,11 @@
                                 <Label text="Blending mode" GridPane.rowIndex="8" />
                         <Label text="Coordinate System" GridPane.rowIndex="3" />
                         <ComboBox id="agisoft.buildorthomosaic.surface" prefWidth="200.0" promptText="DEM" GridPane.columnIndex="1" GridPane.rowIndex="7" />
-                        <ComboBox id="agisoft.builddem.quality" prefWidth="200.0" promptText="Mosaic (default)" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+                        <ComboBox id="agisoft.buildorthomosaic.blendingmode" prefWidth="200.0" promptText="Mosaic (default)" GridPane.columnIndex="1" GridPane.rowIndex="8" />
                         <CheckBox id="agisoft.buildorthomosaic.refineseamlines" mnemonicParsing="false" text="Refine seamlines" GridPane.rowIndex="9" />
                         <CheckBox id="agisoft.buildorthomosaic.enableholefilling" mnemonicParsing="false" text="Enable hole filling" GridPane.rowIndex="10" />
                         <CheckBox id="agisoft.buildorthomosaic.enableghostingfilter" mnemonicParsing="false" text="Enable ghosting filter" GridPane.rowIndex="11" />
-                        <CheckBox id="agisoft.buildorthomosaic.enablebackfaceculling" mnemonicParsing="false" text="Enable back-face culling" GridPane.rowIndex="12" />
+                        <CheckBox id="agisoft.buildorthomosaic.enablebackfaceculling" disable="true" mnemonicParsing="false" text="Enable back-face culling" GridPane.rowIndex="12" />
                             </children>
                         </GridPane>
                     </children>

@@ -11,7 +11,6 @@ import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.RootController;
 import wue.eorc.umas.controller.customs.UMASDialog;
 import wue.eorc.umas.controller.scenes.views.dialogs.ClosingController;
-import wue.eorc.umas.controller.scenes.views.dialogs.CoordinateSelector;
 import wue.eorc.umas.enums.Setting;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.ProjectCache;
