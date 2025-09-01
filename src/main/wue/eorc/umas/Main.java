@@ -63,20 +63,20 @@ public class Main extends Application {
                 Objects.requireNonNull(this.getClass().getResourceAsStream("icon.ac"))
         ));*/
 
-        //primaryStage.setScene(scene);
-        //primaryStage.show();
+        primaryStage.setScene(scene);
+        primaryStage.show();
 
-        DialogPane dialogPane1 = (DialogPane) loader.getScene("coordinate_system_select");
-        CoordinateSelector coordinateSelector = new CoordinateSelector();
-
-        UMASDialog dialog = new UMASDialog(dialogPane1, "Select a coordinate system", true, true);
-        dialog.setResultConverter(coordinateSelector::jsonCallback);
-
-        coordinateSelector.init(dialogPane1, rootController.getDisplayController(), dialog);
-
-        Optional<String> close1 = dialog.showAndWait();
-        dialog.hide();
-        dialog.close();
+//        DialogPane dialogPane1 = (DialogPane) loader.getScene("coordinate_system_select");
+//        CoordinateSelector coordinateSelector = new CoordinateSelector();
+//
+//        UMASDialog dialog = new UMASDialog(dialogPane1, "Select a coordinate system", true, true);
+//        dialog.setResultConverter(coordinateSelector::jsonCallback);
+//
+//        coordinateSelector.init(dialogPane1, rootController.getDisplayController(), dialog);
+//
+//        Optional<String> close1 = dialog.showAndWait();
+//        dialog.hide();
+//        dialog.close();
 
         primaryStage.setOnCloseRequest(windowEvent -> {
             if (AgisoftCaller.isRunning){

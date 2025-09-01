@@ -2,6 +2,7 @@ package wue.eorc.umas.utils;
 
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import wue.eorc.umas.enums.agisoft.AgisoftParameter;
 
@@ -18,6 +19,10 @@ public class AgisoftParamInitiator {
 
     public static void initTextField(TextField textField, AgisoftParameter parameter){
         textField.setText(parameter.getDefaultIndex() + "");
+    }
+
+    public static void initLabel(Label label, AgisoftParameter agisoftParameter){
+        label.setText(agisoftParameter.getChoices().get(agisoftParameter.getDefaultIndex()));
     }
 
 }

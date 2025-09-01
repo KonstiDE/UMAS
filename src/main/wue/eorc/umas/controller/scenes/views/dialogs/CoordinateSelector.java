@@ -25,6 +25,8 @@ public class CoordinateSelector implements StaticDialogController {
 
     private final List<CoordinateSystem> library = new ArrayList<>();
 
+    private CoordinateSystem selectedSystem;
+
     @Override
     public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
         table = ItemSearcher.getGenericControlById("table", pane, TableView.class, CoordinateSystem.class);
@@ -45,7 +47,7 @@ public class CoordinateSelector implements StaticDialogController {
                     String dataSource = record.get(4);
                     String notes = record.get(5);
 
-                    CoordinateSystem system = new CoordinateSystem(name, dataSource + ":" + code, notes);
+                    CoordinateSystem system = new CoordinateSystem(name, dataSource + "::" + code, notes);
                     table.getItems().add(system);
                     library.add(system);
                 }
@@ -63,6 +65,18 @@ public class CoordinateSelector implements StaticDialogController {
             table.getItems().addAll(filtered);
         });
 
+
+        table.setRowFactory( tv -> {
+            TableRow<CoordinateSystem> row = new TableRow<>();
+            row.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && (! row.isEmpty()) ) {
+                    selectedSystem = row.getItem();
+                    dialog.setResult(selectedSystem.toString());
+                }
+            });
+            return row ;
+        });
+
     }
 
     @SuppressWarnings("unchecked")
@@ -76,6 +90,33 @@ public class CoordinateSelector implements StaticDialogController {
 
     @Override
     public String jsonCallback(ButtonType buttonType) {
-        return "";
+        if (buttonType == ButtonType.OK) {
+            if (table.getSelectionModel().getSelectedItem() != null){
+                selectedSystem = table.getSelectionModel().getSelectedItem();
+            }
+
+            if (selectedSystem != null) {
+                return selectedSystem.toString();
+
+            }else{
+                return null;
+            }
+
+        } else if(buttonType == ButtonType.CANCEL) {
+            return null;
+        }
+        return null;
     }
+
+    @Override
+    public String toString() {
+        return String.join("#", selectedSystem.name(), selectedSystem.id());
+    }
+
+    public static CoordinateSystem fromString(String s) {
+        String[] split = s.split("#");
+
+        return new CoordinateSystem(split[0], split[1], null);
+    }
+
 }

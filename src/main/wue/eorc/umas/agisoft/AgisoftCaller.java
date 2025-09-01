@@ -213,12 +213,13 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.BUILD_DEM_CHECK, stackPane, pb, true);
     }
 
-    public void buildDem(StackPane stackPane, String psxFile, WorkflowType workflowType){
+    public void buildDem(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "build_dem.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
+        extendProcessBuilder(pb, agisoftParams);
 
         enqueue(workflowType, AgisoftTask.BUILD_DEM, stackPane, pb, false);
         buildDemCheck(stackPane, psxFile, workflowType);

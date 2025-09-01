@@ -15,17 +15,11 @@ import javafx.scene.layout.StackPane;
 import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.customs.UMASDialog;
 import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
-import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.AlignImagesController;
+import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.*;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
-import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.BuildPointCloudController;
-import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.OptimizeCamerasController;
-import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.SetBrightnessController;
 import wue.eorc.umas.controller.scenes.views.panes.ShowProcessingController;
 import wue.eorc.umas.enums.WorkflowType;
-import wue.eorc.umas.enums.agisoft.AgisoftParameter;
-import wue.eorc.umas.enums.agisoft.AlignImages;
-import wue.eorc.umas.enums.agisoft.BuildPointCloud;
-import wue.eorc.umas.enums.agisoft.OptimizeCameras;
+import wue.eorc.umas.enums.agisoft.*;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.models.Flight;
 import wue.eorc.umas.utils.DirectoryUtils;
@@ -265,10 +259,34 @@ public class ProcessActionsPreparer {
 
         buildDem.setCursor(Cursor.HAND);
         buildDem.setOnMouseClicked(mouseEvent -> {
-            if(mouseEvent.getButton() == MouseButton.PRIMARY){
-                agisoftCaller.buildDem(buildDem, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
-            }else{
+            if(mouseEvent.getButton() == MouseButton.PRIMARY) {
+                agisoftCaller.buildDem(buildDem, DirectoryUtils.figureAgisoftFilePath(this.flight),
+                        this.workflowType, getDefaultParameters(BuildDem.values()));
 
+            } else if (mouseEvent.getButton() == MouseButton.SECONDARY){
+                setupModificationDialog(mouseEvent, event -> {
+                    DialogPane parameterPane = (DialogPane)
+                            display.getSceneLoader().getScene("agisoft_build_dem");
+
+                    BuildDemController controller = new BuildDemController();
+
+                    Dialog<String> dialog = new UMASDialog(parameterPane, "Build DEM", true, true);
+                    try {
+                        controller.init(parameterPane, display, dialog);
+                    } catch (UMASException e) {
+                        throw new RuntimeException(e);
+                    }
+                    dialog.setResultConverter(controller::jsonCallback);
+
+                    Optional<String> json = dialog.showAndWait();
+                    dialog.hide();
+                    dialog.close();
+
+                    if (json.isPresent()){
+                        agisoftCaller.buildDem(buildDem, DirectoryUtils.figureAgisoftFilePath(this.flight),
+                                this.workflowType, retrieveManualChoice(json.orElse(null)));
+                    }
+                });
             }
         });
     }
