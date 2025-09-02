@@ -4,6 +4,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
@@ -22,13 +23,14 @@ public class BatchEditController implements StaticDialogController {
 
     @Override
     public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
-        VBox vBox = ItemSearcher.getItemById("agisoft.batchedit.vbox", pane, VBox.class);
+        GridPane grid = ItemSearcher.getItemById("agisoft.batchedit.grid", pane, GridPane.class);
 
         Label title = new Label("Align Photos");
-        vBox.getChildren().add(title);
+        grid.addRow(0, title);
 
         DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene("agisoft_align_photos");
-        vBox.getChildren().add(dialogPane.getContent());
+        dialogPane.getButtonTypes().clear();
+        grid.addRow(1, dialogPane);
 
         StaticDialogController dialogController = new AlignImagesController();
         dialogController.init(dialogPane, display, dialog);
@@ -36,10 +38,11 @@ public class BatchEditController implements StaticDialogController {
 
 
         Label title2 = new Label("Optimize Cameras");
-        vBox.getChildren().add(title2);
+        grid.addRow(2, title2);
 
         DialogPane dialogPane2 = (DialogPane) display.getSceneLoader().getScene("agisoft_optimize_cameras");
-        vBox.getChildren().add(dialogPane2.getContent());
+        dialogPane2.getButtonTypes().clear();
+        grid.addRow(3, dialogPane2);
 
         StaticDialogController dialogController2 = new OptimizeCamerasController();
         dialogController2.init(dialogPane2, display, dialog);

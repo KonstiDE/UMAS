@@ -84,8 +84,6 @@ public class ShowProcessingController implements ViewController, AgisoftQueueLis
                 ProcessActionsPreparer preparer = new ProcessActionsPreparer(
                         flight, workflowType, display, this, agisoftCaller);
 
-                preparer.setupWorkflowActions();
-
                 AnchorPane anchorPane = new AnchorPane();
                 anchorPane.getChildren().add(preparer.getWorkflowPane());
 

@@ -8,7 +8,7 @@ public enum AlignImages implements AgisoftParameter {
     GENERIC_PRESELECTION("genericpreselection", List.of("True", "False"), 0),
     REFERENCE_PRESELECTION("referencepreselection", List.of("True", "False"), 0),
     REFERENCE_PRESELECTION_COMBO("referencepreselectioncombo", List.of("Source", "Estimated", "Sequential"), 0),
-    KEY_POINT_LIMIT("keypointlimit", List.of("1"), 1),
+    KEY_POINT_LIMIT("keypointlimit", List.of("1"), 0),
     KEY_POINT_LIMIT_PER_MPX("keypointlimitpermpx", List.of("4000"), 0),
     TIE_POINT_LIMIT("tiepointlimit", List.of("1000"), 0),
     APPLY_MASKS_TO("", List.of("None"), 0),

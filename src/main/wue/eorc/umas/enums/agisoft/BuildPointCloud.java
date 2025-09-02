@@ -5,7 +5,7 @@ import java.util.List;
 public enum BuildPointCloud implements AgisoftParameter {
 
     ACCURACY("quality", List.of("Ultra High", "High", "Medium", "Low", "Lowest"), 2),
-    DEPTH_FILTERING("quality", List.of("Disabled", "Mild", "Moderate", "Aggressive"), 1),
+    DEPTH_FILTERING("depthfiltering", List.of("Disabled", "Mild", "Moderate", "Aggressive"), 1),
     REUSE_DEPTH_MAPS("reusedepthmaps", List.of("True", "False"), 1),
     CALCULATE_POINT_COLORS("calculatepointcolors", List.of("True", "False"), 1),
     CALCULATE_POINT_CONFIDENCE("calculatepointconfidence", List.of("Source", "Estimated", "Sequential"), 1);

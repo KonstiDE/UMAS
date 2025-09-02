@@ -65,10 +65,10 @@ public class Main extends Application {
                 Objects.requireNonNull(this.getClass().getResourceAsStream("icon.ac"))
         ));*/
 
-        // primaryStage.setScene(scene);
-        // primaryStage.show();
+        primaryStage.setScene(scene);
+        primaryStage.show();
 
-        DialogPane dialogPane1 = (DialogPane) loader.getScene("agisoft_batch_edit");
+        /*DialogPane dialogPane1 = (DialogPane) loader.getScene("agisoft_batch_edit");
         BatchEditController coordinateSelector = new BatchEditController(WorkflowType.RGB);
 
         UMASDialog dialog = new UMASDialog(dialogPane1, "Batch Edit", true, true);
@@ -78,7 +78,7 @@ public class Main extends Application {
 
         Optional<String> close1 = dialog.showAndWait();
         dialog.hide();
-        dialog.close();
+        dialog.close();*/
 
 
 
