@@ -32,7 +32,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException, UMASException, URISyntaxException {
-        primaryStage.setTitle("EORC - UAS Management Application System");
+        primaryStage.setTitle("UAS Management Application System");
 
         ProjectCache.createRecentProjectsFile();
         Settings.createSettingsFile();
@@ -65,23 +65,8 @@ public class Main extends Application {
                 Objects.requireNonNull(this.getClass().getResourceAsStream("icon.ac"))
         ));*/
 
-        // primaryStage.setScene(scene);
-        // primaryStage.show();
-
-        DialogPane dialogPane1 = (DialogPane) loader.getScene("decision_for_closing");
-        ClosingController coordinateSelector = new ClosingController();
-
-        UMASDialog dialog = new UMASDialog(dialogPane1, "Over and out!", true, true);
-        dialog.setResultConverter(coordinateSelector::jsonCallback);
-
-        coordinateSelector.init(dialogPane1, rootController.getDisplayController(), dialog);
-
-        Optional<String> close1 = dialog.showAndWait();
-        dialog.hide();
-        dialog.close();
-
-
-
+        primaryStage.setScene(scene);
+        primaryStage.show();
 
         primaryStage.setOnCloseRequest(windowEvent -> {
             if (AgisoftCaller.isRunning){

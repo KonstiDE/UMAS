@@ -12,7 +12,7 @@ public class ClosingController implements StaticDialogController {
     public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {  }
 
     @Override
-    public String jsonCallback(ButtonType buttonType) {
+    public void setupResultConverter(Dialog<String> dialog) {
         //Not really json
 
         if(buttonType == ButtonType.OK){

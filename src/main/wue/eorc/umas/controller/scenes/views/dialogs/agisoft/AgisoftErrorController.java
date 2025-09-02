@@ -36,7 +36,7 @@ public class AgisoftErrorController implements StaticDialogController {
     }
 
     @Override
-    public String jsonCallback(ButtonType buttonType) {
+    public void setupResultConverter(Dialog<String> dialog) {
         return "";
     }
 }

@@ -27,6 +27,7 @@ import wue.eorc.umas.utils.GsonTypeTokens;
 import wue.eorc.umas.utils.ItemSearcher;
 
 import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -501,8 +502,8 @@ public class ProcessActionsPreparer {
             contextMenu.getItems().add(modify);
         }
 
-        modifyBatch.setOnAction(handleModifyBatch);
-        runBatch.setOnAction(handleRunBatch);
+        modifyBatch.setOnAction(handleModifyBatch());
+        runBatch.setOnAction(handleRunBatch());
 
         contextMenu.getItems().add(modifyBatch);
         contextMenu.getItems().add(separator);
@@ -510,50 +511,79 @@ public class ProcessActionsPreparer {
         contextMenu.show(getWorkflowPane().getScene().getWindow(), mouseEvent.getScreenX(), mouseEvent.getScreenY());
     }
 
-    public EventHandler<ActionEvent> handleModifyBatch = new EventHandler<>() {
-        @Override
-        public void handle(ActionEvent actionEvent) {
-            DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene(AgisoftDialog.BATCH_EDIT.getDialogId());
-            BatchEditController coordinateSelector = new BatchEditController(WorkflowType.RGB, ProcessActionsPreparer.this);
+    public EventHandler<ActionEvent> handleModifyBatch(){
+        return actionEvent -> {
+            switch (workflowType){
+                case RGB -> {
+                    DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene(AgisoftDialog.BATCH_EDIT.getDialogId());
+                    BatchEditController batchEditController = new BatchEditController(WorkflowType.RGB, ProcessActionsPreparer.this);
 
-            UMASDialog dialog = new UMASDialog(dialogPane, "Batch Edit", true, true);
-            dialog.setResultConverter(coordinateSelector::jsonCallback);
+                    UMASDialog dialog = new UMASDialog(dialogPane, "Batch Edit", true, true);
+                    dialog.setResultConverter(batchEditController::jsonCallback);
 
-            try {
-                coordinateSelector.init(dialogPane, display.getRootController().getDisplayController(), dialog);
-            } catch (UMASException e) {
-                throw new RuntimeException(e);
+                    try {
+                        batchEditController.init(dialogPane, display.getRootController().getDisplayController(), dialog);
+                    } catch (UMASException e) {
+                        throw new RuntimeException(e);
+                    }
+
+                    Optional<String> result = dialog.showAndWait();
+                    dialog.hide();
+                    dialog.close();
+
+                    HashMap<String, String> map = gson.fromJson(result.orElse(null), GsonTypeTokens.hashmapToken);
+
+                    assert map != null;
+
+                    agisoftCaller.completeBuildRGB(
+                            List.of(addPhotos, setBrightness, alignImages, optimizeCameras, buildPointCloud, buildDem,
+                                    buildOrthomosaic, exportDem, exportOrthomosaic, generateReport),
+                            List.of(
+                                    gson.fromJson(map.get(SET_BRIGHTNESS.name()), GsonTypeTokens.hashmapToken),
+                                    gson.fromJson(map.get(ALIGN_IMAGES.name()), GsonTypeTokens.hashmapToken),
+                                    gson.fromJson(map.get(OPTIMIZE_CAMERAS.name()), GsonTypeTokens.hashmapToken),
+                                    gson.fromJson(map.get(BUILD_POINT_CLOUD.name()), GsonTypeTokens.hashmapToken),
+                                    gson.fromJson(map.get(BUILD_DEM.name()), GsonTypeTokens.hashmapToken),
+                                    gson.fromJson(map.get(BUILD_ORTHOMOSAIC.name()), GsonTypeTokens.hashmapToken),
+                                    gson.fromJson(map.get(EXPORT_DEM.name()), GsonTypeTokens.hashmapToken),
+                                    gson.fromJson(map.get(EXPORT_ORTHOMOSAIC.name()), GsonTypeTokens.hashmapToken)
+                            ),
+                            flight.getOriginFlightDirs(),
+                            DirectoryUtils.figureAgisoftFilePath(flight),
+                            Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportDemName()).toFile().getAbsolutePath(),
+                            Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportOrthomosaicName()).toFile().getAbsolutePath(),
+                            Paths.get(DirectoryUtils.figureReportPath(flight), flight.getGenerateReportName()).toFile().getAbsolutePath(),
+                            flight.getGenerateReportName(),
+                            "Automatically generated Report"
+                    );
+                }
             }
 
-            Optional<String> result = dialog.showAndWait();
-            dialog.hide();
-            dialog.close();
-        }
-    };
+        };
+    }
 
-    public EventHandler<ActionEvent> handleRunBatch = new EventHandler<>() {
-        @Override
-        public void handle(ActionEvent actionEvent) {
+    public EventHandler<ActionEvent> handleRunBatch(){
+        return actionEvent -> {
             switch (workflowType) {
                 case RGB -> agisoftCaller.completeBuildRGB(
-                        List.of(addPhotos, setBrightness, alignImages, optimizeCameras, buildPointCloud, buildDem,
-                                buildOrthomosaic, exportDem, exportOrthomosaic, generateReport),
-                        List.of(SetBrightness.values(), AlignImages.values(), OptimizeCameras.values(),
-                                BuildPointCloud.values(), BuildDem.values(), BuildOrthomosaic.values(),
-                                ExportDem.values(), ExportOrthomosaic.values()),
-                        flight.getOriginFlightDirs(),
-                        DirectoryUtils.figureAgisoftFilePath(flight),
-                        Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportDemName()).toFile().getAbsolutePath(),
-                        Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportOrthomosaicName()).toFile().getAbsolutePath(),
-                        Paths.get(DirectoryUtils.figureReportPath(flight), flight.getGenerateReportName()).toFile().getAbsolutePath(),
-                        flight.getGenerateReportName(),
-                        "Automatically generated Report"
+                    List.of(addPhotos, setBrightness, alignImages, optimizeCameras, buildPointCloud, buildDem,
+                            buildOrthomosaic, exportDem, exportOrthomosaic, generateReport),
+                    List.of(SetBrightness.values(), AlignImages.values(), OptimizeCameras.values(),
+                            BuildPointCloud.values(), BuildDem.values(), BuildOrthomosaic.values(),
+                            ExportDem.values(), ExportOrthomosaic.values()),
+                    flight.getOriginFlightDirs(),
+                    DirectoryUtils.figureAgisoftFilePath(flight),
+                    Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportDemName()).toFile().getAbsolutePath(),
+                    Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportOrthomosaicName()).toFile().getAbsolutePath(),
+                    Paths.get(DirectoryUtils.figureReportPath(flight), flight.getGenerateReportName()).toFile().getAbsolutePath(),
+                    flight.getGenerateReportName(),
+                    "Automatically generated Report"
                 );
                 case IR, LIDAR, HYPERSPECTRAL, MULTISPECTRAL, RGB_PLUS_IR, RGB_PLUS_MULTISPECTRAL -> {
                 }
             }
-        }
-    };
+        };
+    }
 
 
     public HashMap<String, String> getDefaultParameters(AgisoftParameter[] agisoftParameters) {

@@ -12,6 +12,6 @@ public interface StaticDialogController {
 
     void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException;
 
-    String jsonCallback(ButtonType buttonType);
+    void setupResultConverter(Dialog<String> dialog);
 
 }

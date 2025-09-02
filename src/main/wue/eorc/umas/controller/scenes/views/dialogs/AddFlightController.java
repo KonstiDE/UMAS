@@ -511,7 +511,7 @@ public class AddFlightController implements StaticDialogController, CopyProgress
 
 
     @Override
-    public String jsonCallback(ButtonType buttonType) {
+    public void setupResultConverter(Dialog<String> dialog) {
         return this.flightJson;
     }
 

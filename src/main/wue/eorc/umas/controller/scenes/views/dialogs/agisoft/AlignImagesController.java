@@ -101,7 +101,7 @@ public class AlignImagesController implements StaticDialogController {
     }
 
     @Override
-    public String jsonCallback(ButtonType buttonType) {
+    public void setupResultConverter(Dialog<String> dialog) {
         if (buttonType == ButtonType.OK) {
             Gson gson = new Gson();
 

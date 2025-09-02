@@ -10,7 +10,6 @@ import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.agisoft.BuildDem;
 import wue.eorc.umas.enums.agisoft.ExportDem;
-import wue.eorc.umas.enums.agisoft.ExportOrthomosaic;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.models.CoordinateSystem;
 import wue.eorc.umas.utils.AgisoftParamInitiator;
@@ -98,33 +97,31 @@ public class ExportDemController implements StaticDialogController {
         writeBigTiffFile = ItemSearcher.getItemById(prefix + "writebigtifffile", pane, CheckBox.class);
         AgisoftParamInitiator.initCheckBox(writeBigTiffFile, ExportDem.WRITE_BIG_TIFF_FILE);
 
-
     }
 
     @Override
-    public String jsonCallback(ButtonType buttonType) {
-        if (buttonType == ButtonType.OK) {
-            Gson gson = new Gson();
+    public void setupResultConverter(Dialog<String> dialog) {
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                Gson gson = new Gson();
 
-            HashMap<String, String> parameterMap = new HashMap<>(){{
-                put("coordinatesystem", epsgLabel.getText());
-                put("rastertransform", rasterTransform.getSelectionModel().getSelectedItem());
-                put("nodatavalue", noDataValue.getText());
-                put("writekml", writeKml.isSelected() ? "True" : "False");
-                put("writeworldfile", writeWorldFile.isSelected() ? "True" : "False");
-                put("writetilescheme", writeTileScheme.isSelected() ? "True" : "False");
-                put("imagedescription", imageDescription.getText());
-                put("writetiledtiff", writeTiledTiff.isSelected() ? "True" : "False");
-                put("generatetiffoverviews", generateTiffOverviews.isSelected() ? "True" : "False");
-                put("writebigtifffile", writeBigTiffFile.isSelected() ? "True" : "False");
-            }};
+                HashMap<String, String> parameterMap = new HashMap<>() {{
+                    put("coordinatesystem", epsgLabel.getText());
+                    put("rastertransform", rasterTransform.getSelectionModel().getSelectedItem());
+                    put("nodatavalue", noDataValue.getText());
+                    put("writekml", writeKml.isSelected() ? "True" : "False");
+                    put("writeworldfile", writeWorldFile.isSelected() ? "True" : "False");
+                    put("writetilescheme", writeTileScheme.isSelected() ? "True" : "False");
+                    put("imagedescription", imageDescription.getText());
+                    put("writetiledtiff", writeTiledTiff.isSelected() ? "True" : "False");
+                    put("generatetiffoverviews", generateTiffOverviews.isSelected() ? "True" : "False");
+                    put("writebigtifffile", writeBigTiffFile.isSelected() ? "True" : "False");
+                }};
 
-            return gson.toJson(parameterMap, GsonTypeTokens.hashmapToken);
-        } else if (buttonType == ButtonType.CANCEL) {
+                return gson.toJson(parameterMap, GsonTypeTokens.hashmapToken);
+            }
             return null;
-        }
-
-        return null;
+        };
     }
 
 }

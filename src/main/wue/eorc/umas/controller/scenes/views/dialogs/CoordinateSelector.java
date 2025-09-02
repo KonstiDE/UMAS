@@ -89,7 +89,7 @@ public class CoordinateSelector implements StaticDialogController {
     }
 
     @Override
-    public String jsonCallback(ButtonType buttonType) {
+    public void setupResultConverter(Dialog<String> dialog) {
         if (buttonType == ButtonType.OK) {
             if (table.getSelectionModel().getSelectedItem() != null){
                 selectedSystem = table.getSelectionModel().getSelectedItem();
