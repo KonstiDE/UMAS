@@ -68,21 +68,6 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        /*DialogPane dialogPane1 = (DialogPane) loader.getScene("agisoft_batch_edit");
-        BatchEditController coordinateSelector = new BatchEditController(WorkflowType.RGB);
-
-        UMASDialog dialog = new UMASDialog(dialogPane1, "Batch Edit", true, true);
-        dialog.setResultConverter(coordinateSelector::jsonCallback);
-
-        coordinateSelector.init(dialogPane1, rootController.getDisplayController(), dialog);
-
-        Optional<String> close1 = dialog.showAndWait();
-        dialog.hide();
-        dialog.close();*/
-
-
-
-
         primaryStage.setOnCloseRequest(windowEvent -> {
             if (AgisoftCaller.isRunning){
                 DialogPane dialogPane = (DialogPane) loader.getScene("decision_for_closing");

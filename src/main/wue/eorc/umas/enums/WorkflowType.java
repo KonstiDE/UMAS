@@ -4,22 +4,26 @@ import wue.eorc.umas.enums.agisoft.AgisoftTask;
 
 import java.util.*;
 
+import static wue.eorc.umas.enums.agisoft.AgisoftTask.*;
+
 public enum WorkflowType {
-    RGB("RGB", ImageType.RGB),
-    MULTISPECTRAL("MS", ImageType.MULTISPECTRAL),
-    RGB_PLUS_MULTISPECTRAL("RGB+MS", ImageType.RGB, ImageType.MULTISPECTRAL),
-    IR("IR", ImageType.IR),
-    RGB_PLUS_IR("RGB+IR", ImageType.RGB, ImageType.IR),
-    HYPERSPECTRAL("HYP", ImageType.HYPERSPECTRAL),
-    LIDAR("LIDAR", ImageType.LIDAR),
-    INVALID(null);
+    RGB("RGB", List.of(ImageType.RGB), List.of(ADD_PHOTOS, SET_BRIGHTNESS, ALIGN_IMAGES, OPTIMIZE_CAMERAS, BUILD_POINT_CLOUD, BUILD_DEM, BUILD_ORTHOMOSAIC, EXPORT_DEM, EXPORT_ORTHOMOSAIC, GENERATE_REPORT)),
+    MULTISPECTRAL("MS", List.of(ImageType.MULTISPECTRAL), List.of(ADD_PHOTOS, SET_BRIGHTNESS, ALIGN_IMAGES, OPTIMIZE_CAMERAS, BUILD_POINT_CLOUD, BUILD_DEM, BUILD_ORTHOMOSAIC, EXPORT_DEM, EXPORT_ORTHOMOSAIC, GENERATE_REPORT)),
+    RGB_PLUS_MULTISPECTRAL("RGB+MS", List.of(ImageType.RGB, ImageType.MULTISPECTRAL), null),
+    IR("IR", List.of(ImageType.IR), null),
+    RGB_PLUS_IR("RGB+IR", List.of(ImageType.RGB, ImageType.IR), null),
+    HYPERSPECTRAL("HYP", List.of(ImageType.HYPERSPECTRAL), null),
+    LIDAR("LIDAR", List.of(ImageType.LIDAR), null),
+    INVALID(null, null, null);
 
     private final String name;
     private final List<ImageType> imageTypes;
+    private final List<AgisoftTask> agisoftTasks;
 
-    WorkflowType(String name, ImageType... imageTypes) {
+    WorkflowType(String name, List<ImageType> imagesTypes, List<AgisoftTask> agisoftTasks) {
         this.name = name;
-        this.imageTypes = Arrays.stream(imageTypes).toList();
+        this.imageTypes = imagesTypes;
+        this.agisoftTasks = agisoftTasks;
     }
 
     public String getName() {
@@ -28,6 +32,10 @@ public enum WorkflowType {
 
     public List<ImageType> getImageTypes(){
         return imageTypes;
+    }
+
+    public List<AgisoftTask> getAgisoftTasks() {
+        return agisoftTasks;
     }
 
     public static List<WorkflowType> getWorkflowTypesFromImageTypes(Set<ImageType> imageTypes){
@@ -59,7 +67,7 @@ public enum WorkflowType {
 
     public static List<AgisoftTask> getAgisoftTasksForWorkflowType(WorkflowType workflowType){
         if (workflowType == RGB){
-            return List.of(AgisoftTask.ADD_PHOTOS, AgisoftTask.SET_BRIGHTNESS, AgisoftTask.ALIGN_IMAGES,
+            return List.of(ADD_PHOTOS, AgisoftTask.SET_BRIGHTNESS, AgisoftTask.ALIGN_IMAGES,
                     AgisoftTask.OPTIMIZE_CAMERAS, AgisoftTask.BUILD_POINT_CLOUD, AgisoftTask.BUILD_DEM,
                     AgisoftTask.BUILD_ORTHOMOSAIC, AgisoftTask.EXPORT_DEM, AgisoftTask.EXPORT_ORTHOMOSAIC,
                     AgisoftTask.GENERATE_REPORT);

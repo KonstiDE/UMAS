@@ -128,7 +128,7 @@ public class ProcessActionsPreparer {
                         this.workflowType);
 
             }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
-
+                setupModificationDialog(mouseEvent, null);
             }
         });
 
@@ -140,23 +140,27 @@ public class ProcessActionsPreparer {
         StackPane setBrightness = ItemSearcher.getItemById("processing." + SET_BRIGHTNESS, this.workflowPane, StackPane.class);
 
         setBrightness.setCursor(Cursor.HAND);
-        setBrightness.setOnMouseClicked(_ignored -> {
-            DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene("agisoft_set_brightness"); 
-            Dialog<String> dialog = new UMASDialog(dialogPane, "Set Brightness", true, true);
+        setBrightness.setOnMouseClicked(mouseEvent -> {
+            if(mouseEvent.getButton() == MouseButton.PRIMARY){
+                DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene(AgisoftDialog.SET_BRIGHTNESS.getDialogId());
+                Dialog<String> dialog = new UMASDialog(dialogPane, "Set Brightness", true, true);
 
-            SetBrightnessController controller = new SetBrightnessController(this);
-            try {
-                controller.init(dialogPane, display, dialog);
-            } catch (UMASException e) {
-                throw new RuntimeException(e);
-            }
-            dialog.setResultConverter(controller::jsonCallback);
+                SetBrightnessController controller = new SetBrightnessController(this);
+                try {
+                    controller.init(dialogPane, display, dialog);
+                } catch (UMASException e) {
+                    throw new RuntimeException(e);
+                }
+                dialog.setResultConverter(controller::jsonCallback);
 
-            Optional<String> result = dialog.showAndWait();
+                Optional<String> result = dialog.showAndWait();
 
-            if(result.isPresent()){
-                HashMap<String, String> agisoftParameters = gson.fromJson(result.get(), GsonTypeTokens.hashmapToken);
-                agisoftCaller.setBrightness(setBrightness, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType, agisoftParameters);
+                if(result.isPresent()){
+                    HashMap<String, String> agisoftParameters = gson.fromJson(result.get(), GsonTypeTokens.hashmapToken);
+                    agisoftCaller.setBrightness(setBrightness, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType, agisoftParameters);
+                }
+            }else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
+                setupModificationDialog(mouseEvent, null);
             }
 
         });
@@ -180,7 +184,7 @@ public class ProcessActionsPreparer {
             }else if(mouseEvent.getButton() == MouseButton.SECONDARY){
                 setupModificationDialog(mouseEvent, event -> {
                     DialogPane parameterPane = (DialogPane)
-                            display.getSceneLoader().getScene("agisoft_align_photos");
+                            display.getSceneLoader().getScene(AgisoftDialog.ALIGN_IMAGES.getDialogId());
 
                     StaticDialogController controller = new AlignImagesController();
 
@@ -219,7 +223,7 @@ public class ProcessActionsPreparer {
             }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
                 setupModificationDialog(mouseEvent, event -> {
                     DialogPane parameterPane = (DialogPane)
-                            display.getSceneLoader().getScene("agisoft_optimize_cameras");
+                            display.getSceneLoader().getScene(AgisoftDialog.OPTIMIZE_CAMERAS.getDialogId());
 
                     OptimizeCamerasController controller = new OptimizeCamerasController();
 
@@ -257,7 +261,7 @@ public class ProcessActionsPreparer {
             }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
                 setupModificationDialog(mouseEvent, event -> {
                     DialogPane parameterPane = (DialogPane)
-                            display.getSceneLoader().getScene("agisoft_build_point_cloud");
+                            display.getSceneLoader().getScene(AgisoftDialog.BUILD_POINT_CLOUD.getDialogId());
 
                     BuildPointCloudController controller = new BuildPointCloudController();
 
@@ -295,7 +299,7 @@ public class ProcessActionsPreparer {
             } else if (mouseEvent.getButton() == MouseButton.SECONDARY){
                 setupModificationDialog(mouseEvent, event -> {
                     DialogPane parameterPane = (DialogPane)
-                            display.getSceneLoader().getScene("agisoft_build_dem");
+                            display.getSceneLoader().getScene(AgisoftDialog.BUILD_DEM.getDialogId());
 
                     BuildDemController controller = new BuildDemController();
 
@@ -334,7 +338,7 @@ public class ProcessActionsPreparer {
             }else{
                 setupModificationDialog(mouseEvent, event -> {
                     DialogPane parameterPane = (DialogPane)
-                            display.getSceneLoader().getScene("agisoft_build_orthomosaic");
+                            display.getSceneLoader().getScene(AgisoftDialog.BUILD_ORTHOMOSAIC.getDialogId());
 
                     BuildOrthomosaicController controller = new BuildOrthomosaicController();
 
@@ -375,7 +379,7 @@ public class ProcessActionsPreparer {
             } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
                 setupModificationDialog(mouseEvent, event -> {
                     DialogPane parameterPane = (DialogPane)
-                            display.getSceneLoader().getScene("agisoft_export_dem");
+                            display.getSceneLoader().getScene(AgisoftDialog.EXPORT_DEM.getDialogId());
 
                     ExportDemController controller = new ExportDemController();
 
@@ -419,7 +423,7 @@ public class ProcessActionsPreparer {
             } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
                 setupModificationDialog(mouseEvent, event -> {
                     DialogPane parameterPane = (DialogPane)
-                            display.getSceneLoader().getScene("agisoft_export_orthomosaic");
+                            display.getSceneLoader().getScene(AgisoftDialog.EXPORT_ORTHOMOSAIC.getDialogId());
 
                     ExportOrthomosaicController controller = new ExportOrthomosaicController();
 
@@ -452,16 +456,20 @@ public class ProcessActionsPreparer {
         StackPane generateReport = ItemSearcher.getItemById("processing." + GENERATE_REPORT, this.workflowPane, StackPane.class);
 
         generateReport.setCursor(Cursor.HAND);
-        generateReport.setOnMouseClicked(_ignored -> {
-            agisoftCaller.generateReport(
-                    generateReport, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
-                            DirectoryUtils.figureReportPath(this.flight),
-                            this.flight.getGenerateReportName()
-                    ).toFile().getAbsolutePath(),
-                    this.flight.getGenerateReportName(),
-                    "Automatically generated Report",
-                    this.workflowType
-            );
+        generateReport.setOnMouseClicked(mouseEvent -> {
+            if (mouseEvent.getButton() == MouseButton.PRIMARY){
+                agisoftCaller.generateReport(
+                        generateReport, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
+                                DirectoryUtils.figureReportPath(this.flight),
+                                this.flight.getGenerateReportName()
+                        ).toFile().getAbsolutePath(),
+                        this.flight.getGenerateReportName(),
+                        "Automatically generated Report",
+                        this.workflowType
+                );
+            }else if(mouseEvent.getButton() == MouseButton.SECONDARY){
+                setupModificationDialog(mouseEvent, null);
+            }
         });
 
         return generateReport;
@@ -488,28 +496,45 @@ public class ProcessActionsPreparer {
         final MenuItem modifyBatch = new MenuItem("Modify Batch");
         final MenuItem runBatch = new MenuItem("Run Batch");
 
-        modify.setOnAction(eventHandler);
+        if(eventHandler != null) {
+            modify.setOnAction(eventHandler);
+            contextMenu.getItems().add(modify);
+        }
+
         modifyBatch.setOnAction(handleModifyBatch);
         runBatch.setOnAction(handleRunBatch);
 
-        contextMenu.getItems().add(modify);
         contextMenu.getItems().add(modifyBatch);
         contextMenu.getItems().add(separator);
         contextMenu.getItems().add(runBatch);
         contextMenu.show(getWorkflowPane().getScene().getWindow(), mouseEvent.getScreenX(), mouseEvent.getScreenY());
     }
 
-    public EventHandler<ActionEvent> handleModifyBatch = new EventHandler<ActionEvent>() {
+    public EventHandler<ActionEvent> handleModifyBatch = new EventHandler<>() {
         @Override
         public void handle(ActionEvent actionEvent) {
+            DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene(AgisoftDialog.BATCH_EDIT.getDialogId());
+            BatchEditController coordinateSelector = new BatchEditController(WorkflowType.RGB, ProcessActionsPreparer.this);
 
+            UMASDialog dialog = new UMASDialog(dialogPane, "Batch Edit", true, true);
+            dialog.setResultConverter(coordinateSelector::jsonCallback);
+
+            try {
+                coordinateSelector.init(dialogPane, display.getRootController().getDisplayController(), dialog);
+            } catch (UMASException e) {
+                throw new RuntimeException(e);
+            }
+
+            Optional<String> result = dialog.showAndWait();
+            dialog.hide();
+            dialog.close();
         }
     };
 
-    public EventHandler<ActionEvent> handleRunBatch = new EventHandler<ActionEvent>() {
+    public EventHandler<ActionEvent> handleRunBatch = new EventHandler<>() {
         @Override
         public void handle(ActionEvent actionEvent) {
-            switch (workflowType){
+            switch (workflowType) {
                 case RGB -> agisoftCaller.completeBuildRGB(
                         List.of(addPhotos, setBrightness, alignImages, optimizeCameras, buildPointCloud, buildDem,
                                 buildOrthomosaic, exportDem, exportOrthomosaic, generateReport),
@@ -524,7 +549,8 @@ public class ProcessActionsPreparer {
                         flight.getGenerateReportName(),
                         "Automatically generated Report"
                 );
-                case IR, LIDAR, HYPERSPECTRAL, MULTISPECTRAL, RGB_PLUS_IR, RGB_PLUS_MULTISPECTRAL -> {}
+                case IR, LIDAR, HYPERSPECTRAL, MULTISPECTRAL, RGB_PLUS_IR, RGB_PLUS_MULTISPECTRAL -> {
+                }
             }
         }
     };

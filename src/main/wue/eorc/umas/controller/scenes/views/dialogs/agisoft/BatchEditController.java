@@ -6,46 +6,54 @@ import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
+import wue.eorc.umas.controller.scenes.views.panes.components.ProcessActionsPreparer;
 import wue.eorc.umas.enums.WorkflowType;
+import wue.eorc.umas.enums.agisoft.AgisoftDialog;
+import wue.eorc.umas.enums.agisoft.AgisoftTask;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.utils.ItemSearcher;
 
 public class BatchEditController implements StaticDialogController {
 
-    private final WorkflowType workflowType;
+    private GridPane grid;
+    private int i = 0;
 
-    public BatchEditController(WorkflowType workflowType){
+    private final WorkflowType workflowType;
+    private final ProcessActionsPreparer processActionsPreparer;
+
+    public BatchEditController(WorkflowType workflowType, ProcessActionsPreparer processActionsPreparer){
         this.workflowType = workflowType;
+        this.processActionsPreparer = processActionsPreparer;
     }
 
     @Override
     public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
-        GridPane grid = ItemSearcher.getItemById("agisoft.batchedit.grid", pane, GridPane.class);
+        grid = ItemSearcher.getItemById("agisoft.batchedit.grid", pane, GridPane.class);
 
-        Label title = new Label("Align Photos");
-        grid.addRow(0, title);
+        for(AgisoftTask agisoftTask : this.workflowType.getAgisoftTasks()){
+            Label title = new Label(toTitleCase(
+                    agisoftTask.name().replace("_", " ").toLowerCase()
+            ));
+            Font font = new Font(13);
+            title.setFont(font);
+            grid.addRow(i, title);
+            i++;
 
-        DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene("agisoft_align_photos");
-        dialogPane.getButtonTypes().clear();
-        grid.addRow(1, dialogPane);
+            switch (agisoftTask){
+                case SET_BRIGHTNESS -> setupDialogRegion(display, AgisoftDialog.SET_BRIGHTNESS, new SetBrightnessController(processActionsPreparer), dialog);
+                case ALIGN_IMAGES -> setupDialogRegion(display, AgisoftDialog.ALIGN_IMAGES, new AlignImagesController(), dialog);
+                case OPTIMIZE_CAMERAS -> setupDialogRegion(display, AgisoftDialog.OPTIMIZE_CAMERAS, new OptimizeCamerasController(), dialog);
+                case BUILD_POINT_CLOUD -> setupDialogRegion(display, AgisoftDialog.BUILD_POINT_CLOUD, new BuildPointCloudController(), dialog);
+                case BUILD_DEM -> setupDialogRegion(display, AgisoftDialog.BUILD_DEM, new BuildDemController(), dialog);
+                case BUILD_ORTHOMOSAIC -> setupDialogRegion(display, AgisoftDialog.BUILD_ORTHOMOSAIC, new BuildOrthomosaicController(), dialog);
+                case EXPORT_DEM -> setupDialogRegion(display, AgisoftDialog.EXPORT_DEM, new ExportDemController(), dialog);
+                case EXPORT_ORTHOMOSAIC -> setupDialogRegion(display, AgisoftDialog.EXPORT_ORTHOMOSAIC, new ExportOrthomosaicController(), dialog);
+            }
 
-        StaticDialogController dialogController = new AlignImagesController();
-        dialogController.init(dialogPane, display, dialog);
-
-
-
-        Label title2 = new Label("Optimize Cameras");
-        grid.addRow(2, title2);
-
-        DialogPane dialogPane2 = (DialogPane) display.getSceneLoader().getScene("agisoft_optimize_cameras");
-        dialogPane2.getButtonTypes().clear();
-        grid.addRow(3, dialogPane2);
-
-        StaticDialogController dialogController2 = new OptimizeCamerasController();
-        dialogController2.init(dialogPane2, display, dialog);
+        }
 
     }
 
@@ -53,4 +61,35 @@ public class BatchEditController implements StaticDialogController {
     public String jsonCallback(ButtonType buttonType) {
         return "";
     }
+
+    private void setupDialogRegion(DisplayController display, AgisoftDialog agisoftDialogDefinition,
+                                   StaticDialogController controller, Dialog<String> dialog) throws UMASException {
+
+        DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene(agisoftDialogDefinition.getDialogId());
+        dialogPane.getButtonTypes().clear();
+
+        grid.addRow(i, dialogPane);
+        i++;
+
+        controller.init(dialogPane, display, dialog);
+    }
+
+    private String toTitleCase(String input) {
+        StringBuilder titleCase = new StringBuilder(input.length());
+        boolean nextTitleCase = true;
+
+        for (char c : input.toCharArray()) {
+            if (Character.isSpaceChar(c)) {
+                nextTitleCase = true;
+            } else if (nextTitleCase) {
+                c = Character.toTitleCase(c);
+                nextTitleCase = false;
+            }
+
+            titleCase.append(c);
+        }
+
+        return titleCase.toString();
+    }
+
 }
