@@ -62,7 +62,7 @@ public class DisplayController {
         Dialog<String> dialog = new UMASDialog(pane, "New flight", true, true);
 
         try{
-            trigger.init(pane, this, dialog);
+            trigger.init(this, dialog);
         }catch (UMASException e){
             UMASException.throwWindow(ErrorType.INTERNAL, "Could not open the flight dialog! Please restart the application.");
         }
@@ -78,7 +78,7 @@ public class DisplayController {
         Dialog<String> dialog = new UMASDialog(pane, "Settings", false, true);
 
         try{
-            trigger.init(pane, this, dialog);
+            trigger.init(this, dialog);
         }catch (UMASException e){
             UMASException.throwWindow(ErrorType.INTERNAL, "Could not open the settings dialog! Please restart the application.");
         }

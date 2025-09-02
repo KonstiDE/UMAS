@@ -30,8 +30,9 @@ public class AlignImagesController implements StaticDialogController {
     private CheckBox adaptiveFitting;
 
     @Override
-    public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
+    public void init(DisplayController display, Dialog<String> dialog) throws UMASException {
         String prefix = "agisoft.alignimages.";
+        DialogPane pane = dialog.getDialogPane();
 
         accuracy = ItemSearcher.getGenericControlById(prefix + "accuracy", pane, ComboBox.class, String.class);
         AgisoftParamInitiator.initComboBox(accuracy, AlignImages.ACCURACY);

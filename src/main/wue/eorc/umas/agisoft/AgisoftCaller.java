@@ -441,7 +441,7 @@ public class AgisoftCaller {
                                 splitForError[0], splitForError[1], splitForError[2]);
 
                         try {
-                            errorController.init(dialogPane, display, dialog);
+                            errorController.init(display, dialog);
                         } catch (UMASException e) {
                             throw new RuntimeException(e);
                         }

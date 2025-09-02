@@ -1,12 +1,7 @@
 package wue.eorc.umas.controller.scenes.views.dialogs.agisoft;
 
 import com.google.gson.Gson;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.event.EventHandler;
 import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
-import org.controlsfx.control.PlusMinusSlider;
 import wue.eorc.umas.controller.customs.UMASDialog;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.controller.scenes.views.dialogs.CoordinateSelector;
@@ -26,7 +21,6 @@ import java.util.Optional;
 public class ExportOrthomosaicController implements StaticDialogController {
 
     private Label epsgLabel;
-    private Button epsgSelect;
 
     private ComboBox<String> backgroundColor;
 
@@ -40,8 +34,6 @@ public class ExportOrthomosaicController implements StaticDialogController {
 
     private Label jpegQualityLabel;
     private Slider jpegQualitySlider;
-    private Button jpegQualityPlus;
-    private Button jpegQualityMinus;
 
     private CheckBox writeTiledTiff;
     private CheckBox writeBigTiffFile;
@@ -49,20 +41,21 @@ public class ExportOrthomosaicController implements StaticDialogController {
     private CheckBox saveAlphaChannel;
 
     @Override
-    public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
+    public void init(DisplayController display, Dialog<String> dialog) throws UMASException {
         String prefix = "agisoft.exportorthomosaic.";
+        DialogPane pane = dialog.getDialogPane();
 
         epsgLabel = ItemSearcher.getItemById(prefix + "epsglabel", pane, Label.class);
         AgisoftParamInitiator.initLabel(epsgLabel, BuildDem.COORDINATE_SYSTEM);
 
-        epsgSelect = ItemSearcher.getItemById(prefix + "epsgselect", pane, Button.class);
+        Button epsgSelect = ItemSearcher.getItemById(prefix + "epsgselect", pane, Button.class);
         epsgSelect.setOnAction(ae -> {
             DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene("coordinate_system_select");
             Dialog<String> coordinateDialog = new UMASDialog(dialogPane, "Select coordinate system", true, true);
             CoordinateSelector controller = new CoordinateSelector();
 
             try {
-                controller.init(dialogPane, display, coordinateDialog);
+                controller.init(display, coordinateDialog);
             } catch (UMASException e) {
                 UMASException.throwWindow(ErrorType.INTERNAL, "Could not setup coordinate dialog. The system " +
                         "will fallback to EPSG:4326.");
@@ -104,11 +97,11 @@ public class ExportOrthomosaicController implements StaticDialogController {
         jpegQualitySlider = ItemSearcher.getItemById(prefix + "jpegqualityslider", pane, Slider.class);
         jpegQualitySlider.valueProperty().addListener((opt, oldVal, newVal) -> jpegQualityLabel.setText("" + newVal.intValue()));
 
-        jpegQualityPlus = ItemSearcher.getItemById(prefix + "jpegqualityplus", pane, Button.class);
+        Button jpegQualityPlus = ItemSearcher.getItemById(prefix + "jpegqualityplus", pane, Button.class);
         jpegQualityPlus.setOnAction((ae) -> {
             if(jpegQualitySlider.getValue() < 100) jpegQualitySlider.setValue(jpegQualitySlider.getValue() + 1);
         });
-        jpegQualityMinus = ItemSearcher.getItemById(prefix + "jpegqualityminus", pane, Button.class);
+        Button jpegQualityMinus = ItemSearcher.getItemById(prefix + "jpegqualityminus", pane, Button.class);
         jpegQualityMinus.setOnAction((ae) -> {
             if(jpegQualitySlider.getValue() > 1) jpegQualitySlider.setValue(jpegQualitySlider.getValue() - 1);
         });

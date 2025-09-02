@@ -13,7 +13,6 @@ import wue.eorc.umas.utils.AgisoftParamInitiator;
 import wue.eorc.umas.utils.GsonTypeTokens;
 import wue.eorc.umas.utils.ItemSearcher;
 
-import java.net.URISyntaxException;
 import java.util.HashMap;
 
 public class SetBrightnessController implements StaticDialogController {
@@ -31,8 +30,9 @@ public class SetBrightnessController implements StaticDialogController {
     }
 
     @Override
-    public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
+    public void init(DisplayController display, Dialog<String> dialog) throws UMASException {
         String prefix = "agisoft.setbrightness.";
+        DialogPane pane = dialog.getDialogPane();
 
         brightness = ItemSearcher.getItemById(prefix + "brightness", pane, TextField.class);
         AgisoftParamInitiator.initTextField(brightness, SetBrightness.BRIGHTNESS);

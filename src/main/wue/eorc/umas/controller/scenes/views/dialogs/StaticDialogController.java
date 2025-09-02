@@ -10,7 +10,7 @@ import java.util.concurrent.CompletableFuture;
 
 public interface StaticDialogController {
 
-    void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException;
+    void init(DisplayController display, Dialog<String> dialog) throws UMASException;
 
     void setupResultConverter(Dialog<String> dialog);
 

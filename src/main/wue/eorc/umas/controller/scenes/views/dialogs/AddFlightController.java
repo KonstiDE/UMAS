@@ -62,7 +62,9 @@ public class AddFlightController implements StaticDialogController, CopyProgress
     private CompletableFuture<Void> copyJob;
 
     @Override
-    public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
+    public void init(DisplayController display, Dialog<String> dialog) throws UMASException {
+        DialogPane pane = dialog.getDialogPane();
+
         DatePicker datePicker = ItemSearcher.getItemById("addflight.date", pane, DatePicker.class);
         TextField location = ItemSearcher.getItemById("addflight.location", pane, TextField.class);
         TextField aoi = ItemSearcher.getItemById("addflight.aoi", pane, TextField.class);

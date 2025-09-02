@@ -2,6 +2,7 @@ package wue.eorc.umas.controller.scenes.views.dialogs;
 
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.layout.Pane;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.exception.UMASException;
@@ -9,7 +10,7 @@ import wue.eorc.umas.exception.UMASException;
 public class ClosingController implements StaticDialogController {
 
     @Override
-    public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
+    public void init(DisplayController display, Dialog<String> dialog) throws UMASException {
         setupResultConverter(dialog);
     }
 

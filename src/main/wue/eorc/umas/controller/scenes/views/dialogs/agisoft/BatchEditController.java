@@ -40,7 +40,9 @@ public class BatchEditController implements StaticDialogController {
     public HashMap<AgisoftTask, Dialog<String>> dialogs = new HashMap<>();
 
     @Override
-    public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
+    public void init(DisplayController display, Dialog<String> dialog) throws UMASException {
+        DialogPane pane = dialog.getDialogPane();
+
         grid = ItemSearcher.getItemById("agisoft.batchedit.grid", pane, GridPane.class);
 
         for(AgisoftTask agisoftTask : this.workflowType.getAgisoftTasks()){
@@ -70,7 +72,7 @@ public class BatchEditController implements StaticDialogController {
     }
 
     private Dialog<String> setupDialogRegion(DisplayController display, AgisoftDialog agisoftDialogDefinition,
-                                             StaticDialogController controller, Dialog<String> dialog) throws UMASException {
+                                             StaticDialogController controller, Dialog<String> mainDialog) throws UMASException {
 
         Dialog<String> newDialog = new Dialog<>();
         DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene(agisoftDialogDefinition.getDialogId());
@@ -79,7 +81,7 @@ public class BatchEditController implements StaticDialogController {
         grid.addRow(i, dialogPane);
         i++;
 
-        controller.init(dialogPane, display, newDialog);
+        controller.init(display, newDialog);
 
         return newDialog;
     }

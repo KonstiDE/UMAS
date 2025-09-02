@@ -30,8 +30,9 @@ public class BuildDemController implements StaticDialogController {
     private ComboBox<String> interpolation;
 
     @Override
-    public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
+    public void init(DisplayController display, Dialog<String> dialog) throws UMASException {
         String prefix = "agisoft.builddem.";
+        DialogPane pane = dialog.getDialogPane();
 
         epsgLabel = ItemSearcher.getItemById(prefix + "epsglabel", pane, Label.class);
         AgisoftParamInitiator.initLabel(epsgLabel, BuildDem.COORDINATE_SYSTEM);
@@ -44,7 +45,7 @@ public class BuildDemController implements StaticDialogController {
             CoordinateSelector controller = new CoordinateSelector();
 
             try {
-                controller.init(dialogPane, display, coordinateDialog);
+                controller.init(display, coordinateDialog);
             } catch (UMASException e) {
                 UMASException.throwWindow(ErrorType.INTERNAL, "Could not setup coordinate dialog. The system " +
                         "will fallback to EPSG:4326.");

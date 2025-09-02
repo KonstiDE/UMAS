@@ -1,10 +1,7 @@
 package wue.eorc.umas.controller.scenes.views.dialogs.agisoft;
 
 import com.google.gson.Gson;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Dialog;
+import javafx.scene.control.*;
 import javafx.scene.layout.Pane;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
@@ -25,8 +22,9 @@ public class BuildPointCloudController implements StaticDialogController {
     private CheckBox calculatePointConfidence;
 
     @Override
-    public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
+    public void init(DisplayController display, Dialog<String> dialog) throws UMASException {
         String prefix = "agisoft.buildpointcloud.";
+        DialogPane pane = dialog.getDialogPane();
 
         quality = ItemSearcher.getGenericControlById(prefix + "quality", pane, ComboBox.class, String.class);
         AgisoftParamInitiator.initComboBox(quality, BuildPointCloud.ACCURACY);

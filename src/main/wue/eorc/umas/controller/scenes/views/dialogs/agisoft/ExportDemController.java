@@ -39,8 +39,9 @@ public class ExportDemController implements StaticDialogController {
     private CheckBox saveAlphaChannel;
 
     @Override
-    public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
+    public void init(DisplayController display, Dialog<String> dialog) throws UMASException {
         String prefix = "agisoft.exportdem.";
+        DialogPane pane = dialog.getDialogPane();
 
         epsgLabel = ItemSearcher.getItemById(prefix + "epsglabel", pane, Label.class);
         AgisoftParamInitiator.initLabel(epsgLabel, BuildDem.COORDINATE_SYSTEM);
@@ -52,7 +53,7 @@ public class ExportDemController implements StaticDialogController {
             CoordinateSelector controller = new CoordinateSelector();
 
             try {
-                controller.init(dialogPane, display, coordinateDialog);
+                controller.init(display, coordinateDialog);
             } catch (UMASException e) {
                 UMASException.throwWindow(ErrorType.INTERNAL, "Could not setup coordinate dialog. The system " +
                         "will fallback to EPSG:4326.");
@@ -64,7 +65,6 @@ public class ExportDemController implements StaticDialogController {
 
             if (result.isPresent()){
                 CoordinateSystem coordinateSystem = CoordinateSelector.fromString(controller.toString());
-
                 epsgLabel.setText(coordinateSystem.id());
             }
         });
@@ -124,5 +124,4 @@ public class ExportDemController implements StaticDialogController {
             return null;
         });
     }
-
 }

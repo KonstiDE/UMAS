@@ -24,7 +24,9 @@ import java.util.concurrent.CompletableFuture;
 public class SettingsController implements StaticDialogController {
 
     @Override
-    public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
+    public void init(DisplayController display, Dialog<String> dialog) throws UMASException {
+        DialogPane pane = dialog.getDialogPane();
+
         ComboBox<String> uiTheme = ItemSearcher.getGenericControlById("settings.uitheme", pane, ComboBox.class, String.class);
         ToggleSwitch fullScreenAtStartup = ItemSearcher.getItemById("settings.fullscreenatstartup", pane, ToggleSwitch.class);
 

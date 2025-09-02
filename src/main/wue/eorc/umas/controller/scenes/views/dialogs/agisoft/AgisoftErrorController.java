@@ -2,6 +2,7 @@ package wue.eorc.umas.controller.scenes.views.dialogs.agisoft;
 
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
@@ -22,8 +23,9 @@ public class AgisoftErrorController implements StaticDialogController {
     }
 
     @Override
-    public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
+    public void init(DisplayController display, Dialog<String> dialog) throws UMASException {
         String prefix = "agisoft.error.";
+        DialogPane pane = dialog.getDialogPane();
 
         Label uiTitle = ItemSearcher.getItemById(prefix + "title", pane, Label.class);
         Label uiContent = ItemSearcher.getItemById(prefix + "content", pane, Label.class);

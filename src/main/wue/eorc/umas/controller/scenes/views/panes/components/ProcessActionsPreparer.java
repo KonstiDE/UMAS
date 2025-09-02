@@ -149,7 +149,7 @@ public class ProcessActionsPreparer {
 
                 SetBrightnessController controller = new SetBrightnessController(this);
                 try {
-                    controller.init(dialogPane, display, dialog);
+                    controller.init(display, dialog);
                 } catch (UMASException e) {
                     throw new RuntimeException(e);
                 }
@@ -191,7 +191,7 @@ public class ProcessActionsPreparer {
 
                     Dialog<String> dialog = new UMASDialog(parameterPane, "Align Images", true, true);
                     try {
-                        controller.init(parameterPane, display, dialog);
+                        controller.init(display, dialog);
                     } catch (UMASException e) {
                         throw new RuntimeException(e);
                     }
@@ -230,7 +230,7 @@ public class ProcessActionsPreparer {
 
                     Dialog<String> dialog = new UMASDialog(parameterPane, "Optimize Camera Alignment", true, true);
                     try {
-                        controller.init(parameterPane, display, dialog);
+                        controller.init(display, dialog);
                     } catch (UMASException e) {
                         throw new RuntimeException(e);
                     }
@@ -268,7 +268,7 @@ public class ProcessActionsPreparer {
 
                     Dialog<String> dialog = new UMASDialog(parameterPane, "Build Dense (Point) Cloud", true, true);
                     try {
-                        controller.init(parameterPane, display, dialog);
+                        controller.init(display, dialog);
                     } catch (UMASException e) {
                         throw new RuntimeException(e);
                     }
@@ -306,7 +306,7 @@ public class ProcessActionsPreparer {
 
                     Dialog<String> dialog = new UMASDialog(parameterPane, "Build DEM", true, true);
                     try {
-                        controller.init(parameterPane, display, dialog);
+                        controller.init(display, dialog);
                     } catch (UMASException e) {
                         throw new RuntimeException(e);
                     }
@@ -344,7 +344,7 @@ public class ProcessActionsPreparer {
 
                     Dialog<String> dialog = new UMASDialog(parameterPane, "Build Orthomosaic", true, true);
                     try {
-                        controller.init(parameterPane, display, dialog);
+                        controller.init(display, dialog);
                     } catch (UMASException e) {
                         throw new RuntimeException(e);
                     }
@@ -384,7 +384,7 @@ public class ProcessActionsPreparer {
 
                     Dialog<String> dialog = new UMASDialog(parameterPane, "Export DEM - TIFF", true, true);
                     try {
-                        controller.init(parameterPane, display, dialog);
+                        controller.init(display, dialog);
                     } catch (UMASException e) {
                         throw new RuntimeException(e);
                     }
@@ -427,7 +427,7 @@ public class ProcessActionsPreparer {
 
                     Dialog<String> dialog = new UMASDialog(parameterPane, "Export Orthomosaic - TIFF", true, true);
                     try {
-                        controller.init(parameterPane, display, dialog);
+                        controller.init(display, dialog);
                     } catch (UMASException e) {
                         throw new RuntimeException(e);
                     }
@@ -517,7 +517,7 @@ public class ProcessActionsPreparer {
                     UMASDialog dialog = new UMASDialog(dialogPane, "Batch Edit", true, true);
 
                     try {
-                        batchEditController.init(dialogPane, display.getRootController().getDisplayController(), dialog);
+                        batchEditController.init(display.getRootController().getDisplayController(), dialog);
                     } catch (UMASException e) {
                         throw new RuntimeException(e);
                     }

@@ -28,7 +28,9 @@ public class CoordinateSelector implements StaticDialogController {
     private CoordinateSystem selectedSystem;
 
     @Override
-    public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
+    public void init(DisplayController display, Dialog<String> dialog) throws UMASException {
+        DialogPane pane = dialog.getDialogPane();
+
         table = ItemSearcher.getGenericControlById("table", pane, TableView.class, CoordinateSystem.class);
         initTableViewCellFactories(table);
 
