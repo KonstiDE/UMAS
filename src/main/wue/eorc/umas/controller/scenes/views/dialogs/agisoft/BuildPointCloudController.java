@@ -43,26 +43,27 @@ public class BuildPointCloudController implements StaticDialogController {
         calculatePointConfidence = ItemSearcher.getItemById(prefix + "calculatepointconfidence", pane, CheckBox.class);
         AgisoftParamInitiator.initCheckBox(calculatePointConfidence, BuildPointCloud.CALCULATE_POINT_CONFIDENCE);
 
+
+        setupResultConverter(dialog);
     }
 
     @Override
     public void setupResultConverter(Dialog<String> dialog) {
-        if (buttonType == ButtonType.OK) {
-            Gson gson = new Gson();
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                Gson gson = new Gson();
 
-            HashMap<String, String> parameterMap = new HashMap<>(){{
-                put("quality", quality.getSelectionModel().getSelectedItem());
-                put("depthfiltering", depthFiltering.getSelectionModel().getSelectedItem());
-                put("reusedepthmaps", reuseDepthMaps.isSelected() ? "True" : "False");
-                put("calculatepointcolors", calculatePointColors.isSelected() ? "True" : "False");
-                put("calculatepointconfidence", calculatePointConfidence.isSelected() ? "True" : "False");
-            }};
+                HashMap<String, String> parameterMap = new HashMap<>(){{
+                    put("quality", quality.getSelectionModel().getSelectedItem());
+                    put("depthfiltering", depthFiltering.getSelectionModel().getSelectedItem());
+                    put("reusedepthmaps", reuseDepthMaps.isSelected() ? "True" : "False");
+                    put("calculatepointcolors", calculatePointColors.isSelected() ? "True" : "False");
+                    put("calculatepointconfidence", calculatePointConfidence.isSelected() ? "True" : "False");
+                }};
 
-            return gson.toJson(parameterMap, GsonTypeTokens.hashmapToken);
-        } else if (buttonType == ButtonType.CANCEL) {
+                return gson.toJson(parameterMap, GsonTypeTokens.hashmapToken);
+            }
             return null;
-        }
-
-        return null;
+        });
     }
 }

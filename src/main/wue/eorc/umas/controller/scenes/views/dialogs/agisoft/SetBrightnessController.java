@@ -54,23 +54,24 @@ public class SetBrightnessController implements StaticDialogController {
                 indicator.setVisible(false);
             }
         });
+
+        setupResultConverter(dialog);
     }
 
     @Override
     public void setupResultConverter(Dialog<String> dialog) {
-        if (buttonType == ButtonType.OK) {
-            Gson gson = new Gson();
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                Gson gson = new Gson();
 
-            HashMap<String, String> parameterMap = new HashMap<>(){{
-                put("brightness", brightness.getText());
-                put("contrast", contrast.getText());
-            }};
+                HashMap<String, String> parameterMap = new HashMap<>(){{
+                    put("brightness", brightness.getText());
+                    put("contrast", contrast.getText());
+                }};
 
-            return gson.toJson(parameterMap, GsonTypeTokens.hashmapToken);
-        } else if (buttonType == ButtonType.CANCEL) {
+                return gson.toJson(parameterMap, GsonTypeTokens.hashmapToken);
+            }
             return null;
-        }
-
-        return null;
+        });
     }
 }

@@ -36,7 +36,5 @@ public class AgisoftErrorController implements StaticDialogController {
     }
 
     @Override
-    public void setupResultConverter(Dialog<String> dialog) {
-        return "";
-    }
+    public void setupResultConverter(Dialog<String> dialog) {}
 }

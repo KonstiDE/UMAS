@@ -98,31 +98,32 @@ public class AlignImagesController implements StaticDialogController {
             }
         });
 
+        setupResultConverter(dialog);
+
     }
 
     @Override
     public void setupResultConverter(Dialog<String> dialog) {
-        if (buttonType == ButtonType.OK) {
-            Gson gson = new Gson();
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                Gson gson = new Gson();
 
-            HashMap<String, String> parameterMap = new HashMap<>(){{
-                put("accuracy", accuracy.getSelectionModel().getSelectedItem());
-                put("genericpreselection", genericPreselection.isSelected() ? "True" : "False");
-                put("referencepreselection", referencePreselection.isSelected() ? "True" : "False");
-                put("referencepreselectioncombo", referencePreselectionCombo.getSelectionModel().getSelectedItem());
-                put("keypointlimit", keyPointLimitSave + "");
-                put("keypointlimitpermpx", keyPointLimitPerMpxSave + "");
-                put("tiepointlimit", tiePointLimit.getText());
-                put("excludestationarytiepoints", excludeTiePoints.isSelected() ? "True" : "False");
-                put("guidedimagematching", guidedMatching.isSelected() ? "True" : "False");
-                put("adaptivecameramodelfitting", adaptiveFitting.isSelected() ? "True" : "False");
-            }};
+                HashMap<String, String> parameterMap = new HashMap<>(){{
+                    put("accuracy", accuracy.getSelectionModel().getSelectedItem());
+                    put("genericpreselection", genericPreselection.isSelected() ? "True" : "False");
+                    put("referencepreselection", referencePreselection.isSelected() ? "True" : "False");
+                    put("referencepreselectioncombo", referencePreselectionCombo.getSelectionModel().getSelectedItem());
+                    put("keypointlimit", keyPointLimitSave + "");
+                    put("keypointlimitpermpx", keyPointLimitPerMpxSave + "");
+                    put("tiepointlimit", tiePointLimit.getText());
+                    put("excludestationarytiepoints", excludeTiePoints.isSelected() ? "True" : "False");
+                    put("guidedimagematching", guidedMatching.isSelected() ? "True" : "False");
+                    put("adaptivecameramodelfitting", adaptiveFitting.isSelected() ? "True" : "False");
+                }};
 
-            return gson.toJson(parameterMap, GsonTypeTokens.hashmapToken);
-        } else if (buttonType == ButtonType.CANCEL) {
+                return gson.toJson(parameterMap, GsonTypeTokens.hashmapToken);
+            }
             return null;
-        }
-
-        return null;
+        });
     }
 }

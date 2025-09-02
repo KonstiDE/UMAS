@@ -74,7 +74,6 @@ public class Main extends Application {
                 ClosingController closingController = new ClosingController();
 
                 UMASDialog closingDialog = new UMASDialog(dialogPane, "Over and out!", true, true);
-                closingDialog.setResultConverter(closingController::jsonCallback);
 
                 Optional<String> close = closingDialog.showAndWait();
                 closingDialog.hide();

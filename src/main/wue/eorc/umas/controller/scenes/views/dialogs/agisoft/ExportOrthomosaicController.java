@@ -67,7 +67,6 @@ public class ExportOrthomosaicController implements StaticDialogController {
                 UMASException.throwWindow(ErrorType.INTERNAL, "Could not setup coordinate dialog. The system " +
                         "will fallback to EPSG:4326.");
             }
-            coordinateDialog.setResultConverter(controller::jsonCallback);
 
             Optional<String> result = coordinateDialog.showAndWait();
             coordinateDialog.hide();
@@ -127,33 +126,33 @@ public class ExportOrthomosaicController implements StaticDialogController {
         AgisoftParamInitiator.initCheckBox(saveAlphaChannel, ExportOrthomosaic.SAVE_ALPHA_CHANNEL);
 
 
+        setupResultConverter(dialog);
     }
 
     @Override
     public void setupResultConverter(Dialog<String> dialog) {
-        if (buttonType == ButtonType.OK) {
-            Gson gson = new Gson();
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                Gson gson = new Gson();
 
-            HashMap<String, String> parameterMap = new HashMap<>(){{
-                put("coordinatesystem", epsgLabel.getText());
-                put("backgroundcolor", backgroundColor.getSelectionModel().getSelectedItem());
-                put("writekml", writeKml.isSelected() ? "True" : "False");
-                put("writeworldfile", writeWorldFile.isSelected() ? "True" : "False");
-                put("writetilescheme", writeTileScheme.isSelected() ? "True" : "False");
-                put("imagedescription", imageDescription.getText());
-                put("writetiledtiff", writeTiledTiff.isSelected() ? "True" : "False");
-                put("generatetiffoverviews", generateTiffOverviews.isSelected() ? "True" : "False");
-                put("writebigtifffile", writeBigTiffFile.isSelected() ? "True" : "False");
-                put("savealphachannel", saveAlphaChannel.isSelected() ? "True" : "False");
-                put("tiffcompression", tiffCompression.getSelectionModel().getSelectedItem());
-                put("jpegquality", jpegQualityLabel.getText());
-            }};
+                HashMap<String, String> parameterMap = new HashMap<>(){{
+                    put("coordinatesystem", epsgLabel.getText());
+                    put("backgroundcolor", backgroundColor.getSelectionModel().getSelectedItem());
+                    put("writekml", writeKml.isSelected() ? "True" : "False");
+                    put("writeworldfile", writeWorldFile.isSelected() ? "True" : "False");
+                    put("writetilescheme", writeTileScheme.isSelected() ? "True" : "False");
+                    put("imagedescription", imageDescription.getText());
+                    put("writetiledtiff", writeTiledTiff.isSelected() ? "True" : "False");
+                    put("generatetiffoverviews", generateTiffOverviews.isSelected() ? "True" : "False");
+                    put("writebigtifffile", writeBigTiffFile.isSelected() ? "True" : "False");
+                    put("savealphachannel", saveAlphaChannel.isSelected() ? "True" : "False");
+                    put("tiffcompression", tiffCompression.getSelectionModel().getSelectedItem());
+                    put("jpegquality", jpegQualityLabel.getText());
+                }};
 
-            return gson.toJson(parameterMap, GsonTypeTokens.hashmapToken);
-        } else if (buttonType == ButtonType.CANCEL) {
+                return gson.toJson(parameterMap, GsonTypeTokens.hashmapToken);
+            }
             return null;
-        }
-
-        return null;
+        });
     }
 }

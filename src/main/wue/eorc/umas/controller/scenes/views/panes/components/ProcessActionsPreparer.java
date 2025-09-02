@@ -18,6 +18,7 @@ import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
 import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.*;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.controller.scenes.views.panes.ShowProcessingController;
+import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.WorkflowType;
 import wue.eorc.umas.enums.agisoft.*;
 import wue.eorc.umas.exception.UMASException;
@@ -152,7 +153,6 @@ public class ProcessActionsPreparer {
                 } catch (UMASException e) {
                     throw new RuntimeException(e);
                 }
-                dialog.setResultConverter(controller::jsonCallback);
 
                 Optional<String> result = dialog.showAndWait();
 
@@ -195,7 +195,7 @@ public class ProcessActionsPreparer {
                     } catch (UMASException e) {
                         throw new RuntimeException(e);
                     }
-                    dialog.setResultConverter(controller::jsonCallback);
+
                     Optional<String> json = dialog.showAndWait();
                     dialog.hide();
                     dialog.close();
@@ -234,7 +234,7 @@ public class ProcessActionsPreparer {
                     } catch (UMASException e) {
                         throw new RuntimeException(e);
                     }
-                    dialog.setResultConverter(controller::jsonCallback);
+
                     Optional<String> json = dialog.showAndWait();
                     dialog.hide();
                     dialog.close();
@@ -272,7 +272,7 @@ public class ProcessActionsPreparer {
                     } catch (UMASException e) {
                         throw new RuntimeException(e);
                     }
-                    dialog.setResultConverter(controller::jsonCallback);
+
                     Optional<String> json = dialog.showAndWait();
                     dialog.hide();
                     dialog.close();
@@ -310,7 +310,6 @@ public class ProcessActionsPreparer {
                     } catch (UMASException e) {
                         throw new RuntimeException(e);
                     }
-                    dialog.setResultConverter(controller::jsonCallback);
 
                     Optional<String> json = dialog.showAndWait();
                     dialog.hide();
@@ -349,7 +348,6 @@ public class ProcessActionsPreparer {
                     } catch (UMASException e) {
                         throw new RuntimeException(e);
                     }
-                    dialog.setResultConverter(controller::jsonCallback);
 
                     Optional<String> json = dialog.showAndWait();
                     dialog.hide();
@@ -390,7 +388,6 @@ public class ProcessActionsPreparer {
                     } catch (UMASException e) {
                         throw new RuntimeException(e);
                     }
-                    dialog.setResultConverter(controller::jsonCallback);
 
                     Optional<String> json = dialog.showAndWait();
                     dialog.hide();
@@ -434,7 +431,6 @@ public class ProcessActionsPreparer {
                     } catch (UMASException e) {
                         throw new RuntimeException(e);
                     }
-                    dialog.setResultConverter(controller::jsonCallback);
 
                     Optional<String> json = dialog.showAndWait();
                     dialog.hide();
@@ -519,7 +515,6 @@ public class ProcessActionsPreparer {
                     BatchEditController batchEditController = new BatchEditController(WorkflowType.RGB, ProcessActionsPreparer.this);
 
                     UMASDialog dialog = new UMASDialog(dialogPane, "Batch Edit", true, true);
-                    dialog.setResultConverter(batchEditController::jsonCallback);
 
                     try {
                         batchEditController.init(dialogPane, display.getRootController().getDisplayController(), dialog);
@@ -533,29 +528,31 @@ public class ProcessActionsPreparer {
 
                     HashMap<String, String> map = gson.fromJson(result.orElse(null), GsonTypeTokens.hashmapToken);
 
-                    assert map != null;
-
-                    agisoftCaller.completeBuildRGB(
-                            List.of(addPhotos, setBrightness, alignImages, optimizeCameras, buildPointCloud, buildDem,
-                                    buildOrthomosaic, exportDem, exportOrthomosaic, generateReport),
-                            List.of(
-                                    gson.fromJson(map.get(SET_BRIGHTNESS.name()), GsonTypeTokens.hashmapToken),
-                                    gson.fromJson(map.get(ALIGN_IMAGES.name()), GsonTypeTokens.hashmapToken),
-                                    gson.fromJson(map.get(OPTIMIZE_CAMERAS.name()), GsonTypeTokens.hashmapToken),
-                                    gson.fromJson(map.get(BUILD_POINT_CLOUD.name()), GsonTypeTokens.hashmapToken),
-                                    gson.fromJson(map.get(BUILD_DEM.name()), GsonTypeTokens.hashmapToken),
-                                    gson.fromJson(map.get(BUILD_ORTHOMOSAIC.name()), GsonTypeTokens.hashmapToken),
-                                    gson.fromJson(map.get(EXPORT_DEM.name()), GsonTypeTokens.hashmapToken),
-                                    gson.fromJson(map.get(EXPORT_ORTHOMOSAIC.name()), GsonTypeTokens.hashmapToken)
-                            ),
-                            flight.getOriginFlightDirs(),
-                            DirectoryUtils.figureAgisoftFilePath(flight),
-                            Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportDemName()).toFile().getAbsolutePath(),
-                            Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportOrthomosaicName()).toFile().getAbsolutePath(),
-                            Paths.get(DirectoryUtils.figureReportPath(flight), flight.getGenerateReportName()).toFile().getAbsolutePath(),
-                            flight.getGenerateReportName(),
-                            "Automatically generated Report"
-                    );
+                    if(map != null){
+                        agisoftCaller.completeBuildRGB(
+                                List.of(addPhotos, setBrightness, alignImages, optimizeCameras, buildPointCloud, buildDem,
+                                        buildOrthomosaic, exportDem, exportOrthomosaic, generateReport),
+                                List.of(
+                                        gson.fromJson(map.get(SET_BRIGHTNESS.name()), GsonTypeTokens.hashmapToken),
+                                        gson.fromJson(map.get(ALIGN_IMAGES.name()), GsonTypeTokens.hashmapToken),
+                                        gson.fromJson(map.get(OPTIMIZE_CAMERAS.name()), GsonTypeTokens.hashmapToken),
+                                        gson.fromJson(map.get(BUILD_POINT_CLOUD.name()), GsonTypeTokens.hashmapToken),
+                                        gson.fromJson(map.get(BUILD_DEM.name()), GsonTypeTokens.hashmapToken),
+                                        gson.fromJson(map.get(BUILD_ORTHOMOSAIC.name()), GsonTypeTokens.hashmapToken),
+                                        gson.fromJson(map.get(EXPORT_DEM.name()), GsonTypeTokens.hashmapToken),
+                                        gson.fromJson(map.get(EXPORT_ORTHOMOSAIC.name()), GsonTypeTokens.hashmapToken)
+                                ),
+                                flight.getOriginFlightDirs(),
+                                DirectoryUtils.figureAgisoftFilePath(flight),
+                                Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportDemName()).toFile().getAbsolutePath(),
+                                Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportOrthomosaicName()).toFile().getAbsolutePath(),
+                                Paths.get(DirectoryUtils.figureReportPath(flight), flight.getGenerateReportName()).toFile().getAbsolutePath(),
+                                flight.getGenerateReportName(),
+                                "Automatically generated Report"
+                        );
+                    }else{
+                        UMASException.throwWindow(ErrorType.INTERNAL, "Could not run process");
+                    }
                 }
             }
 
@@ -568,9 +565,16 @@ public class ProcessActionsPreparer {
                 case RGB -> agisoftCaller.completeBuildRGB(
                     List.of(addPhotos, setBrightness, alignImages, optimizeCameras, buildPointCloud, buildDem,
                             buildOrthomosaic, exportDem, exportOrthomosaic, generateReport),
-                    List.of(SetBrightness.values(), AlignImages.values(), OptimizeCameras.values(),
-                            BuildPointCloud.values(), BuildDem.values(), BuildOrthomosaic.values(),
-                            ExportDem.values(), ExportOrthomosaic.values()),
+                    List.of(
+                            getDefaultParameters(SetBrightness.values()),
+                            getDefaultParameters(AlignImages.values()),
+                            getDefaultParameters(OptimizeCameras.values()),
+                            getDefaultParameters(BuildPointCloud.values()),
+                            getDefaultParameters(BuildDem.values()),
+                            getDefaultParameters(BuildOrthomosaic.values()),
+                            getDefaultParameters(ExportDem.values()),
+                            getDefaultParameters( ExportOrthomosaic.values())
+                    ),
                     flight.getOriginFlightDirs(),
                     DirectoryUtils.figureAgisoftFilePath(flight),
                     Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportDemName()).toFile().getAbsolutePath(),

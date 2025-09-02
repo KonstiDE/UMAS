@@ -9,18 +9,18 @@ import wue.eorc.umas.exception.UMASException;
 public class ClosingController implements StaticDialogController {
 
     @Override
-    public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {  }
+    public void init(Pane pane, DisplayController display, Dialog<String> dialog) throws UMASException {
+        setupResultConverter(dialog);
+    }
 
     @Override
     public void setupResultConverter(Dialog<String> dialog) {
         //Not really json
-
-        if(buttonType == ButtonType.OK){
-            return "true";
-        } else if(buttonType == ButtonType.CANCEL){
+        dialog.setResultConverter(buttonType -> {
+            if(buttonType == ButtonType.OK){
+                return "true";
+            }
             return null;
-        }
-
-        return null;
+        });
     }
 }

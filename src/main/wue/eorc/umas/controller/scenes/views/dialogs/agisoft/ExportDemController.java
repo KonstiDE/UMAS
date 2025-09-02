@@ -57,7 +57,6 @@ public class ExportDemController implements StaticDialogController {
                 UMASException.throwWindow(ErrorType.INTERNAL, "Could not setup coordinate dialog. The system " +
                         "will fallback to EPSG:4326.");
             }
-            coordinateDialog.setResultConverter(controller::jsonCallback);
 
             Optional<String> result = coordinateDialog.showAndWait();
             coordinateDialog.hide();
@@ -97,6 +96,8 @@ public class ExportDemController implements StaticDialogController {
         writeBigTiffFile = ItemSearcher.getItemById(prefix + "writebigtifffile", pane, CheckBox.class);
         AgisoftParamInitiator.initCheckBox(writeBigTiffFile, ExportDem.WRITE_BIG_TIFF_FILE);
 
+
+        setupResultConverter(dialog);
     }
 
     @Override
@@ -121,7 +122,7 @@ public class ExportDemController implements StaticDialogController {
                 return gson.toJson(parameterMap, GsonTypeTokens.hashmapToken);
             }
             return null;
-        };
+        });
     }
 
 }

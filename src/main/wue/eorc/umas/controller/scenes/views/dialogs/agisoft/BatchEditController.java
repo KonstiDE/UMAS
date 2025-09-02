@@ -65,42 +65,45 @@ public class BatchEditController implements StaticDialogController {
 
         }
 
-    }
+        setupResultConverter(dialog);
 
-    @Override
-    public void setupResultConverter(Dialog<String> dialog) {
-        Gson gson = new Gson();
-
-        HashMap<String, String> completeResult = new HashMap<>();
-
-        for (Map.Entry<AgisoftTask, Dialog<String>> entry : dialogs.entrySet()) {
-            Dialog<String> dialog = entry.getValue();
-            Callback<ButtonType, String> converter = dialog.getResultConverter();
-
-            if (converter != null) {
-                String value = converter.call(ButtonType.OK);
-                completeResult.put(entry.getKey().name(), value);
-            } else {
-                completeResult.put(entry.getKey().name(), null);
-            }
-        }
-
-
-        return gson.toJson(completeResult, GsonTypeTokens.hashmapToken);
     }
 
     private Dialog<String> setupDialogRegion(DisplayController display, AgisoftDialog agisoftDialogDefinition,
-                                   StaticDialogController controller, Dialog<String> dialog) throws UMASException {
+                                             StaticDialogController controller, Dialog<String> dialog) throws UMASException {
 
+        Dialog<String> newDialog = new Dialog<>();
         DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene(agisoftDialogDefinition.getDialogId());
         dialogPane.getButtonTypes().clear();
 
         grid.addRow(i, dialogPane);
         i++;
 
-        controller.init(dialogPane, display, dialog);
+        controller.init(dialogPane, display, newDialog);
 
-        return dialog;
+        return newDialog;
+    }
+
+    @Override
+    public void setupResultConverter(Dialog<String> dialog) {
+        dialog.setResultConverter(buttonType -> {
+            Gson gson = new Gson();
+
+            HashMap<String, String> completeResult = new HashMap<>();
+
+            for (Map.Entry<AgisoftTask, Dialog<String>> entry : dialogs.entrySet()) {
+                Callback<ButtonType, String> converter = entry.getValue().getResultConverter();
+
+                if (converter != null) {
+                    String value = converter.call(ButtonType.OK);
+                    completeResult.put(entry.getKey().name(), value);
+                } else {
+                    completeResult.put(entry.getKey().name(), null);
+                }
+            }
+
+            return gson.toJson(completeResult, GsonTypeTokens.hashmapToken);
+        });
     }
 
     private String toTitleCase(String input) {

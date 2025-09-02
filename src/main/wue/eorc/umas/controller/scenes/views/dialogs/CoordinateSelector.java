@@ -77,6 +77,8 @@ public class CoordinateSelector implements StaticDialogController {
             return row ;
         });
 
+        setupResultConverter(dialog);
+
     }
 
     @SuppressWarnings("unchecked")
@@ -90,22 +92,22 @@ public class CoordinateSelector implements StaticDialogController {
 
     @Override
     public void setupResultConverter(Dialog<String> dialog) {
-        if (buttonType == ButtonType.OK) {
-            if (table.getSelectionModel().getSelectedItem() != null){
-                selectedSystem = table.getSelectionModel().getSelectedItem();
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                if (table.getSelectionModel().getSelectedItem() != null){
+                    selectedSystem = table.getSelectionModel().getSelectedItem();
+                }
+
+                if (selectedSystem != null) {
+                    return selectedSystem.toString();
+
+                }else{
+                    return null;
+                }
+
             }
-
-            if (selectedSystem != null) {
-                return selectedSystem.toString();
-
-            }else{
-                return null;
-            }
-
-        } else if(buttonType == ButtonType.CANCEL) {
             return null;
-        }
-        return null;
+        });
     }
 
     @Override

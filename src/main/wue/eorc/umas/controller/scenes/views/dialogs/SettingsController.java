@@ -117,10 +117,12 @@ public class SettingsController implements StaticDialogController {
             });
         });
 
+        setupResultConverter(dialog);
+
     }
 
     @Override
     public void setupResultConverter(Dialog<String> dialog) {
-        return null;
+        dialog.setResultConverter(buttonType -> null);
     }
 }

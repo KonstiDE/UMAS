@@ -512,7 +512,12 @@ public class AddFlightController implements StaticDialogController, CopyProgress
 
     @Override
     public void setupResultConverter(Dialog<String> dialog) {
-        return this.flightJson;
+        dialog.setResultConverter(buttonType -> {
+            if(buttonType == ButtonType.OK){
+                return this.flightJson;
+            }
+            return null;
+        });
     }
 
 

@@ -80,46 +80,40 @@ public class OptimizeCamerasController implements StaticDialogController {
 
 
         adaptiveFitting.selectedProperty().addListener((opt, oldVal, newVal) -> {
-            if (newVal){
-                disableCheckboxes(true,
-                        fitF, fitK1, fitK2, fitK3, fitK4, fitCxCy, fitP1, fitP2, fitB1, fitB2, fitAdditional);
-            }else{
-                disableCheckboxes(false,
-                        fitF, fitK1, fitK2, fitK3, fitK4, fitCxCy, fitP1, fitP2, fitB1, fitB2, fitAdditional);
-            }
+            disableCheckboxes(newVal,
+                    fitF, fitK1, fitK2, fitK3, fitK4, fitCxCy, fitP1, fitP2, fitB1, fitB2, fitAdditional);
         });
 
-
+        setupResultConverter(dialog);
 
     }
 
     @Override
     public void setupResultConverter(Dialog<String> dialog) {
-        if (buttonType == ButtonType.OK) {
-            Gson gson = new Gson();
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                Gson gson = new Gson();
 
-            HashMap<String, String> parameterMap = new HashMap<>(){{
-                put("fitf", fitF.isSelected() ? "True" : "False");
-                put("fitk1", fitK1.isSelected() ? "True" : "False");
-                put("fitk2", fitK2.isSelected() ? "True" : "False");
-                put("fitk3", fitK3.isSelected() ? "True" : "False");
-                put("fitk4", fitK4.isSelected() ? "True" : "False");
-                put("fitcxcy", fitCxCy.isSelected() ? "True" : "False");
-                put("fitp1", fitP1.isSelected() ? "True" : "False");
-                put("fitp2", fitP2.isSelected() ? "True" : "False");
-                put("fitb1", fitB1.isSelected() ? "True" : "False");
-                put("fitb2", fitB2.isSelected() ? "True" : "False");
-                put("adaptivecameramodelfitting", adaptiveFitting.isSelected() ? "True" : "False");
-                put("estimatetiepointcovariance", estimateTieCov.isSelected() ? "True" : "False");
-                put("fitadditionalcorrections", fitAdditional.isSelected() ? "True" : "False");
-            }};
+                HashMap<String, String> parameterMap = new HashMap<>(){{
+                    put("fitf", fitF.isSelected() ? "True" : "False");
+                    put("fitk1", fitK1.isSelected() ? "True" : "False");
+                    put("fitk2", fitK2.isSelected() ? "True" : "False");
+                    put("fitk3", fitK3.isSelected() ? "True" : "False");
+                    put("fitk4", fitK4.isSelected() ? "True" : "False");
+                    put("fitcxcy", fitCxCy.isSelected() ? "True" : "False");
+                    put("fitp1", fitP1.isSelected() ? "True" : "False");
+                    put("fitp2", fitP2.isSelected() ? "True" : "False");
+                    put("fitb1", fitB1.isSelected() ? "True" : "False");
+                    put("fitb2", fitB2.isSelected() ? "True" : "False");
+                    put("adaptivecameramodelfitting", adaptiveFitting.isSelected() ? "True" : "False");
+                    put("estimatetiepointcovariance", estimateTieCov.isSelected() ? "True" : "False");
+                    put("fitadditionalcorrections", fitAdditional.isSelected() ? "True" : "False");
+                }};
 
-            return gson.toJson(parameterMap, GsonTypeTokens.hashmapToken);
-        } else if (buttonType == ButtonType.CANCEL) {
+                return gson.toJson(parameterMap, GsonTypeTokens.hashmapToken);
+            }
             return null;
-        }
-
-        return null;
+        });
     }
 
     private void disableCheckboxes(boolean disable, CheckBox... boxes){

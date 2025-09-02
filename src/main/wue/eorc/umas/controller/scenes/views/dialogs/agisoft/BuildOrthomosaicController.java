@@ -54,7 +54,6 @@ public class BuildOrthomosaicController implements StaticDialogController {
                 UMASException.throwWindow(ErrorType.INTERNAL, "Could not setup coordinate dialog. The system " +
                         "will fallback to EPSG:4326.");
             }
-            coordinateDialog.setResultConverter(controller::jsonCallback);
 
             Optional<String> result = coordinateDialog.showAndWait();
             coordinateDialog.hide();
@@ -97,28 +96,29 @@ public class BuildOrthomosaicController implements StaticDialogController {
             }
         });
 
+        setupResultConverter(dialog);
+
     }
 
     @Override
     public void setupResultConverter(Dialog<String> dialog) {
-        if (buttonType == ButtonType.OK) {
-            Gson gson = new Gson();
+        dialog.setResultConverter(buttonType -> {
+            if (buttonType == ButtonType.OK) {
+                Gson gson = new Gson();
 
-            HashMap<String, String> parameterMap = new HashMap<>(){{
-                put("coordinatesystem", epsgLabel.getText());
-                put("surface", surface.getSelectionModel().getSelectedItem());
-                put("blendingmode", blendingMode.getSelectionModel().getSelectedItem());
-                put("refineseamlines", refineSeamlines.isSelected() ? "True" : "False");
-                put("enableholefilling", enableHoleFilling.isSelected() ? "True" : "False");
-                put("enableghostingfilter", enableGhostingFilter.isSelected() ? "True" : "False");
-                put("enablebackfaceculling", enableBackFaceCulling.isSelected() ? "True" : "False");
-            }};
+                HashMap<String, String> parameterMap = new HashMap<>(){{
+                    put("coordinatesystem", epsgLabel.getText());
+                    put("surface", surface.getSelectionModel().getSelectedItem());
+                    put("blendingmode", blendingMode.getSelectionModel().getSelectedItem());
+                    put("refineseamlines", refineSeamlines.isSelected() ? "True" : "False");
+                    put("enableholefilling", enableHoleFilling.isSelected() ? "True" : "False");
+                    put("enableghostingfilter", enableGhostingFilter.isSelected() ? "True" : "False");
+                    put("enablebackfaceculling", enableBackFaceCulling.isSelected() ? "True" : "False");
+                }};
 
-            return gson.toJson(parameterMap, GsonTypeTokens.hashmapToken);
-        } else if (buttonType == ButtonType.CANCEL) {
+                return gson.toJson(parameterMap, GsonTypeTokens.hashmapToken);
+            }
             return null;
-        }
-
-        return null;
+        });
     }
 }
