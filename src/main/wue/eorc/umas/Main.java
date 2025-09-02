@@ -4,6 +4,7 @@ import javafx.geometry.Rectangle2D;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.scene.control.DialogPane;
+import javafx.scene.image.Image;
 import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
@@ -22,6 +23,7 @@ import wue.eorc.umas.loader.Settings;
 
 import java.io.IOException;
 import java.net.URISyntaxException;
+import java.util.Objects;
 import java.util.Optional;
 
 public class Main extends Application {
@@ -42,7 +44,7 @@ public class Main extends Application {
         VBox root = (VBox) loader.getScene("main");
         RootController rootController = new RootController(root, loader);
 
-        Scene scene = new Scene(root, 1024, 720);
+        Scene scene = new Scene(root, 1440, 900);
 
         // Check settings
         if(Settings.useDarkLayout()){
@@ -61,9 +63,10 @@ public class Main extends Application {
             primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
         }
 
-        /*primaryStage.getIcons().add(new Image(
-                Objects.requireNonNull(this.getClass().getResourceAsStream("icon.ac"))
-        ));*/
+        primaryStage.getIcons().add(new Image(
+                Objects.requireNonNull(getClass().
+                        getClassLoader().getResourceAsStream("assets/icons/logo_jm.png"))
+        ));
 
         primaryStage.setScene(scene);
         primaryStage.show();
