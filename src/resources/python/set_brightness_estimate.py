@@ -33,8 +33,8 @@ def estimate_brightness_and_contrast(psx, chunk_lab):
         print(f"vn:SET_BRIGHTNESS_ESTIMATE:{sum(bs) / len(bs)}#{sum(cs) / len(cs)}")
 
     else:
+        print(f"ve:SET_BRIGHTNESS_ESTIMATE:Please add images first.~Could not estimate brightness values, since no photos are currently added.~UMAS will fallback to 100 brightness and 100 contrast.")
         print(f"vn:SET_BRIGHTNESS_ESTIMATE:{100}#{100}")
-        print(f"ve:SET_BRIGHTNESS_ESTIMATE:Could not estimate brightness values, since no photos are currently added.\n\nPlease add images first.\n\nUMAS will fallback to 100 brightness and 100 contrast.")
 
 
     del doc

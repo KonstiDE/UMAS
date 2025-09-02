@@ -68,7 +68,7 @@ public class SettingsController implements StaticDialogController {
 
             File file = fileChooser.showOpenDialog(display.rootControl.getScene().getWindow());
             try {
-                String version = new AgisoftCaller(null, null)
+                String version = new AgisoftCaller(null, null, display)
                         .checkAgisoftVersion(file.getAbsolutePath());
 
                 if(version != null){

@@ -33,9 +33,9 @@ public class ShowProcessingController implements ViewController, AgisoftQueueLis
     private final AgisoftCaller agisoftCaller;
     private final Flight flight;
 
-    public ShowProcessingController(Flight flight) throws URISyntaxException {
+    public ShowProcessingController(Flight flight, DisplayController display) throws URISyntaxException {
         this.flight = flight;
-        this.agisoftCaller = new AgisoftCaller(this, this);
+        this.agisoftCaller = new AgisoftCaller(this, this, display);
     }
 
     public Pane processingPaneRoot;

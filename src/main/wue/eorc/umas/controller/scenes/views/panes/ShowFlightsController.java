@@ -323,7 +323,7 @@ public class ShowFlightsController implements ViewController {
                             display.switchSceneTo(
                                     SplitPanePosition.RIGHT,
                                     display.getSceneLoader().getScene("show_processing"),
-                                    new ShowProcessingController(flight)
+                                    new ShowProcessingController(flight, display)
                             );
                         } catch (URISyntaxException e) {
                             UMASException.throwWindow(ErrorType.USER, "Could not find the path to Agisoft. Please update this in the settings.");

@@ -1,12 +1,17 @@
 package wue.eorc.umas.agisoft;
 
 import javafx.application.Platform;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Pair;
+import wue.eorc.umas.controller.customs.UMASDialog;
 import wue.eorc.umas.controller.listeners.AgisoftCallbackListener;
 import wue.eorc.umas.controller.listeners.AgisoftQueueListener;
+import wue.eorc.umas.controller.scenes.main.DisplayController;
+import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.AgisoftErrorController;
 import wue.eorc.umas.enums.agisoft.AgisoftParameter;
 import wue.eorc.umas.enums.agisoft.AgisoftTask;
 import wue.eorc.umas.enums.Setting;
@@ -32,9 +37,12 @@ public class AgisoftCaller {
     public AgisoftQueueListener agisoftQueueListener;
     public AgisoftCallbackListener agisoftCallbackListener;
 
-    public AgisoftCaller(AgisoftQueueListener agisoftQueueListener, AgisoftCallbackListener agisoftCallbackListener) throws URISyntaxException {
+    public DisplayController display;
+
+    public AgisoftCaller(AgisoftQueueListener agisoftQueueListener, AgisoftCallbackListener agisoftCallbackListener, DisplayController display) throws URISyntaxException {
         this.agisoftQueueListener = agisoftQueueListener;
         this.agisoftCallbackListener = agisoftCallbackListener;
+        this.display = display;
     }
 
     public boolean createProject(String psxFilePath) throws IOException, InterruptedException {
@@ -390,7 +398,7 @@ public class AgisoftCaller {
     }
 
     // !!!Signal key must be 4 chars long!!!
-    public static Pair<AgisoftTask, String> watchForSignal(String signalKey, InputStream inputStream, AgisoftCallbackListener listener, WorkflowType workflowType, AgisoftTask task, Pane pane) throws IOException {
+    public Pair<AgisoftTask, String> watchForSignal(String signalKey, InputStream inputStream, AgisoftCallbackListener listener, WorkflowType workflowType, AgisoftTask task, Pane pane) throws IOException {
         try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
             String line;
             while ((line = reader.readLine()) != null) {
@@ -417,6 +425,30 @@ public class AgisoftCaller {
                         if(listener != null && pane != null)
                             listener.callback(pane, workflowType, currentTask, split[2]);
                     }
+                }
+                if(line.startsWith("ve:")){
+                    final String[] split = line.split(":");
+
+                    Platform.runLater(() -> {
+                        AgisoftTask currentTask = AgisoftTask.valueOf(split[1]);
+
+                        DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene("agisoft_error_dialog");
+                        Dialog<String> dialog = new UMASDialog(dialogPane, "Error", true, true);
+
+                        String[] splitForError = split[2].split("~");
+
+                        AgisoftErrorController errorController = new AgisoftErrorController(
+                                splitForError[0], splitForError[1], splitForError[2]);
+
+                        try {
+                            errorController.init(dialogPane, display, dialog);
+                        } catch (UMASException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        dialog.show();
+                    });
+
                 }
             }
         } catch (UMASException e) {
