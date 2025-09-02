@@ -97,7 +97,6 @@ public class UMASDialog extends Dialog<String> {
             this.getDialogPane().getScene().getStylesheets().add(Settings.darkModeDialog);
         }
 
-        this.getDialogPane().getScene().getStylesheets().add("styles/window-shadow.css");
     }
 
 }
