@@ -127,7 +127,7 @@ public class ProcessActionsPreparer {
                         this.flight.getImageTypes().keySet().stream()
                                 .filter(i -> this.workflowType.getImageTypes().contains(i))
                                 .map(i -> this.flight.getImageTypes().get(i)).toList(),
-                        this.workflowType);
+                        this.workflowType, false);
 
             }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
                 setupModificationDialog(mouseEvent, null);
@@ -180,7 +180,7 @@ public class ProcessActionsPreparer {
         alignPhotos.setOnMouseClicked(mouseEvent -> {
             if(mouseEvent.getButton() == MouseButton.PRIMARY){
                 agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                        this.workflowType, getDefaultParameters(AlignImages.values()));
+                        this.workflowType, getDefaultParameters(AlignImages.values()), false);
 
             }else if(mouseEvent.getButton() == MouseButton.SECONDARY){
                 setupModificationDialog(mouseEvent, event -> {
@@ -202,7 +202,7 @@ public class ProcessActionsPreparer {
 
                     if (json.isPresent()){
                         agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                                this.workflowType, retrieveManualChoice(json.orElse(null)));
+                                this.workflowType, retrieveManualChoice(json.orElse(null)), false);
                     }
                 });
 
@@ -257,7 +257,7 @@ public class ProcessActionsPreparer {
         buildPointCloud.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY){
                 agisoftCaller.buildPointCloud(buildPointCloud, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                        this.workflowType, getDefaultParameters(BuildPointCloud.values()));
+                        this.workflowType, getDefaultParameters(BuildPointCloud.values()), false);
 
             }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
                 setupModificationDialog(mouseEvent, event -> {
@@ -279,7 +279,7 @@ public class ProcessActionsPreparer {
 
                     if (json.isPresent()){
                         agisoftCaller.buildPointCloud(buildPointCloud, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                                this.workflowType, retrieveManualChoice(json.orElse(null)));
+                                this.workflowType, retrieveManualChoice(json.orElse(null)), false);
                     }
                 });
             }
@@ -295,7 +295,7 @@ public class ProcessActionsPreparer {
         buildDem.setOnMouseClicked(mouseEvent -> {
             if(mouseEvent.getButton() == MouseButton.PRIMARY) {
                 agisoftCaller.buildDem(buildDem, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                        this.workflowType, getDefaultParameters(BuildDem.values()));
+                        this.workflowType, getDefaultParameters(BuildDem.values()), false);
 
             } else if (mouseEvent.getButton() == MouseButton.SECONDARY){
                 setupModificationDialog(mouseEvent, event -> {
@@ -317,7 +317,7 @@ public class ProcessActionsPreparer {
 
                     if (json.isPresent()){
                         agisoftCaller.buildDem(buildDem, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                                this.workflowType, retrieveManualChoice(json.orElse(null)));
+                                this.workflowType, retrieveManualChoice(json.orElse(null)), false);
                     }
                 });
             }
@@ -333,7 +333,7 @@ public class ProcessActionsPreparer {
         buildOrthomosaic.setOnMouseClicked(mouseEvent -> {
             if(mouseEvent.getButton() == MouseButton.PRIMARY){
                 agisoftCaller.buildOrthomosaic(buildOrthomosaic, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                        this.workflowType, getDefaultParameters(BuildOrthomosaic.values()));
+                        this.workflowType, getDefaultParameters(BuildOrthomosaic.values()), false);
 
             }else{
                 setupModificationDialog(mouseEvent, event -> {
@@ -355,7 +355,7 @@ public class ProcessActionsPreparer {
 
                     if (json.isPresent()){
                         agisoftCaller.buildOrthomosaic(buildOrthomosaic, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                                this.workflowType, retrieveManualChoice(json.orElse(null)));
+                                this.workflowType, retrieveManualChoice(json.orElse(null)), false);
                     }
                 });
             }
@@ -373,7 +373,7 @@ public class ProcessActionsPreparer {
                 agisoftCaller.exportDem(exportDem, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
                         DirectoryUtils.figureExportPath(this.flight),
                         this.flight.getExportDemName()
-                ).toFile().getAbsolutePath(), this.workflowType, getDefaultParameters(ExportDem.values()));
+                ).toFile().getAbsolutePath(), this.workflowType, getDefaultParameters(ExportDem.values()), false);
 
             } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
                 setupModificationDialog(mouseEvent, event -> {
@@ -397,7 +397,8 @@ public class ProcessActionsPreparer {
                         agisoftCaller.exportDem(exportDem, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
                                 DirectoryUtils.figureExportPath(this.flight),
                                 this.flight.getExportDemName()
-                        ).toFile().getAbsolutePath(), this.workflowType, retrieveManualChoice(json.orElse(null)));
+                        ).toFile().getAbsolutePath(), this.workflowType, retrieveManualChoice(json.orElse(null))
+                                , false);
                     }
                 });
             }
@@ -416,7 +417,7 @@ public class ProcessActionsPreparer {
                 agisoftCaller.exportOrtho(exportOrtho, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
                         DirectoryUtils.figureExportPath(this.flight),
                         this.flight.getExportOrthomosaicName()
-                ).toFile().getAbsolutePath(), this.workflowType, getDefaultParameters(ExportOrthomosaic.values()));
+                ).toFile().getAbsolutePath(), this.workflowType, getDefaultParameters(ExportOrthomosaic.values()), false);
 
             } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
                 setupModificationDialog(mouseEvent, event -> {
@@ -440,7 +441,7 @@ public class ProcessActionsPreparer {
                         agisoftCaller.exportOrtho(exportOrtho, DirectoryUtils.figureAgisoftFilePath(this.flight), Paths.get(
                                 DirectoryUtils.figureExportPath(this.flight),
                                 this.flight.getExportOrthomosaicName()
-                        ).toFile().getAbsolutePath(), this.workflowType, retrieveManualChoice(json.orElse(null)));
+                        ).toFile().getAbsolutePath(), this.workflowType, retrieveManualChoice(json.orElse(null)), false);
                     }
                 });
             }
@@ -462,7 +463,7 @@ public class ProcessActionsPreparer {
                         ).toFile().getAbsolutePath(),
                         this.flight.getGenerateReportName(),
                         "Automatically generated Report",
-                        this.workflowType
+                        this.workflowType, false
                 );
             }else if(mouseEvent.getButton() == MouseButton.SECONDARY){
                 setupModificationDialog(mouseEvent, null);

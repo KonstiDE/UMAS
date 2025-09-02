@@ -3,38 +3,51 @@ import sys
 
 import Metashape as ms
 
-from utils import get_arg, report_progress
+from utils import get_arg, report_progress, get_chunk, rb
 
 
 def add_photos(file, chunk_lab, folders):
     doc = ms.Document()
 
     doc.open(path=file, read_only=False, ignore_lock=True)
-    chunk = doc.addChunk()
-    chunk.label = chunk_lab
 
-    for folder in folders:
-        photos = os.listdir(folder)
-        photos = [os.path.join(folder, photo) for photo in photos] # supplies full names
+    chunk = get_chunk(doc.chunks, chunk_lab)
 
-        chunk.addPhotos(
-            photos,
-            layout=ms.UndefinedLayout, # options: UndefinedLayout, FlatLayout, MultiframeLayout, MultiplaneLayout
-            strip_extensions=True,  # if False, adds ".JPG" to image name
-            load_reference=True,
-            load_xmp_calibration=True,
-            load_xmp_orientation=True,
-            load_xmp_accuracy=False,
-            load_xmp_antenna=True,
-            load_rpc_txt=False,
-            progress=report_progress
-        )
+    batch = rb(batch)
 
-    doc.save(file)
+    if chunk is not None and not batch:
+        print(f"ve:ADD_PHOTOS:Images already exist!~The images were already added to the chunk.~Please remove them to continue.")
+        print("vn:ADD_PHOTOS:false")
+    else:
+        if batch:
+            doc.remove(chunk)
+
+        chunk = doc.addChunk()
+        chunk.label = chunk_lab
+
+        for folder in folders:
+            photos = os.listdir(folder)
+            photos = [os.path.join(folder, photo) for photo in photos] # supplies full names
+
+            chunk.addPhotos(
+                photos,
+                layout=ms.UndefinedLayout, # options: UndefinedLayout, FlatLayout, MultiframeLayout, MultiplaneLayout
+                strip_extensions=True,  # if False, adds ".JPG" to image name
+                load_reference=True,
+                load_xmp_calibration=True,
+                load_xmp_orientation=True,
+                load_xmp_accuracy=False,
+                load_xmp_antenna=True,
+                load_rpc_txt=False,
+                progress=report_progress
+            )
+
+        doc.save(file)
+
+        print("vn:ADD_PHOTOS:true")
 
     del doc
 
-    print("vn:ADD_PHOTOS:true")
 
 
 if __name__ == '__main__':

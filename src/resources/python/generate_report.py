@@ -4,19 +4,22 @@ import sys
 import Metashape
 import Metashape as ms
 
-from utils import get_arg, report_progress, get_chunk
+from utils import get_arg, report_progress, get_chunk, rb
 
 
-def generate_report(psx_file, report_file, flight_name, desc, chunk_lab):
+def generate_report(psx_file, report_file, flight_name, desc, chunk_lab, batch):
     doc = ms.Document()
 
     doc.open(path=psx_file, read_only=False, ignore_lock=True)
 
     chunk = get_chunk(doc.chunks, chunk_lab)
 
-    if chunk is not None:
+    batch = rb(batch)
+
+    if chunk is not None and not batch:
         if os.path.exists(report_file):
-            print("vd: This Report file already exists!")
+            print("ve:This report file already exists!~For this chunk, a report was already exported which cannot be overwritten.~Please remove the current report.")
+            print("vn:GENERATE_REPORT:false")
         else:
             for chunk in doc.chunks:
                 chunk.exportReport(
@@ -46,5 +49,6 @@ if __name__ == '__main__':
     flights_name = get_arg(args, "-flightName")
     description = get_arg(args, "-description")
     chunk_label = get_arg(args, "-chunk_label")
+    batch_edit = get_arg(args, "-batch")
 
-    generate_report(project_file, target_file, flights_name, description, chunk_label)
+    generate_report(project_file, target_file, flights_name, description, chunk_label, batch_edit)

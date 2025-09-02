@@ -52,6 +52,8 @@ def align_photos(file, chunk_lab,
 
     chunk = get_chunk(doc.chunks, chunk_lab)
 
+    batch = rb(batch)
+
     if chunk.point_cloud is not None and not batch:
         print(f"ve:ALIGN_IMAGES:Chunk is already aligned!~The images within this chunk already have been aligned to each other.~Please remove the current alignment first.")
         print("vn:ALIGN_IMAGES:false")

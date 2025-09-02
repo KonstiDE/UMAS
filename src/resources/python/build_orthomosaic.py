@@ -30,6 +30,7 @@ def build_ortho(file, chunk_lab, surface, blending_mode, refine_seamlines, enabl
     else:
         blending = ms.MosaicBlending
 
+    batch = rb(batch)
 
     if chunk is not None:
         if chunk.orthomosaic is not None and not batch:

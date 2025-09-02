@@ -103,7 +103,7 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.ADD_PHOTOS_CHECK, stackPane, pb, true);
     }
 
-    public void addPhotos(StackPane stackPane, String psxFile, List<String> folders, WorkflowType workflowType){
+    public void addPhotos(StackPane stackPane, String psxFile, List<String> folders, WorkflowType workflowType, boolean batch){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "add_photos.py");
 
@@ -156,7 +156,7 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.ALIGN_IMAGES_CHECK, stackPane, pb, true);
     }
 
-    public void alignPhotos(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams){
+    public void alignPhotos(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams, boolean batch){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "align_images.py");
 
@@ -200,7 +200,7 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.BUILD_POINT_CLOUD_CHECK, stackPane, pb, true);
     }
 
-    public void buildPointCloud(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams){
+    public void buildPointCloud(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams, boolean batch){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "build_point_cloud.py");
 
@@ -222,7 +222,7 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.BUILD_DEM_CHECK, stackPane, pb, true);
     }
 
-    public void buildDem(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams){
+    public void buildDem(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams, boolean batch){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "build_dem.py");
 
@@ -244,7 +244,7 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.BUILD_ORTHOMOSAIC_CHECK, stackPane, pb, true);
     }
 
-    public void buildOrthomosaic(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams){
+    public void buildOrthomosaic(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams, boolean batch){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "build_orthomosaic.py");
 
@@ -267,7 +267,7 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.EXPORT_DEM_CHECK, stackPane, pb, true);
 
     }
-    public void exportDem(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType, HashMap<String, String> agisoftParams){
+    public void exportDem(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType, HashMap<String, String> agisoftParams, boolean batch){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "export_dem.py");
 
@@ -291,7 +291,7 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.EXPORT_ORTHOMOSAIC_CHECK, stackPane, pb, true);
 
     }
-    public void exportOrtho(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType, HashMap<String, String> agisoftParams){
+    public void exportOrtho(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType, HashMap<String, String> agisoftParams, boolean batch){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "export_orthomosaic.py");
 
@@ -315,7 +315,7 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.GENERATE_REPORT_CHECK, stackPane, pb, true);
 
     }
-    public void generateReport(StackPane stackPane, String psxFile, String targetFile, String flightName, String description, WorkflowType workflowType){
+    public void generateReport(StackPane stackPane, String psxFile, String targetFile, String flightName, String description, WorkflowType workflowType, boolean batch){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "generate_report.py");
 
@@ -332,16 +332,16 @@ public class AgisoftCaller {
                                  List<String> folders, String psxFile, String demFile, String orthoFile,
                                  String reportFile, String flightName, String reportDescription){
 
-        addPhotos(stackPanes.get(0), psxFile, folders, WorkflowType.RGB);
+        addPhotos(stackPanes.get(0), psxFile, folders, WorkflowType.RGB, true);
         setBrightness(stackPanes.get(1), psxFile, WorkflowType.RGB, agisoftParameters.get(0));
-        alignPhotos(stackPanes.get(2), psxFile, WorkflowType.RGB, agisoftParameters.get(1));
+        alignPhotos(stackPanes.get(2), psxFile, WorkflowType.RGB, agisoftParameters.get(1), true);
         optimizeCameras(stackPanes.get(3), psxFile, WorkflowType.RGB, agisoftParameters.get(2));
-        buildPointCloud(stackPanes.get(4), psxFile, WorkflowType.RGB, agisoftParameters.get(3));
-        buildDem(stackPanes.get(5), psxFile, WorkflowType.RGB, agisoftParameters.get(4));
-        buildOrthomosaic(stackPanes.get(6), psxFile, WorkflowType.RGB, agisoftParameters.get(5));
-        exportDem(stackPanes.get(7), psxFile, demFile, WorkflowType.RGB, agisoftParameters.get(6));
-        exportOrtho(stackPanes.get(8), psxFile, orthoFile, WorkflowType.RGB, agisoftParameters.get(7));
-        generateReport(stackPanes.get(9), psxFile, reportFile, flightName, reportDescription, WorkflowType.RGB);
+        buildPointCloud(stackPanes.get(4), psxFile, WorkflowType.RGB, agisoftParameters.get(3), true);
+        buildDem(stackPanes.get(5), psxFile, WorkflowType.RGB, agisoftParameters.get(4), true);
+        buildOrthomosaic(stackPanes.get(6), psxFile, WorkflowType.RGB, agisoftParameters.get(5), true);
+        exportDem(stackPanes.get(7), psxFile, demFile, WorkflowType.RGB, agisoftParameters.get(6), true);
+        exportOrtho(stackPanes.get(8), psxFile, orthoFile, WorkflowType.RGB, agisoftParameters.get(7), true);
+        generateReport(stackPanes.get(9), psxFile, reportFile, flightName, reportDescription, WorkflowType.RGB, true);
 
     }
 

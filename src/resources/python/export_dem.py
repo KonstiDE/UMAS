@@ -17,6 +17,8 @@ def export_dem(psx_file, dem_file, chunk_lab, coordinate_system, raster_transfor
 
     chunk = get_chunk(doc.chunks, chunk_lab)
 
+    batch = rb(batch)
+
     if raster_transform == "None":
         raster_transform_mode = ms.RasterTransformNone
     elif raster_transform == "Palette":
@@ -29,7 +31,7 @@ def export_dem(psx_file, dem_file, chunk_lab, coordinate_system, raster_transfor
             print("ve:This DEM file already exists!~For this chunk, a DEM was already exported which cannot be overwritten.~Please remove the current DEM.")
             print("vn:EXPORT_DEM:false")
         else:
-            projection = Metashape.OrthoProjection()
+            projection = ms.OrthoProjection()
             projection.crs = ms.CoordinateSystem(coordinate_system)
 
             if chunk.elevation is not None:

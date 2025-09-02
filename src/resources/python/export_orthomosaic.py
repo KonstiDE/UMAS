@@ -41,6 +41,8 @@ def export_orthomosaic(psx_file, ortho_file, chunk_lab, coordinate_system, backg
     else:
         white_background_mode = False
 
+    batch = rb(batch)
+
     if chunk is not None and not batch:
         if os.path.exists(ortho_file):
             print("vd: This Orthomosaic file already exists!~For this chunk, a Orthomosaic was already exported which cannot be overwritten.~Please remove the current Orthomosaic.")
