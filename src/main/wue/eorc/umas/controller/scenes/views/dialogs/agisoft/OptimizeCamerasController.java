@@ -81,10 +81,8 @@ public class OptimizeCamerasController implements StaticDialogController {
         AgisoftParamInitiator.initCheckBox(fitAdditional, OptimizeCameras.FIT_ADDITIONAL);
 
 
-        adaptiveFitting.selectedProperty().addListener((opt, oldVal, newVal) -> {
-            disableCheckboxes(newVal,
-                    fitF, fitK1, fitK2, fitK3, fitK4, fitCxCy, fitP1, fitP2, fitB1, fitB2, fitAdditional);
-        });
+        adaptiveFitting.selectedProperty().addListener((opt, oldVal, newVal) -> disableCheckboxes(newVal,
+                fitF, fitK1, fitK2, fitK3, fitK4, fitCxCy, fitP1, fitP2, fitB1, fitB2, fitAdditional));
 
         setupResultConverter(dialog);
 

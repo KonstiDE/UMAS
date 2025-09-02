@@ -1,10 +1,7 @@
 package wue.eorc.umas.controller.scenes.views.dialogs.agisoft;
 
 import com.google.gson.Gson;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
 import wue.eorc.umas.controller.customs.UMASDialog;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.controller.scenes.views.dialogs.CoordinateSelector;
@@ -85,15 +82,12 @@ public class BuildOrthomosaicController implements StaticDialogController {
         enableBackFaceCulling = ItemSearcher.getItemById(prefix + "enablebackfaceculling", pane, CheckBox.class);
         AgisoftParamInitiator.initCheckBox(enableBackFaceCulling, BuildOrthomosaic.ENABLE_BACK_FACE_CULLING);
 
-        blendingMode.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue<? extends String> opt, String oldVal, String newVal) {
-                if(newVal.equalsIgnoreCase("Average")){
-                    refineSeamlines.setDisable(true);
-                    refineSeamlines.setSelected(false);
-                }else{
-                    refineSeamlines.setDisable(false);
-                }
+        blendingMode.getSelectionModel().selectedItemProperty().addListener((opt, oldVal, newVal) -> {
+            if (newVal.equalsIgnoreCase("Average")) {
+                refineSeamlines.setDisable(true);
+                refineSeamlines.setSelected(false);
+            } else {
+                refineSeamlines.setDisable(false);
             }
         });
 

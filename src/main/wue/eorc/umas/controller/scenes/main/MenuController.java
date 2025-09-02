@@ -53,14 +53,11 @@ public class MenuController {
 
         ObservableList<MenuItem> mainMenu = menus.get(0).getItems();
 
-        getMenuItem(mainMenu, "newmission").setOnAction(_ignored -> {
-
-                rootController.getDisplayController().switchSceneTo(
-                        SplitPanePosition.LEFT,
-                        rootController.getSceneLoader().getScene("new_mission"),
-                        new CreateProjectController()
-                );
-        });
+        getMenuItem(mainMenu, "newmission").setOnAction(_ignored -> rootController.getDisplayController().switchSceneTo(
+                SplitPanePosition.LEFT,
+                rootController.getSceneLoader().getScene("new_mission"),
+                new CreateProjectController()
+        ));
 
         getMenuItem(mainMenu, "openmission").setOnAction(_ignored -> {
             FileChooser fileChooser = new FileChooser();
@@ -119,12 +116,10 @@ public class MenuController {
             });
         }
 
-        getMenuItem(mainMenu, "settings").setOnAction(_ignored -> {
-            rootController.getDisplayController().openSettingsDialog(
-                    (DialogPane) rootController.getSceneLoader().getScene("settings"),
-                    new SettingsController()
-            );
-        });
+        getMenuItem(mainMenu, "settings").setOnAction(_ignored -> rootController.getDisplayController().openSettingsDialog(
+                (DialogPane) rootController.getSceneLoader().getScene("settings"),
+                new SettingsController()
+        ));
 
 
         mainMenu.get(mainMenu.size() - 1).setOnAction(ignored -> System.exit(0));

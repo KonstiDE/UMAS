@@ -42,13 +42,7 @@ public class ProjectCache {
             }
             cachePath = cacheFile;
 
-            Iterator<Map.Entry<String, Timestamp>> it = cache.entrySet().iterator();
-            while (it.hasNext()) {
-                Map.Entry<String, Timestamp> item = it.next();
-                if(!new File(item.getKey()).exists()){
-                    it.remove();
-                }
-            }
+            cache.entrySet().removeIf(item -> !new File(item.getKey()).exists());
             saveCache();
 
         }

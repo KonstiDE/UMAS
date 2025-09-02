@@ -63,20 +63,20 @@ public class ItemSearcher {
                 T casted = type.cast(found);
 
                 if (genericType != null) {
-                    boolean valid;
-                    if (casted instanceof ComboBox<?> combo) {
-                        valid = combo.getItems().isEmpty() || genericType.isInstance(combo.getItems().get(0));
-                    } else if (casted instanceof TableView<?> table) {
-                        valid = table.getItems().isEmpty() || genericType.isInstance(table.getItems().get(0));
-                    } else if (casted instanceof CheckComboBox<?> checkcombo) {
-                        valid = checkcombo.getItems().isEmpty() || genericType.isInstance(checkcombo.getItems().get(0));
-                    } else if (casted instanceof TreeView<?> treeView) {
-                        valid = treeView.getRoot() == null || genericType.isInstance(treeView.getRoot().getChildren().get(0));
-                    } else if (casted instanceof ListView<?> listView) {
-                        valid = listView.getItems().isEmpty() || genericType.isInstance(listView.getItems().get(0));
-                    } else {
-                        throw new UMASException(ErrorType.INTERNAL, "Generic check not supported for type: " + type.getSimpleName());
-                    }
+                    boolean valid = switch (casted) {
+                        case ComboBox<?> combo ->
+                                combo.getItems().isEmpty() || genericType.isInstance(combo.getItems().get(0));
+                        case TableView<?> table ->
+                                table.getItems().isEmpty() || genericType.isInstance(table.getItems().get(0));
+                        case CheckComboBox<?> checkcombo ->
+                                checkcombo.getItems().isEmpty() || genericType.isInstance(checkcombo.getItems().get(0));
+                        case TreeView<?> treeView ->
+                                treeView.getRoot() == null || genericType.isInstance(treeView.getRoot().getChildren().get(0));
+                        case ListView<?> listView ->
+                                listView.getItems().isEmpty() || genericType.isInstance(listView.getItems().get(0));
+                        default ->
+                                throw new UMASException(ErrorType.INTERNAL, "Generic check not supported for type: " + type.getSimpleName());
+                    };
 
                     if (!valid) {
                         throw new UMASException(ErrorType.INTERNAL,
@@ -96,7 +96,7 @@ public class ItemSearcher {
     }
 
     public static ArrayList<Node> getAllNodes(Parent root) {
-        ArrayList<Node> nodes = new ArrayList<Node>();
+        ArrayList<Node> nodes = new ArrayList<>();
         addAllDescendents(root, nodes);
         return nodes;
     }

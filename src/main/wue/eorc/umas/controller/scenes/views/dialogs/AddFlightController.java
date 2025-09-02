@@ -141,9 +141,7 @@ public class AddFlightController implements StaticDialogController, CopyProgress
 
         selectChain.getItems().addAll(Stream.of(ProcessingChain.values()).map(ProcessingChain::getName).toList());
 
-        selectChain.setOnAction(_ignored -> {
-            this.processingChain = ProcessingChain.fromName(selectChain.getValue());
-        });
+        selectChain.setOnAction(_ignored -> this.processingChain = ProcessingChain.fromName(selectChain.getValue()));
 
         selectImageTypes.getCheckModel().getCheckedIndices().addListener((ListChangeListener<Integer>) _ignored -> {
             for(ImageType imageType : selectImageTypes.getCheckModel().getCheckedItems()
@@ -191,7 +189,7 @@ public class AddFlightController implements StaticDialogController, CopyProgress
         });
 
 
-        datePicker.setConverter(new StringConverter<LocalDate>() {
+        datePicker.setConverter(new StringConverter<>() {
             final String pattern = "dd/MM/yyyy";
             final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern(pattern);
 

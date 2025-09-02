@@ -28,16 +28,16 @@ import java.util.concurrent.CompletableFuture;
 
 public class AgisoftCaller {
 
-    public static Queue<Runnable> queue = new LinkedList<>();
+    public static final Queue<Runnable> queue = new LinkedList<>();
     public static Process currentProcess;
     public static boolean isRunning = false;
 
     private final String snippetsPath = Path.of(Objects.requireNonNull(getClass().getClassLoader().getResource("python")).toURI()).toString();
 
-    public AgisoftQueueListener agisoftQueueListener;
-    public AgisoftCallbackListener agisoftCallbackListener;
+    public final AgisoftQueueListener agisoftQueueListener;
+    public final AgisoftCallbackListener agisoftCallbackListener;
 
-    public DisplayController display;
+    public final DisplayController display;
 
     public AgisoftCaller(AgisoftQueueListener agisoftQueueListener, AgisoftCallbackListener agisoftCallbackListener, DisplayController display) throws URISyntaxException {
         this.agisoftQueueListener = agisoftQueueListener;
