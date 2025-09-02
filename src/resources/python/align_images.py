@@ -16,7 +16,8 @@ def align_photos(file, chunk_lab,
                  tie_point_limit,
                  exclude_stationary_tie_points,
                  guided_image_matching,
-                 adaptive_camera_model_fitting):
+                 adaptive_camera_model_fitting,
+                 batch):
 
     # Highest = 0
     # High = 1
@@ -51,9 +52,9 @@ def align_photos(file, chunk_lab,
 
     chunk = get_chunk(doc.chunks, chunk_lab)
 
-    if chunk.point_cloud is not None:
-        print(f"vd: Chunk {chunk_lab} is already aligned!")
-        print("vn:ALIGN_IMAGES:true")
+    if chunk.point_cloud is not None and not batch:
+        print(f"ve:ALIGN_IMAGES:Chunk is already aligned!~The images within this chunk already have been aligned to each other.~Please remove the current alignment first.")
+        print("vn:ALIGN_IMAGES:false")
     else:
         for frame in chunk.frames:
             frame.matchPhotos(
@@ -83,7 +84,7 @@ def align_photos(file, chunk_lab,
                 # [cameras][, point_clouds],
                 min_image=2,
                 adaptive_fitting=rb(adaptive_camera_model_fitting),
-                reset_alignment=False,
+                reset_alignment=True,
                 subdivide_task=True,
                 progress=report_progress
             )
@@ -99,6 +100,7 @@ if __name__ == '__main__':
 
     project_file = get_arg(args, "-psxFile")
     chunk_label = get_arg(args, "-chunk_label")
+    batch_edit = get_arg(args, "-batch")
 
     accuracy = get_arg(args, "-accuracy")
     generic_preselection = get_arg(args, "-genericpreselection")
@@ -123,5 +125,6 @@ if __name__ == '__main__':
         tie_point_limit,
         exclude_stationary_tie_points,
         guided_image_matching,
-        adaptive_camera_model_fitting
+        adaptive_camera_model_fitting,
+        batch_edit
     )

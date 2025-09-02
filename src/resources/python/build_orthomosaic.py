@@ -8,7 +8,7 @@ from utils import get_arg, report_progress, get_chunk, rb
 
 
 def build_ortho(file, chunk_lab, surface, blending_mode, refine_seamlines, enable_hole_filling,
-                enable_ghosting_filter, enable_backface_culling):
+                enable_ghosting_filter, enable_backface_culling, batch):
 
     doc = ms.Document()
 
@@ -32,9 +32,13 @@ def build_ortho(file, chunk_lab, surface, blending_mode, refine_seamlines, enabl
 
 
     if chunk is not None:
-        if chunk.orthomosaic is not None:
-            print(f"vd: Chunk {chunk_lab} already has a orthomosaic!")
+        if chunk.orthomosaic is not None and not batch:
+            print(f"ve:Chunk {chunk_lab} already has a orthomosaic!~For this chunk, an Orthomosaic was already processed which cannot be overwritten.~Please remove the current Orthomosaic.")
+            print("vn:BUILD_ORTHOMOSAIC:false")
         else:
+            if batch:
+                chunk.remove(chunk.orthomosaic)
+
             chunk.buildOrthomosaic(
                 surface_data=surface_mode,
                 blending_mode=blending, # options: AverageBlending, MosaicBlending, (MinBlending, MaxBlending,) DisabledBlending,
@@ -72,6 +76,7 @@ if __name__ == '__main__':
 
     project_file = get_arg(args, "-psxFile")
     chunk_label = get_arg(args, "-chunk_label")
+    batch_edit = get_arg(args, "-batch")
 
     surface = get_arg(args, "-surface")
     belnding_mode = get_arg(args, "-blendingmode")
@@ -82,4 +87,4 @@ if __name__ == '__main__':
     enable_backface_culling = get_arg(args, "-enablebackfaceculling")
 
     build_ortho(project_file, chunk_label, surface, belnding_mode, refine_seamlines, enable_hole_filling,
-                enable_ghosting_filter, enable_backface_culling)
+                enable_ghosting_filter, enable_backface_culling, batch_edit)

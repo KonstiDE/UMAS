@@ -10,7 +10,7 @@ from utils import get_arg, report_progress, get_chunk, rb
 def export_orthomosaic(psx_file, ortho_file, chunk_lab, coordinate_system, background_color, write_kml,
                        write_world_file, write_tile_scheme, image_description, write_tiled_tiff,
                        generate_tiff_overviews, write_big_tiff_file, save_alpha_channel, tiff_compression,
-                       jpeg_quality):
+                       jpeg_quality, batch):
 
     doc = ms.Document()
 
@@ -41,14 +41,13 @@ def export_orthomosaic(psx_file, ortho_file, chunk_lab, coordinate_system, backg
     else:
         white_background_mode = False
 
-    if chunk is not None:
+    if chunk is not None and not batch:
         if os.path.exists(ortho_file):
-            print("vd: This ORTHOMOSAIC file already exists!")
-
+            print("vd: This Orthomosaic file already exists!~For this chunk, a Orthomosaic was already exported which cannot be overwritten.~Please remove the current Orthomosaic.")
+            print("vn:EXPORT_ORTHOMOSAIC:false")
         else:
             projection = Metashape.OrthoProjection()
             projection.crs = ms.CoordinateSystem(coordinate_system)
-
 
             if chunk.orthomosaic is not None:
                 chunk.exportRaster(
@@ -109,6 +108,7 @@ if __name__ == '__main__':
     project_file = get_arg(args, "-psxFile")
     target_file = get_arg(args, "-orthoFile")
     chunk_label = get_arg(args, "-chunk_label")
+    batch_edit = get_arg(args, "-batch")
 
     coordinate_system = get_arg(args, "-coordinatesystem")
     background_color = get_arg(args, "-backgroundcolor")
@@ -126,4 +126,4 @@ if __name__ == '__main__':
     export_orthomosaic(project_file, target_file, chunk_label, coordinate_system, background_color, write_kml,
                        write_world_file, write_tile_scheme, image_description, write_tiled_tiff,
                        generate_tiff_overviews, write_big_tiff_file, save_alpha_channel, tiff_compression,
-                       jpeg_quality)
+                       jpeg_quality, batch_edit)

@@ -7,7 +7,7 @@ import Metashape as ms
 from utils import get_arg, report_progress, get_chunk
 
 
-def build_dem(file, chunk_lab, coordinate_system, source_data, quality, interpolation):
+def build_dem(file, chunk_lab, coordinate_system, source_data, quality, interpolation, batch):
     doc = ms.Document()
 
     doc.open(path=file, read_only=False, ignore_lock=True)
@@ -36,9 +36,13 @@ def build_dem(file, chunk_lab, coordinate_system, source_data, quality, interpol
 
 
     if chunk is not None:
-        if chunk.elevation is not None:
-            print(f"vd: Chunk {chunk_lab} already has a dem!")
+        if chunk.elevation is not None and not batch:
+            print(f"ve:BUILD_DEM:Chunk already has a DEM!~For this chunk, a DEM was already processed which cannot be overwritten.~Please remove the current DEM.")
+            print("vn:ALIGN_IMAGES:false")
         else:
+            if batch:
+                chunk.remove(chunk.elevation)
+
             chunk.buildDem(
                 source_data=source_data_mode, # options: TiePointsData, PointCloudData, DepthMapsData, ModelData, TiledModelData, ElevationData, OrthomosaicData, ImagesData
                 interpolation=interpolation_mode,
@@ -70,10 +74,11 @@ if __name__ == '__main__':
 
     project_file = get_arg(args, "-psxFile")
     chunk_label = get_arg(args, "-chunk_label")
+    batch_edit = get_arg(args, "-batch")
 
     coordinate_system = get_arg(args, "-coordinatesystem")
     source_data = get_arg(args, "-sourcedata")
     quality = get_arg(args, "-quality")
     interpolation = get_arg(args, "-interpolation")
 
-    build_dem(project_file, chunk_label, coordinate_system, source_data, quality, interpolation)
+    build_dem(project_file, chunk_label, coordinate_system, source_data, quality, interpolation, batch_edit)

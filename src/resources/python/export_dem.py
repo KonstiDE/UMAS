@@ -9,7 +9,7 @@ from utils import get_arg, report_progress, get_chunk, rb
 
 def export_dem(psx_file, dem_file, chunk_lab, coordinate_system, raster_transform, no_data_value, write_kml,
                write_world_file, write_tile_scheme, image_description, write_tiled_tiff, generate_tiff_overviews,
-               write_big_tiff_file):
+               write_big_tiff_file, batch):
 
     doc = ms.Document()
 
@@ -24,9 +24,10 @@ def export_dem(psx_file, dem_file, chunk_lab, coordinate_system, raster_transfor
     else:
         raster_transform_mode = ms.RasterTransformNone
 
-    if chunk is not None:
+    if chunk is not None and not batch:
         if os.path.exists(dem_file):
-            print("vd: This DEM file already exists!")
+            print("ve:This DEM file already exists!~For this chunk, a DEM was already exported which cannot be overwritten.~Please remove the current DEM.")
+            print("vn:EXPORT_DEM:false")
         else:
             projection = Metashape.OrthoProjection()
             projection.crs = ms.CoordinateSystem(coordinate_system)
@@ -91,6 +92,7 @@ if __name__ == '__main__':
     project_file = get_arg(args, "-psxFile")
     target_file = get_arg(args, "-demFile")
     chunk_label = get_arg(args, "-chunk_label")
+    batch_edit = get_arg(args, "-batch")
 
     coordinate_system = get_arg(args, "-coordinatesystem")
     raster_transform = get_arg(args, "-rastertransform")
@@ -105,4 +107,4 @@ if __name__ == '__main__':
 
     export_dem(project_file, target_file, chunk_label, coordinate_system, raster_transform, no_data_value, write_kml,
                write_world_file, write_tile_scheme, image_description, write_tiled_tiff, generate_tiff_overviews,
-               write_big_tiff_file)
+               write_big_tiff_file, batch_edit)
