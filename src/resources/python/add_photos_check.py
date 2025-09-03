@@ -3,7 +3,7 @@ import sys
 
 import Metashape as ms
 
-from utils import get_arg
+from utils import get_arg, get_chunk
 
 
 def add_photos_check(file, chunk_lab):
@@ -11,18 +11,15 @@ def add_photos_check(file, chunk_lab):
 
     doc.open(path=file, read_only=True)
 
-    # add_photos_check
-    found = False
+    chunk = get_chunk(doc.chunks, chunk_lab)
 
-    if len(doc.chunks) > 0:
-        for chunk in doc.chunks:
-                if chunk.label == chunk_lab:
-                    print("vn:ADD_PHOTOS_CHECK:true")
-                    found = True
-                    break
-
-    if not found:
-        print("vn:ADD_PHOTOS_CHECK:false")
+    if chunk is None:
+        print("vn:ADD_PHOTOS_CHECK:true")
+    else:
+        if len(chunk.cameras > 0):
+            print("vn:ADD_PHOTOS_CHECK:true")
+        else:
+            print("vn:ADD_PHOTOS_CHECK:false")
 
     del doc
 

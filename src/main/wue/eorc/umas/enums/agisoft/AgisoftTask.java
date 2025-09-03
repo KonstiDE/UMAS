@@ -27,6 +27,7 @@ public enum AgisoftTask {
     CREATE_PROJECT,
     CHECK_VERSION,
     CHECK_CHUNK,
+    REMOVE_COMPONENT,
 
     UNDEFINED;
 }

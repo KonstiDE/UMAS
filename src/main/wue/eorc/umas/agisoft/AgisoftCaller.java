@@ -108,7 +108,9 @@ public class AgisoftCaller {
         Path filePath = Paths.get(snippetsPath, "add_photos.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r", filePath.toFile().getAbsolutePath(),
-                "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType), "-photo_folder", folders.size() > 1 ? String.join(",", folders) : folders.get(0));
+                "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType),
+                "-photo_folder", folders.size() > 1 ? String.join(",", folders) : folders.get(0),
+                "-batch", "" + batch);
 
         enqueue(workflowType, AgisoftTask.ADD_PHOTOS, stackPane, pb, true);
         addPhotosCheck(stackPane, psxFile, workflowType);
@@ -161,7 +163,8 @@ public class AgisoftCaller {
         Path filePath = Paths.get(snippetsPath, "align_images.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType),
+                "-batch", "" + batch);
         extendProcessBuilder(pb, agisoftParams);
 
         enqueue(workflowType, AgisoftTask.ALIGN_IMAGES, stackPane, pb, false);
@@ -205,7 +208,8 @@ public class AgisoftCaller {
         Path filePath = Paths.get(snippetsPath, "build_point_cloud.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType),
+                "-batch", "" + batch);
         extendProcessBuilder(pb, agisoftParams);
 
         enqueue(workflowType, AgisoftTask.BUILD_POINT_CLOUD, stackPane, pb, false);
@@ -227,7 +231,8 @@ public class AgisoftCaller {
         Path filePath = Paths.get(snippetsPath, "build_dem.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType),
+                "-batch", "" + batch);
         extendProcessBuilder(pb, agisoftParams);
 
         enqueue(workflowType, AgisoftTask.BUILD_DEM, stackPane, pb, false);
@@ -249,7 +254,8 @@ public class AgisoftCaller {
         Path filePath = Paths.get(snippetsPath, "build_orthomosaic.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
-                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType),
+                "-batch", "" + batch);
         extendProcessBuilder(pb, agisoftParams);
 
         enqueue(workflowType, AgisoftTask.BUILD_ORTHOMOSAIC, stackPane, pb, false);
@@ -273,7 +279,7 @@ public class AgisoftCaller {
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-demFile", targetFile,
-                "-chunk_label", chunkLabel(workflowType));
+                "-chunk_label", chunkLabel(workflowType), "-batch", "" + batch);
         extendProcessBuilder(pb, agisoftParams);
 
         enqueue(workflowType, AgisoftTask.EXPORT_DEM, stackPane, pb, false);
@@ -297,7 +303,7 @@ public class AgisoftCaller {
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-orthoFile", targetFile,
-                "-chunk_label", chunkLabel(workflowType));
+                "-chunk_label", chunkLabel(workflowType), "-batch", "" + batch);
         extendProcessBuilder(pb, agisoftParams);
 
         enqueue(workflowType, AgisoftTask.EXPORT_ORTHOMOSAIC, stackPane, pb, false);
@@ -321,10 +327,30 @@ public class AgisoftCaller {
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-reportFile", targetFile,
-                "-flightName", flightName, "-description", description, "-chunk_label", chunkLabel(workflowType));
+                "-flightName", flightName, "-description", description, "-chunk_label", chunkLabel(workflowType),
+                "-batch", "" + batch);
 
         enqueue(workflowType, AgisoftTask.GENERATE_REPORT, stackPane, pb, false);
         generateReportCheck(stackPane, psxFile, targetFile, workflowType);
+
+    }
+
+    public void removeComponent(StackPane stackPane, String psxFile, AgisoftTask agisoftTask, WorkflowType workflowType){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "remove_component.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType),
+                "-agisofttask", "" + agisoftTask);
+        enqueue(workflowType, AgisoftTask.REMOVE_COMPONENT, null, pb, false);
+
+        switch (agisoftTask){
+            case ADD_PHOTOS -> addPhotosCheck(stackPane, psxFile, workflowType);
+            case ALIGN_IMAGES -> alignPhotosCheck(stackPane, psxFile, workflowType);
+            case BUILD_POINT_CLOUD -> buildPointCloudCheck(stackPane, psxFile, workflowType);
+            case BUILD_DEM -> buildDemCheck(stackPane, psxFile, workflowType);
+            case BUILD_ORTHOMOSAIC -> buildOrthomosaicCheck(stackPane, psxFile, workflowType);
+        }
 
     }
 

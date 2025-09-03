@@ -130,7 +130,7 @@ public class ProcessActionsPreparer {
                         this.workflowType, false);
 
             }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
-                setupModificationDialog(mouseEvent, null);
+                setupModificationDialog(addPhotos, mouseEvent, ADD_PHOTOS, null);
             }
         });
 
@@ -161,7 +161,7 @@ public class ProcessActionsPreparer {
                     agisoftCaller.setBrightness(setBrightness, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType, agisoftParameters);
                 }
             }else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                setupModificationDialog(mouseEvent, null);
+                setupModificationDialog(setBrightness, mouseEvent, SET_BRIGHTNESS, null);
             }
 
         });
@@ -183,7 +183,7 @@ public class ProcessActionsPreparer {
                         this.workflowType, getDefaultParameters(AlignImages.values()), false);
 
             }else if(mouseEvent.getButton() == MouseButton.SECONDARY){
-                setupModificationDialog(mouseEvent, event -> {
+                setupModificationDialog(alignPhotos, mouseEvent, ALIGN_IMAGES, event -> {
                     DialogPane parameterPane = (DialogPane)
                             display.getSceneLoader().getScene(AgisoftDialog.ALIGN_IMAGES.getDialogId());
 
@@ -222,7 +222,7 @@ public class ProcessActionsPreparer {
                         this.workflowType, getDefaultParameters(OptimizeCameras.values()));
 
             }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
-                setupModificationDialog(mouseEvent, event -> {
+                setupModificationDialog(optimizeCameras, mouseEvent, OPTIMIZE_CAMERAS, event -> {
                     DialogPane parameterPane = (DialogPane)
                             display.getSceneLoader().getScene(AgisoftDialog.OPTIMIZE_CAMERAS.getDialogId());
 
@@ -260,7 +260,7 @@ public class ProcessActionsPreparer {
                         this.workflowType, getDefaultParameters(BuildPointCloud.values()), false);
 
             }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
-                setupModificationDialog(mouseEvent, event -> {
+                setupModificationDialog(buildPointCloud, mouseEvent, BUILD_POINT_CLOUD, event -> {
                     DialogPane parameterPane = (DialogPane)
                             display.getSceneLoader().getScene(AgisoftDialog.BUILD_POINT_CLOUD.getDialogId());
 
@@ -298,7 +298,7 @@ public class ProcessActionsPreparer {
                         this.workflowType, getDefaultParameters(BuildDem.values()), false);
 
             } else if (mouseEvent.getButton() == MouseButton.SECONDARY){
-                setupModificationDialog(mouseEvent, event -> {
+                setupModificationDialog(buildDem, mouseEvent, BUILD_DEM, event -> {
                     DialogPane parameterPane = (DialogPane)
                             display.getSceneLoader().getScene(AgisoftDialog.BUILD_DEM.getDialogId());
 
@@ -336,7 +336,7 @@ public class ProcessActionsPreparer {
                         this.workflowType, getDefaultParameters(BuildOrthomosaic.values()), false);
 
             }else{
-                setupModificationDialog(mouseEvent, event -> {
+                setupModificationDialog(buildOrthomosaic, mouseEvent, BUILD_ORTHOMOSAIC, event -> {
                     DialogPane parameterPane = (DialogPane)
                             display.getSceneLoader().getScene(AgisoftDialog.BUILD_ORTHOMOSAIC.getDialogId());
 
@@ -376,7 +376,7 @@ public class ProcessActionsPreparer {
                 ).toFile().getAbsolutePath(), this.workflowType, getDefaultParameters(ExportDem.values()), false);
 
             } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                setupModificationDialog(mouseEvent, event -> {
+                setupModificationDialog(exportDem, mouseEvent, EXPORT_DEM, event -> {
                     DialogPane parameterPane = (DialogPane)
                             display.getSceneLoader().getScene(AgisoftDialog.EXPORT_DEM.getDialogId());
 
@@ -420,7 +420,7 @@ public class ProcessActionsPreparer {
                 ).toFile().getAbsolutePath(), this.workflowType, getDefaultParameters(ExportOrthomosaic.values()), false);
 
             } else if (mouseEvent.getButton() == MouseButton.SECONDARY) {
-                setupModificationDialog(mouseEvent, event -> {
+                setupModificationDialog(exportOrthomosaic, mouseEvent, EXPORT_ORTHOMOSAIC, event -> {
                     DialogPane parameterPane = (DialogPane)
                             display.getSceneLoader().getScene(AgisoftDialog.EXPORT_ORTHOMOSAIC.getDialogId());
 
@@ -466,7 +466,7 @@ public class ProcessActionsPreparer {
                         this.workflowType, false
                 );
             }else if(mouseEvent.getButton() == MouseButton.SECONDARY){
-                setupModificationDialog(mouseEvent, null);
+                setupModificationDialog(generateReport, mouseEvent, GENERATE_REPORT, null);
             }
         });
 
@@ -486,17 +486,25 @@ public class ProcessActionsPreparer {
         return gson.fromJson(json, GsonTypeTokens.hashmapToken);
     }
 
-    public void setupModificationDialog(MouseEvent mouseEvent, EventHandler<ActionEvent> eventHandler){
+    public void setupModificationDialog(StackPane stackPane, MouseEvent mouseEvent, AgisoftTask agisoftTask,
+                                        EventHandler<ActionEvent> eventHandler){
+
         final ContextMenu contextMenu = new ContextMenu();
         final MenuItem separator = new SeparatorMenuItem();
 
         final MenuItem modify = new MenuItem("Modify");
+        final MenuItem remove = new MenuItem("Remove " + toRemoveFromAgisoftTask(agisoftTask));
         final MenuItem modifyBatch = new MenuItem("Modify Batch");
         final MenuItem runBatch = new MenuItem("Run Batch");
 
         if(eventHandler != null) {
             modify.setOnAction(eventHandler);
             contextMenu.getItems().add(modify);
+        }
+
+        if(List.of(ADD_PHOTOS, ALIGN_IMAGES, BUILD_POINT_CLOUD, BUILD_DEM, BUILD_ORTHOMOSAIC).contains(agisoftTask)){
+            remove.setOnAction(handleRemove(stackPane, agisoftTask));
+            contextMenu.getItems().add(remove);
         }
 
         modifyBatch.setOnAction(handleModifyBatch());
@@ -590,6 +598,15 @@ public class ProcessActionsPreparer {
         };
     }
 
+    public EventHandler<ActionEvent> handleRemove(StackPane stackPane, AgisoftTask agisoftTask){
+        return actionEvent -> agisoftCaller.removeComponent(
+                stackPane,
+                DirectoryUtils.figureAgisoftFilePath(this.flight),
+                agisoftTask,
+                this.workflowType
+        );
+    }
+
 
     public HashMap<String, String> getDefaultParameters(AgisoftParameter[] agisoftParameters) {
         HashMap<String, String> parameters = new HashMap<>();
@@ -599,6 +616,17 @@ public class ProcessActionsPreparer {
         }
 
         return parameters;
+    }
+
+    private String toRemoveFromAgisoftTask(AgisoftTask agisoftTask){
+        return switch (agisoftTask) {
+            case ADD_PHOTOS -> "Photos";
+            case ALIGN_IMAGES -> "Alignment";
+            case BUILD_POINT_CLOUD -> "Point Cloud";
+            case BUILD_DEM -> "DEM";
+            case BUILD_ORTHOMOSAIC -> "Orthomosaic";
+            default -> "INVALID";
+        };
     }
 
 }
