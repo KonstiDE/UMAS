@@ -187,22 +187,26 @@ public class ShowProcessingController implements ViewController, AgisoftQueueLis
         switch (task){
             case ADD_PHOTOS_CHECK, ALIGN_IMAGES_CHECK, OPTIMIZE_CAMERAS_CHECK, BUILD_DEM_CHECK, BUILD_ORTHOMOSAIC_CHECK,
                  EXPORT_DEM_CHECK, EXPORT_ORTHOMOSAIC_CHECK, BUILD_POINT_CLOUD_CHECK, SET_BRIGHTNESS_CHECK,
-                 GENERATE_REPORT_CHECK -> {
-                StackPane workFlowStep = ItemSearcher.getItemById("processing." + task.name().replace("_CHECK", ""), source, StackPane.class);
+                 GENERATE_REPORT_CHECK, CALIBRATE_REFLECTANCE_CHECK -> {
 
-                Rectangle rectangle = ItemSearcher.getItemById("processing.rectangle", workFlowStep, Rectangle.class);
-                ProgressIndicator indicator = ItemSearcher.getItemById("processing.indicator", workFlowStep, ProgressIndicator.class);
+                try{
+                    StackPane workFlowStep = ItemSearcher.getItemById("processing." + task.name().replace("_CHECK", ""), source, StackPane.class);
 
-                indicator.setVisible(false);
+                    Rectangle rectangle = ItemSearcher.getItemById("processing.rectangle", workFlowStep, Rectangle.class);
+                    ProgressIndicator indicator = ItemSearcher.getItemById("processing.indicator", workFlowStep, ProgressIndicator.class);
 
-                boolean success = Boolean.parseBoolean(result);
+                    indicator.setVisible(false);
 
-                if(success){
-                    rectangle.setFill(Colors.PROC_GREEN);
-                    //this.showProcessingController.refresh(this.showProcessingController.getProcessingPaneRoot(), display);
-                }else{
-                    rectangle.setFill(Colors.PROC_RED);
-                }
+                    boolean success = Boolean.parseBoolean(result);
+
+                    if(success){
+                        rectangle.setFill(Colors.PROC_GREEN);
+                        //this.showProcessingController.refresh(this.showProcessingController.getProcessingPaneRoot(), display);
+                    }else{
+                        rectangle.setFill(Colors.PROC_RED);
+                    }
+                }catch (Exception ignored){  }
+
             }
             case SET_BRIGHTNESS_ESTIMATE -> {
                 TextField brightness = ItemSearcher.getItemById("agisoft.setbrightness.brightness", source, TextField.class);

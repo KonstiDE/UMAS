@@ -57,6 +57,7 @@ public class ProcessActionsPreparer {
 
     public StackPane addPhotos;
     public StackPane setBrightness;
+    public StackPane setCalibrateReflectance;
     public StackPane alignImages;
     public StackPane optimizeCameras;
     public StackPane buildPointCloud;
@@ -86,9 +87,24 @@ public class ProcessActionsPreparer {
 
     public void setupWorkflowActions() throws UMASException {
         switch (this.workflowType){
-            case RGB, MULTISPECTRAL -> {
+            case RGB -> {
                 this.addPhotos = setupAddPhotos();
                 this.setBrightness = setupSetBrightness();
+                this.alignImages = setupAlignPhotos();
+                this.optimizeCameras = setupOptimizeCameras();
+                this.buildPointCloud = setupBuildPointCloud();
+                this.buildDem = setupBuildDem();
+                this.buildOrthomosaic = setupBuildOrthomosaic();
+                this.exportDem = setupExportDem();
+                this.exportOrthomosaic = setupExportOrthomosaic();
+                this.generateReport = setupGenerateReports();
+
+                setupCheckProject();
+            }
+            case MULTISPECTRAL, RGB_PLUS_MULTISPECTRAL -> {
+                this.addPhotos = setupAddPhotos();
+                this.setBrightness = setupSetBrightness();
+                this.setCalibrateReflectance = setupCalibrateReflectance();
                 this.alignImages = setupAlignPhotos();
                 this.optimizeCameras = setupOptimizeCameras();
                 this.buildPointCloud = setupBuildPointCloud();
@@ -183,6 +199,22 @@ public class ProcessActionsPreparer {
 
     public void callBrightnessEstimate(Pane pane) throws UMASException {
         agisoftCaller.setBrightnessEstimate(pane, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType);
+    }
+
+    private StackPane setupCalibrateReflectance() throws UMASException {
+        StackPane calibrateReflectance = ItemSearcher.getItemById("processing." + CALIBRATE_REFLECTANCE, this.workflowPane, StackPane.class);
+
+        calibrateReflectance.setCursor(Cursor.HAND);
+        calibrateReflectance.setOnMouseClicked(mouseEvent -> {
+            if(mouseEvent.getButton() == MouseButton.PRIMARY){
+                agisoftCaller.calibrateReflectance(calibrateReflectance, DirectoryUtils.figureAgisoftFilePath(this.flight),
+                        this.workflowType, new HashMap<>() {  }, false);
+
+            }
+        });
+
+        return calibrateReflectance;
+
     }
 
     private StackPane setupAlignPhotos() throws UMASException {

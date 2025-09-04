@@ -149,6 +149,29 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.SET_BRIGHTNESS_ESTIMATE, pane, pb, false);
     }
 
+    public void calibrateReflectanceCheck(Pane pane, String psxFile, WorkflowType workflowType){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "calibrate_reflectance_check.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
+
+        enqueue(workflowType, AgisoftTask.SET_BRIGHTNESS_CHECK, stackPane, pb, true);
+    }
+
+    public void calibrateReflectance(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams, boolean batch){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path filePath = Paths.get(snippetsPath, "calibrate_reflectance.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType),
+                "-batch", "" + batch);
+        extendProcessBuilder(pb, agisoftParams);
+
+        enqueue(workflowType, AgisoftTask.CALIBRATE_REFLECTANCE, stackPane, pb, false);
+        calibrateReflectanceCheck(stackPane, psxFile, workflowType);
+    }
+
     public void alignPhotosCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "align_images_check.py");

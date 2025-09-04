@@ -24,6 +24,7 @@ def check_chunk(file, demFile, orthoFile, reportFile, chunk_lab):
     if not found:
         print("vn:ADD_PHOTOS_CHECK:false")
         print("vn:SET_BRIGHTNESS_CHECK:false")
+        print("vn:CALIBRATE_REFLECTANCE_CHECK:false")
         print("vn:ALIGN_IMAGES_CHECK:false")
         print("vn:OPTIMIZE_CAMERAS_CHECK:false")
         print("vn:BUILD_POINT_CLOUD_CHECK:false")
@@ -43,6 +44,18 @@ def check_chunk(file, demFile, orthoFile, reportFile, chunk_lab):
                 print("vn:SET_BRIGHTNESS_CHECK:false")
             else:
                 print("vn:SET_BRIGHTNESS_CHECK:true")
+
+            # calibrate_reflectance check
+            anything_calibrated = False
+
+            for cam in chunk.cameras:
+                if cam.sensor.calibration and hasattr(cam.sensor.calibration, "reflectance"):
+                    anything_calibrated = True
+                    print("vn:CALIBRATE_REFLECTANCE_CHECK:true")
+
+            if not anything_calibrated:
+                print("vn:CALIBRATE_REFLECTANCE_CHECK:false")
+
 
             # align_images check
             if chunk.point_cloud is None:
