@@ -103,13 +103,14 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.ADD_PHOTOS_CHECK, stackPane, pb, true);
     }
 
-    public void addPhotos(StackPane stackPane, String psxFile, List<String> folders, WorkflowType workflowType, boolean batch){
+    public void addPhotos(StackPane stackPane, String psxFile, List<String> flightFolders, List<String> calibFolders, WorkflowType workflowType, boolean batch){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "add_photos.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r", filePath.toFile().getAbsolutePath(),
                 "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType),
-                "-photo_folder", folders.size() > 1 ? String.join(",", folders) : folders.get(0),
+                "-photo_folders", flightFolders.size() > 1 ? String.join(",", flightFolders) : flightFolders.get(0),
+                "-calib_folders", calibFolders.size() > 1 ? String.join(",", calibFolders) : calibFolders.get(0),
                 "-batch", "" + batch);
 
         enqueue(workflowType, AgisoftTask.ADD_PHOTOS, stackPane, pb, true);
@@ -355,10 +356,10 @@ public class AgisoftCaller {
     }
 
     public void completeBuildRGB(List<StackPane> stackPanes, List<HashMap<String, String>> agisoftParameters,
-                                 List<String> folders, String psxFile, String demFile, String orthoFile,
-                                 String reportFile, String flightName, String reportDescription){
+                                List<String> folders, String psxFile, String demFile, String orthoFile,
+                                String reportFile, String flightName, String reportDescription){
 
-        addPhotos(stackPanes.get(0), psxFile, folders, WorkflowType.RGB, true);
+        addPhotos(stackPanes.get(0), psxFile, folders, List.of(), WorkflowType.RGB, true);
         setBrightness(stackPanes.get(1), psxFile, WorkflowType.RGB, agisoftParameters.get(0));
         alignPhotos(stackPanes.get(2), psxFile, WorkflowType.RGB, agisoftParameters.get(1), true);
         optimizeCameras(stackPanes.get(3), psxFile, WorkflowType.RGB, agisoftParameters.get(2));

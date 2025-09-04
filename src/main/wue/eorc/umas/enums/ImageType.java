@@ -3,10 +3,12 @@ package wue.eorc.umas.enums;
 public enum ImageType {
 
     RGB("RGB"),
-    IR("IR"),
+    IR("Thermal"),
     HYPERSPECTRAL("Hyperspectral"),
     LIDAR("Lidar"),
-    MULTISPECTRAL("Multispectral");
+    MULTISPECTRAL("Multispectral"),
+
+    CALIBRATION("Calibration");
 
     private final String name;
 

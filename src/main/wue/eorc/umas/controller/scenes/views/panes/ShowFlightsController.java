@@ -188,18 +188,21 @@ public class ShowFlightsController implements ViewController {
                 ArrayList<ImageView> imageViewList = new ArrayList<>();
 
                 for(ImageType imageType : flight.getImageTypes().keySet()) {
-                    String iconpath = "assets/imgicons/" + switch(imageType) {
+                    String iconPath = "assets/imgicons/" + switch(imageType) {
                         case RGB -> "rgb.png";
                         case MULTISPECTRAL -> "ms.png";
                         case HYPERSPECTRAL -> "hyper.png";
                         case IR -> "thermal.png";
                         case LIDAR -> "lidar.png";
+                        case CALIBRATION -> null;
                     };
 
-                    ImageView icon = new ImageView(new Image(iconpath));
-                    icon.setFitHeight(16);
-                    icon.setFitWidth(16);
-                    imageViewList.add(icon);
+                    if(imageType != ImageType.CALIBRATION){
+                        ImageView icon = new ImageView(new Image(iconPath));
+                        icon.setFitHeight(16);
+                        icon.setFitWidth(16);
+                        imageViewList.add(icon);
+                    }
                 }
                 return imageViewList;
             }

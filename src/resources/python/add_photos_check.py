@@ -16,7 +16,7 @@ def add_photos_check(file, chunk_lab):
     if chunk is None:
         print("vn:ADD_PHOTOS_CHECK:true")
     else:
-        if len(chunk.cameras > 0):
+        if len(chunk.cameras) > 0:
             print("vn:ADD_PHOTOS_CHECK:true")
         else:
             print("vn:ADD_PHOTOS_CHECK:false")

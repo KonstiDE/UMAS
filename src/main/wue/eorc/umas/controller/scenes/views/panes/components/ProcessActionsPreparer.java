@@ -19,6 +19,7 @@ import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.*;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.controller.scenes.views.panes.ShowProcessingController;
 import wue.eorc.umas.enums.ErrorType;
+import wue.eorc.umas.enums.ImageType;
 import wue.eorc.umas.enums.WorkflowType;
 import wue.eorc.umas.enums.agisoft.*;
 import wue.eorc.umas.exception.UMASException;
@@ -123,11 +124,23 @@ public class ProcessActionsPreparer {
         addPhotos.setCursor(Cursor.HAND);
         addPhotos.setOnMouseClicked(mouseEvent -> {
             if(mouseEvent.getButton() == MouseButton.PRIMARY){
-                agisoftCaller.addPhotos(addPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                        this.flight.getImageTypes().keySet().stream()
-                                .filter(i -> this.workflowType.getImageTypes().contains(i))
-                                .map(i -> this.flight.getImageTypes().get(i)).toList(),
-                        this.workflowType, false);
+                switch (this.workflowType){
+                    case RGB -> agisoftCaller.addPhotos(addPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
+                            this.flight.getImageTypes().keySet().stream()
+                                    .filter(i -> this.workflowType.getImageTypes().contains(i))
+                                    .map(i -> this.flight.getImageTypes().get(i)).toList(),
+                            List.of(),
+                            this.workflowType, false);
+                    case MULTISPECTRAL -> agisoftCaller.addPhotos(addPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
+
+                            this.flight.getImageTypes().keySet().stream()
+                                    .filter(i -> this.workflowType.getImageTypes().contains(i) && i != ImageType.CALIBRATION)
+                                    .map(i -> this.flight.getImageTypes().get(i)).toList(),
+
+                            List.of(this.flight.getImageTypes().get(ImageType.CALIBRATION)),
+
+                            this.workflowType, false);
+                }
 
             }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
                 setupModificationDialog(addPhotos, mouseEvent, ADD_PHOTOS, null);

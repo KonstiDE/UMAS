@@ -344,6 +344,10 @@ public class DirectoryUtils {
                     File msDir = Paths.get(flight.getFlightDirectory(), "0_Images", "1_MS").toFile();
                     if(msDir.exists()) flight.getImageTypes().put(type, msDir.getAbsolutePath());
                 }
+                case CALIBRATION -> {
+                    File calibDir = Paths.get(flight.getFlightDirectory(), "0_Images", "2_CALIB").toFile();
+                    if(calibDir.exists()) flight.getImageTypes().put(type, calibDir.getAbsolutePath());
+                }
                 case IR -> {
                     File irDir1 = Paths.get(flight.getFlightDirectory(), "0_Images", "1_T").toFile();
                     File irDir2 = Paths.get(flight.getFlightDirectory(), "0_Images", "1_TCal").toFile();

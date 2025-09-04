@@ -121,12 +121,12 @@ public class AddFlightController implements StaticDialogController, CopyProgress
 
             List<ImageType> imageTypes = switch (Sensor.fromName(selectSensor.getValue())){
                 case FIXEDM2, FIXEDMPHANTOM -> List.of(ImageType.RGB);
-                case FIXEDM3M -> List.of(ImageType.RGB, ImageType.MULTISPECTRAL);
+                case FIXEDM3M -> List.of(ImageType.RGB, ImageType.MULTISPECTRAL, ImageType.CALIBRATION);
                 case FIXEDM3T, FIXEDM4T, H20T -> List.of(ImageType.RGB, ImageType.IR);
-                case MXDUAL -> List.of(ImageType.MULTISPECTRAL);
-                case D2M -> List.of(ImageType.MULTISPECTRAL);
-                case ALTUM -> List.of(ImageType.RGB, ImageType.MULTISPECTRAL);
-                case ALTUMPT -> List.of(ImageType.MULTISPECTRAL);
+                case MXDUAL -> List.of(ImageType.MULTISPECTRAL, ImageType.CALIBRATION);
+                case D2M -> List.of(ImageType.MULTISPECTRAL, ImageType.CALIBRATION);
+                case ALTUM -> List.of(ImageType.RGB, ImageType.MULTISPECTRAL, ImageType.CALIBRATION);
+                case ALTUMPT -> List.of(ImageType.MULTISPECTRAL, ImageType.CALIBRATION);
                 case L1 -> List.of(ImageType.LIDAR);
                 case NIKONRGB -> List.of(ImageType.RGB);
                 case NANOHP -> List.of(ImageType.HYPERSPECTRAL);

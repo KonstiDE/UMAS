@@ -8,8 +8,8 @@ import static wue.eorc.umas.enums.agisoft.AgisoftTask.*;
 
 public enum WorkflowType {
     RGB("RGB", List.of(ImageType.RGB), List.of(ADD_PHOTOS, SET_BRIGHTNESS, ALIGN_IMAGES, OPTIMIZE_CAMERAS, BUILD_POINT_CLOUD, BUILD_DEM, BUILD_ORTHOMOSAIC, EXPORT_DEM, EXPORT_ORTHOMOSAIC, GENERATE_REPORT)),
-    MULTISPECTRAL("MS", List.of(ImageType.MULTISPECTRAL), List.of(ADD_PHOTOS, SET_BRIGHTNESS, ALIGN_IMAGES, OPTIMIZE_CAMERAS, BUILD_POINT_CLOUD, BUILD_DEM, BUILD_ORTHOMOSAIC, EXPORT_DEM, EXPORT_ORTHOMOSAIC, GENERATE_REPORT)),
-    RGB_PLUS_MULTISPECTRAL("RGB+MS", List.of(ImageType.RGB, ImageType.MULTISPECTRAL), null),
+    MULTISPECTRAL("MS", List.of(ImageType.MULTISPECTRAL, ImageType.CALIBRATION), List.of(ADD_PHOTOS, SET_BRIGHTNESS, CALIBRATE_REFLECTANCE, ALIGN_IMAGES, OPTIMIZE_CAMERAS, BUILD_POINT_CLOUD, BUILD_DEM, BUILD_ORTHOMOSAIC, EXPORT_DEM, EXPORT_ORTHOMOSAIC, GENERATE_REPORT)),
+    RGB_PLUS_MULTISPECTRAL("RGB+MS", List.of(ImageType.RGB, ImageType.MULTISPECTRAL, ImageType.CALIBRATION), null),
     IR("IR", List.of(ImageType.IR), null),
     RGB_PLUS_IR("RGB+IR", List.of(ImageType.RGB, ImageType.IR), null),
     HYPERSPECTRAL("HYP", List.of(ImageType.HYPERSPECTRAL), null),
@@ -46,7 +46,7 @@ public enum WorkflowType {
         }else if(imageTypes.size() == 1){
             return switch (imageTypes.stream().toList().get(0)) {
                 case RGB -> List.of(RGB);
-                case MULTISPECTRAL -> List.of(MULTISPECTRAL);
+                case MULTISPECTRAL, CALIBRATION -> List.of(MULTISPECTRAL);
                 case IR -> List.of(IR);
                 case HYPERSPECTRAL -> List.of(HYPERSPECTRAL);
                 case LIDAR -> List.of(LIDAR);
