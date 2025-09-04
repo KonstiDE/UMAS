@@ -70,12 +70,11 @@ public class ProcessActionsPreparer {
         this.flight = flight;
         this.workflowPane = switch (workflowType){
             case RGB -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
-            case RGB_PLUS_MULTISPECTRAL -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
+            case MULTISPECTRAL, RGB_PLUS_MULTISPECTRAL -> (AnchorPane) display.getSceneLoader().getScene("ms_workflow");
             case IR -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
             case RGB_PLUS_IR -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
             case HYPERSPECTRAL -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
             case LIDAR -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
-            case MULTISPECTRAL -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
             case INVALID -> null;
         };
         this.workflowType = workflowType;
@@ -131,7 +130,7 @@ public class ProcessActionsPreparer {
                                     .map(i -> this.flight.getImageTypes().get(i)).toList(),
                             List.of(),
                             this.workflowType, false);
-                    case MULTISPECTRAL -> agisoftCaller.addPhotos(addPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
+                    case MULTISPECTRAL, RGB_PLUS_MULTISPECTRAL -> agisoftCaller.addPhotos(addPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
 
                             this.flight.getImageTypes().keySet().stream()
                                     .filter(i -> this.workflowType.getImageTypes().contains(i) && i != ImageType.CALIBRATION)
