@@ -3,7 +3,7 @@ import sys
 
 import Metashape as ms
 
-from utils import get_arg, get_chunk
+from utils import get_arg, get_chunk, rb
 
 
 def check_chunk(file, demFile, orthoFile, reportFile, chunk_lab):
@@ -46,14 +46,9 @@ def check_chunk(file, demFile, orthoFile, reportFile, chunk_lab):
                 print("vn:SET_BRIGHTNESS_CHECK:true")
 
             # calibrate_reflectance check
-            anything_calibrated = False
-
-            for cam in chunk.cameras:
-                if cam.sensor.calibration and hasattr(cam.sensor.calibration, "reflectance"):
-                    anything_calibrated = True
-                    print("vn:CALIBRATE_REFLECTANCE_CHECK:true")
-
-            if not anything_calibrated:
+            if chunk.meta["ReflectanceCalibration"] is not None and rb(chunk.meta["ReflectanceCalibration"]):
+                print("vn:CALIBRATE_REFLECTANCE_CHECK:true")
+            else:
                 print("vn:CALIBRATE_REFLECTANCE_CHECK:false")
 
 

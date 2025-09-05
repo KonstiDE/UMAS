@@ -3,10 +3,10 @@ import sys
 
 import Metashape as ms
 
-from utils import get_arg, report_progress, get_chunk, rb
+from utils import get_arg, get_chunk, rb
 
 
-def calibrate_reflectance(file, chunk_lab):
+def calibrate_reflectance_check(file, chunk_lab):
     doc = ms.Document()
     doc.read_only = False
 
@@ -14,17 +14,10 @@ def calibrate_reflectance(file, chunk_lab):
 
     chunk = get_chunk(doc.chunks, chunk_lab)
 
-    anything_calibrated = False
-
-    for cam in chunk.cameras:
-        if cam.sensor.calibration and hasattr(cam.sensor.calibration, "reflectance"):
-            anything_calibrated = True
-            break
-
-    if anything_calibrated:
-        print("vn:CALIBRATE_REFLECTANCE:true")
+    if chunk.meta["ReflectanceCalibration"] is not None and rb(chunk.meta["ReflectanceCalibration"]):
+        print("vn:CALIBRATE_REFLECTANCE_CHECK:true")
     else:
-        print("vn:CALIBRATE_REFLECTANCE:false")
+        print("vn:CALIBRATE_REFLECTANCE_CHECK:false")
 
         del doc
 
@@ -36,4 +29,4 @@ if __name__ == '__main__':
     chunk_label = get_arg(args, "-chunk_label")
 
 
-    calibrate_reflectance(project_file, chunk_label)
+    calibrate_reflectance_check(project_file, chunk_label)

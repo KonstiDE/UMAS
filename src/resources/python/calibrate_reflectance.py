@@ -16,14 +16,7 @@ def calibrate_reflectance(file, chunk_lab, batch):
 
     batch = rb(batch)
 
-    anything_calibrated = False
-
-    for cam in chunk.cameras:
-        if cam.sensor.calibration and hasattr(cam.sensor.calibration, "reflectance"):
-            anything_calibrated = True
-            break
-
-    if anything_calibrated and not batch:
+    if chunk.meta["ReflectanceCalibration"] is not None and not rb(chunk.meta["ReflectanceCalibration"]):
         print(f"ve:CALIBRATE_REFLECTANCE:Chunk is already aligned!~The images within this chunk already have been calibrated.~Please remove the current calibration first.")
         print("vn:CALIBRATE_REFLECTANCE:false")
     else:
@@ -36,6 +29,8 @@ def calibrate_reflectance(file, chunk_lab, batch):
             use_sun_sensor=False,
             progress=report_progress
         )
+
+        chunk.meta["ReflectanceCalibration"] = "True"
 
         doc.save()
 

@@ -210,6 +210,9 @@ public class ProcessActionsPreparer {
                 agisoftCaller.calibrateReflectance(calibrateReflectance, DirectoryUtils.figureAgisoftFilePath(this.flight),
                         this.workflowType, new HashMap<>() {  }, false);
 
+            }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
+                setupModificationDialog(calibrateReflectance, mouseEvent, CALIBRATE_REFLECTANCE, event -> {});
+
             }
         });
 
@@ -546,7 +549,7 @@ public class ProcessActionsPreparer {
             contextMenu.getItems().add(modify);
         }
 
-        if(List.of(ADD_PHOTOS, ALIGN_IMAGES, BUILD_POINT_CLOUD, BUILD_DEM, BUILD_ORTHOMOSAIC).contains(agisoftTask)){
+        if(List.of(ADD_PHOTOS, CALIBRATE_REFLECTANCE, ALIGN_IMAGES, BUILD_POINT_CLOUD, BUILD_DEM, BUILD_ORTHOMOSAIC).contains(agisoftTask)){
             remove.setOnAction(handleRemove(stackPane, agisoftTask));
             contextMenu.getItems().add(remove);
         }
@@ -643,12 +646,15 @@ public class ProcessActionsPreparer {
     }
 
     public EventHandler<ActionEvent> handleRemove(StackPane stackPane, AgisoftTask agisoftTask){
-        return actionEvent -> agisoftCaller.removeComponent(
-                stackPane,
-                DirectoryUtils.figureAgisoftFilePath(this.flight),
-                agisoftTask,
-                this.workflowType
-        );
+        return actionEvent -> {
+            agisoftCaller.removeComponent(
+                    stackPane,
+                    DirectoryUtils.figureAgisoftFilePath(this.flight),
+                    agisoftTask,
+                    this.workflowType
+            );
+            //TODO trigger refresh!
+        };
     }
 
 
@@ -665,6 +671,7 @@ public class ProcessActionsPreparer {
     private String toRemoveFromAgisoftTask(AgisoftTask agisoftTask){
         return switch (agisoftTask) {
             case ADD_PHOTOS -> "Photos";
+            case CALIBRATE_REFLECTANCE -> "Reflectance Calibration";
             case ALIGN_IMAGES -> "Alignment";
             case BUILD_POINT_CLOUD -> "Point Cloud";
             case BUILD_DEM -> "DEM";

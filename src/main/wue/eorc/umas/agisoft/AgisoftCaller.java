@@ -149,14 +149,14 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.SET_BRIGHTNESS_ESTIMATE, pane, pb, false);
     }
 
-    public void calibrateReflectanceCheck(Pane pane, String psxFile, WorkflowType workflowType){
+    public void calibrateReflectanceCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
         Path filePath = Paths.get(snippetsPath, "calibrate_reflectance_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
 
-        enqueue(workflowType, AgisoftTask.SET_BRIGHTNESS_CHECK, stackPane, pb, true);
+        enqueue(workflowType, AgisoftTask.CALIBRATE_REFLECTANCE_CHECK, stackPane, pb, true);
     }
 
     public void calibrateReflectance(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams, boolean batch){

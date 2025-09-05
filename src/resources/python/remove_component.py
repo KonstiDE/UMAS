@@ -3,7 +3,7 @@ import sys
 
 import Metashape as ms
 
-from utils import get_arg, get_chunk
+from utils import get_arg, get_chunk, rb
 
 
 def remove_component(file, chunk_lab, agisoft_task):
@@ -19,6 +19,10 @@ def remove_component(file, chunk_lab, agisoft_task):
             if len(chunk.cameras) > 0:
                 for camera in chunk.cameras:
                     chunk.remove(camera)
+
+        elif agisoft_task == "REFLECTANCE_CALIBRATION":
+            if chunk.meta["ReflectanceCalibration"] is not None and rb(chunk.meta["ReflectanceCalibration"]):
+                chunk.meta["ReflectanceCalibration"] = "False"
 
         elif agisoft_task == "ALIGN_IMAGES":
             if chunk.point_cloud is not None:
