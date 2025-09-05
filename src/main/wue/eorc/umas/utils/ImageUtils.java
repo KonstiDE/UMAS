@@ -1,5 +1,7 @@
 package wue.eorc.umas.utils;
 
+import java.io.File;
+
 public class ImageUtils {
 
     public static boolean isJPG(String name){
@@ -15,15 +17,15 @@ public class ImageUtils {
                 name.endsWith(".obs") || name.endsWith(".OBS") || name.endsWith(".rtk") || name.endsWith(".RTK");
     }
 
-    public static boolean isJPGorAux(String name){
-        return isJPG(name) && isAux(name);
+    public static boolean isJPGorAux(File name){
+        return isJPG(name.getName()) || isAux(name.getName());
     }
-    public static boolean isPNGorAux(String name){
-        return isJPG(name) && isAux(name);
+    public static boolean isPNGorAux(File name){
+        return isJPG(name.getName()) || isAux(name.getName());
     }
 
-    public static boolean isTIForAux(String name){
-        return isTIF(name) && isAux(name);
+    public static boolean isTIForAux(File name){
+        return isTIF(name.getName()) || isAux(name.getName());
     }
 
 }

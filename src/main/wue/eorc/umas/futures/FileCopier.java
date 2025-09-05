@@ -7,6 +7,7 @@ import wue.eorc.umas.models.Flight;
 import wue.eorc.umas.utils.ImageUtils;
 
 import java.io.File;
+import java.io.FileFilter;
 import java.io.IOException;
 import java.nio.file.*;
 import java.nio.file.attribute.BasicFileAttributes;
@@ -74,10 +75,10 @@ public class FileCopier {
         }
     }
 
-    private void copy(List<String> origins, String flightDirectory, Predicate<String> filter, String... baseDest) throws IOException {
+    private void copy(List<String> origins, String flightDirectory, Predicate<File> filter, String... baseDest) throws IOException {
         ArrayList<File> filesToCopy = new ArrayList<>();
         for(String absPathString : origins){
-            File[] files = Paths.get(absPathString).toFile().listFiles();
+            File[] files = Paths.get(absPathString).toFile().listFiles(filter::test);
             if(files != null){
                 filesToCopy.addAll(Arrays.asList(files));
             }
