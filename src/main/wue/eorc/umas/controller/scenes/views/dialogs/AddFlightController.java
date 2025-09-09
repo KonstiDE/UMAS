@@ -153,7 +153,7 @@ public class AddFlightController implements StaticDialogController, CopyProgress
 
             }
 
-            if(this.imageTypes.containsKey(ImageType.MULTISPECTRAL)){
+            if(this.imageTypes.containsKey(ImageType.CALIBRATION)){
                 browseCalib.setDisable(false);
                 calibDirs.setDisable(false);
             }else{
