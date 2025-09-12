@@ -38,7 +38,7 @@ public class CoordinateSelector implements StaticDialogController {
             Reader in = new FileReader(Path.of(Objects.requireNonNull(
                     getClass().getClassLoader().getResource("data/coordinate-systems.csv")).toURI()).toString());
 
-            CSVFormat csvFormat = CSVFormat.DEFAULT.builder().get();
+            CSVFormat csvFormat = CSVFormat.DEFAULT.builder().build();
 
             Iterable<CSVRecord> records = csvFormat.parse(in);
 
