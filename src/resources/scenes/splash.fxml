@@ -2,10 +2,10 @@
 
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.ProgressIndicator?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
-
 
 <AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
@@ -14,7 +14,8 @@
             <Image url="@../assets/splash/splash.png" />
          </image>
       </ImageView>
-      <Label id="splash.label" layoutX="6.0" layoutY="368.0" text="Label" textFill="WHITE" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="4.0" />
+      <Label id="splash.label" layoutX="22.0" layoutY="378.0" text="Label" textFill="WHITE" AnchorPane.bottomAnchor="4.0" AnchorPane.leftAnchor="22.0" />
       <ProgressBar id="splash.progress" layoutY="377.0" prefHeight="2.0" prefWidth="600.0" progress="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+      <ProgressIndicator layoutX="2.0" layoutY="379.0" prefHeight="16.0" prefWidth="16.0" />
    </children>
 </AnchorPane>
