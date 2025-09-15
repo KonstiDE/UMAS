@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-import javafx.scene.layout.Pane;
 import javafx.stage.FileChooser;
 import org.controlsfx.control.ToggleSwitch;
 import wue.eorc.umas.agisoft.AgisoftCaller;
@@ -19,34 +18,48 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 
 public class SettingsController implements StaticDialogController {
+
+    private ComboBox<String> uiTheme;
+    private ToggleSwitch fullScreenAtStartup;
+    private TextField agisoftExecPath;
+    private TextField terraExecPath;
+    private ImageView agisoftIndicator;
+    private Label agisoftVersion;
+    private TextField databaseHost;
+    private TextField databasePort;
+    private Button databaseTest;
+
+    private DisplayController displayController;
 
     @Override
     public void init(DisplayController display, Dialog<String> dialog) throws UMASException {
         DialogPane pane = dialog.getDialogPane();
 
-        ComboBox<String> uiTheme = ItemSearcher.getGenericControlById("settings.uitheme", pane, ComboBox.class, String.class);
-        ToggleSwitch fullScreenAtStartup = ItemSearcher.getItemById("settings.fullscreenatstartup", pane, ToggleSwitch.class);
+        this.displayController = display;
+
+        uiTheme = ItemSearcher.getGenericControlById("settings.uitheme", pane, ComboBox.class, String.class);
+        fullScreenAtStartup = ItemSearcher.getItemById("settings.fullscreenatstartup", pane, ToggleSwitch.class);
 
         Button browseAgisoftExecPath = ItemSearcher.getItemById("settings.agisoftexecpathbrowse", pane, Button.class);
         Button browseTerraExecPath = ItemSearcher.getItemById("settings.terraexecpathbrowse", pane, Button.class);
 
-        TextField agisoftExecPath = ItemSearcher.getItemById("settings.agisoftexecpath", pane, TextField.class);
-        TextField terraExecPath = ItemSearcher.getItemById("settings.terraexecpath", pane, TextField.class);
+        agisoftExecPath = ItemSearcher.getItemById("settings.agisoftexecpath", pane, TextField.class);
+        terraExecPath = ItemSearcher.getItemById("settings.terraexecpath", pane, TextField.class);
 
-        ImageView agisoftIndicator = ItemSearcher.getItemById("settings.agisoftindicator", pane, ImageView.class);
-        Label agisoftVersion = ItemSearcher.getItemById("settings.agisoftversion", pane, Label.class);
+        agisoftIndicator = ItemSearcher.getItemById("settings.agisoftindicator", pane, ImageView.class);
+        agisoftVersion = ItemSearcher.getItemById("settings.agisoftversion", pane, Label.class);
         ImageView terraIndicator = ItemSearcher.getItemById("settings.terraindicator", pane, ImageView.class);
         Label terraVersion = ItemSearcher.getItemById("settings.terraversion", pane, Label.class);
 
-        Button save = ItemSearcher.getItemById("settings.save", pane, Button.class);
-        Button cancel = ItemSearcher.getItemById("settings.cancel", pane, Button.class);
+        databaseHost = ItemSearcher.getItemById("settings.database.host", pane, TextField.class);
+        databasePort = ItemSearcher.getItemById("settings.database.port", pane, TextField.class);
+        databaseTest = ItemSearcher.getItemById("settings.database.test", pane, Button.class);
 
         uiTheme.getItems().clear();
         uiTheme.getItems().addAll("Light", "Dark");
-        uiTheme.getSelectionModel().select(Settings.getSetting(Setting.UITHEME));
+        uiTheme.getSelectionModel().select(Settings.getSetting(Setting.UI_THEME));
         uiTheme.setOnAction(_ignored -> {
             if (uiTheme.getSelectionModel().getSelectedItem().equals("Dark")) {
                 display.rootControl.getScene().getStylesheets().clear();
@@ -59,10 +72,10 @@ public class SettingsController implements StaticDialogController {
             }
         });
 
-        fullScreenAtStartup.setSelected(Boolean.parseBoolean(Settings.getSetting(Setting.FULLSCREENATSTARTUP)));
+        fullScreenAtStartup.setSelected(Boolean.parseBoolean(Settings.getSetting(Setting.FULL_SCREEN_AT_START_UP)));
 
-        agisoftExecPath.setText(Settings.getSetting(Setting.AGISOFTEXECPATH));
-        terraExecPath.setText(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        agisoftExecPath.setText(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
+        terraExecPath.setText(Settings.getSetting(Setting.TERRA_EXEC_PATH));
 
         browseAgisoftExecPath.setOnAction(_ignored -> {
             FileChooser fileChooser = new FileChooser();
@@ -76,9 +89,13 @@ public class SettingsController implements StaticDialogController {
                 if(version != null){
                     agisoftIndicator.setImage(new Image(Objects.requireNonNull(getClass().getClassLoader().getResource("assets/settings/check.png")).toString()));
                     agisoftVersion.setText(version);
+                    Settings.modifySettings(Setting.AGISOFT_VERSION, version);
+                    Settings.modifySettings(Setting.AGISOFT_EXEC_PATH_VALID, "true");
                 }else{
                     agisoftIndicator.setImage(new Image(Objects.requireNonNull(getClass().getClassLoader().getResource("assets/settings/cross.png")).toString()));
                     agisoftVersion.setText("Invalid Agisoft Executable");
+                    Settings.modifySettings(Setting.AGISOFT_VERSION, "Invalid Agisoft Executable");
+                    Settings.modifySettings(Setting.AGISOFT_EXEC_PATH_VALID, "false");
                 }
 
                 agisoftExecPath.setText(file.getAbsolutePath());
@@ -89,35 +106,13 @@ public class SettingsController implements StaticDialogController {
 
         });
 
-        save.setOnAction(_ignored -> {
-            try {
-                Settings.modifySettings(Setting.UITHEME, uiTheme.getValue());
-                Settings.modifySettings(Setting.FULLSCREENATSTARTUP, "" + fullScreenAtStartup.isSelected());
-                Settings.modifySettings(Setting.AGISOFTEXECPATH, agisoftExecPath.getText());
-                Settings.modifySettings(Setting.TERRAEXECPATH, terraExecPath.getText());
-
-                Settings.saveSettings();
-            } catch (IOException e) {
-                UMASException.throwWindow(ErrorType.INTERNAL, "Could not save settings. Please restart the application!");
-            }
-
-            Platform.runLater(() -> {
-                dialog.setResult("");
-                dialog.close();
-            });
-        });
-
-        cancel.setOnAction(_ignored -> {
-            if(Settings.getSetting(Setting.UITHEME).equals("Light")){
-                dialog.getDialogPane().getScene().getStylesheets().clear();
-                display.rootControl.getScene().getStylesheets().clear();
-            }
-
-            Platform.runLater(() -> {
-                dialog.setResult("");
-                dialog.close();
-            });
-        });
+        if(Boolean.parseBoolean(Settings.getSetting(Setting.AGISOFT_EXEC_PATH_VALID))){
+            agisoftIndicator.setImage(new Image(Objects.requireNonNull(getClass().getClassLoader().getResource("assets/settings/check.png")).toString()));
+            agisoftVersion.setText(Settings.getSetting(Setting.AGISOFT_VERSION));
+        }else{
+            agisoftIndicator.setImage(new Image(Objects.requireNonNull(getClass().getClassLoader().getResource("assets/settings/cross.png")).toString()));
+            agisoftVersion.setText("Invalid Agisoft Executable");
+        }
 
         setupResultConverter(dialog);
 
@@ -125,6 +120,37 @@ public class SettingsController implements StaticDialogController {
 
     @Override
     public void setupResultConverter(Dialog<String> dialog) {
-        dialog.setResultConverter(buttonType -> null);
+        dialog.setResultConverter(buttonType -> {
+            if(buttonType == ButtonType.APPLY){
+                try {
+                    Settings.modifySettings(Setting.UI_THEME, uiTheme.getValue());
+                    Settings.modifySettings(Setting.FULL_SCREEN_AT_START_UP, "" + fullScreenAtStartup.isSelected());
+                    Settings.modifySettings(Setting.AGISOFT_EXEC_PATH, agisoftExecPath.getText());
+                    Settings.modifySettings(Setting.TERRA_EXEC_PATH, terraExecPath.getText());
+
+                    Settings.saveSettings();
+                } catch (IOException e) {
+                    UMASException.throwWindow(ErrorType.INTERNAL, "Could not save settings. Please restart the application!");
+                }
+
+                Platform.runLater(() -> {
+                    dialog.setResult("");
+                    dialog.close();
+                });
+            }else{
+                if(Settings.getSetting(Setting.UI_THEME).equals("Light")){
+                    dialog.getDialogPane().getScene().getStylesheets().clear();
+                    displayController.rootControl.getScene().getStylesheets().clear();
+                }
+
+                Platform.runLater(() -> {
+                    dialog.setResult("");
+                    dialog.close();
+                });
+            }
+            return null;
+        });
     }
+
+
 }

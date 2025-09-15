@@ -1,13 +1,11 @@
 package wue.eorc.umas.controller.scenes.main;
 
-import javafx.scene.control.DialogPane;
+import javafx.scene.control.*;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Menu;
-import javafx.scene.control.MenuBar;
-import javafx.scene.control.MenuItem;
 import javafx.stage.FileChooser;
 import wue.eorc.umas.controller.RootController;
+import wue.eorc.umas.controller.customs.UMASDialog;
 import wue.eorc.umas.controller.scenes.views.dialogs.SettingsController;
 import wue.eorc.umas.controller.scenes.views.panes.CreateProjectController;
 import wue.eorc.umas.controller.scenes.views.panes.ShowFlightsController;
@@ -116,10 +114,10 @@ public class MenuController {
             });
         }
 
-        getMenuItem(mainMenu, "settings").setOnAction(_ignored -> rootController.getDisplayController().openSettingsDialog(
-                (DialogPane) rootController.getSceneLoader().getScene("settings"),
-                new SettingsController()
-        ));
+        getMenuItem(mainMenu, "settings").setOnAction(_ignored -> {
+            DialogPane dialogPane = (DialogPane) rootController.getSceneLoader().getScene("settings");
+            rootController.getDisplayController().openSettingsDialog(dialogPane, new SettingsController());
+        });
 
 
         mainMenu.get(mainMenu.size() - 1).setOnAction(ignored -> System.exit(0));

@@ -46,7 +46,7 @@ public class AgisoftCaller {
     }
 
     public boolean createProject(String psxFilePath) throws IOException, InterruptedException {
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "create_project.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -83,7 +83,7 @@ public class AgisoftCaller {
     public void checkChunk(AnchorPane anchorPane, String psxFile, String demFile, String orthoFile, String reportFile,
                            WorkflowType workflowType){
 
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "check_chunk.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -94,7 +94,7 @@ public class AgisoftCaller {
     }
 
     public void addPhotosCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "add_photos_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -104,7 +104,7 @@ public class AgisoftCaller {
     }
 
     public void addPhotos(StackPane stackPane, String psxFile, List<String> flightFolders, List<String> calibFolders, WorkflowType workflowType, boolean batch){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "add_photos.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r", filePath.toFile().getAbsolutePath(),
@@ -118,7 +118,7 @@ public class AgisoftCaller {
     }
 
     public void setBrightnessCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "set_brightness_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -128,7 +128,7 @@ public class AgisoftCaller {
     }
 
     public void setBrightness(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "set_brightness.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -140,7 +140,7 @@ public class AgisoftCaller {
     }
 
     public void setBrightnessEstimate(Pane pane, String psxFile, WorkflowType workflowType){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "set_brightness_estimate.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -150,7 +150,7 @@ public class AgisoftCaller {
     }
 
     public void calibrateReflectanceCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "calibrate_reflectance_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -160,7 +160,7 @@ public class AgisoftCaller {
     }
 
     public void calibrateReflectance(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams, boolean batch){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "calibrate_reflectance.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -173,7 +173,7 @@ public class AgisoftCaller {
     }
 
     public void alignPhotosCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "align_images_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -183,7 +183,7 @@ public class AgisoftCaller {
     }
 
     public void alignPhotos(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams, boolean batch){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "align_images.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -196,7 +196,7 @@ public class AgisoftCaller {
     }
 
     public void optimizeCamerasCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "optimize_cameras_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -206,7 +206,7 @@ public class AgisoftCaller {
     }
 
     public void optimizeCameras(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "optimize_cameras.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -218,7 +218,7 @@ public class AgisoftCaller {
     }
 
     public void buildPointCloudCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "build_point_cloud_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -228,7 +228,7 @@ public class AgisoftCaller {
     }
 
     public void buildPointCloud(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams, boolean batch){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "build_point_cloud.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -241,7 +241,7 @@ public class AgisoftCaller {
     }
 
     public void buildDemCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "build_dem_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -251,7 +251,7 @@ public class AgisoftCaller {
     }
 
     public void buildDem(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams, boolean batch){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "build_dem.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -264,7 +264,7 @@ public class AgisoftCaller {
     }
 
     public void buildOrthomosaicCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "build_orthomosaic_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -274,7 +274,7 @@ public class AgisoftCaller {
     }
 
     public void buildOrthomosaic(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams, boolean batch){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "build_orthomosaic.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -287,7 +287,7 @@ public class AgisoftCaller {
     }
 
     public void exportDemCheck(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "export_dem_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -298,7 +298,7 @@ public class AgisoftCaller {
 
     }
     public void exportDem(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType, HashMap<String, String> agisoftParams, boolean batch){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "export_dem.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -311,7 +311,7 @@ public class AgisoftCaller {
     }
 
     public void exportOrthoCheck(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "export_orthomosaic_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -322,7 +322,7 @@ public class AgisoftCaller {
 
     }
     public void exportOrtho(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType, HashMap<String, String> agisoftParams, boolean batch){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "export_orthomosaic.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -335,7 +335,7 @@ public class AgisoftCaller {
     }
 
     public void generateReportCheck(StackPane stackPane, String psxFile, String targetFile, WorkflowType workflowType){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "generate_report_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -346,7 +346,7 @@ public class AgisoftCaller {
 
     }
     public void generateReport(StackPane stackPane, String psxFile, String targetFile, String flightName, String description, WorkflowType workflowType, boolean batch){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "generate_report.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
@@ -360,7 +360,7 @@ public class AgisoftCaller {
     }
 
     public void removeComponent(StackPane stackPane, String psxFile, AgisoftTask agisoftTask, WorkflowType workflowType){
-        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFTEXECPATH));
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "remove_component.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",

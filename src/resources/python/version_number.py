@@ -2,7 +2,7 @@ import Metashape
 
 
 def version_number():
-    print("vn:CHECK_VERSION:Agisoft Metasahpe {}.{}.{}, Build: {}".format(
+    print("vn:CHECK_VERSION:Agisoft Metashape {}.{}.{}, Build: {}".format(
         Metashape.version.major,
         Metashape.version.minor,
         Metashape.version.micro,

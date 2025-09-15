@@ -75,7 +75,7 @@ public class DisplayController {
     }
 
     public void openSettingsDialog(DialogPane pane, StaticDialogController trigger) {
-        Dialog<String> dialog = new UMASDialog(pane, "Settings", false, true);
+        Dialog<String> dialog = new UMASDialog(pane, "Settings", false, false);
 
         try{
             trigger.init(this, dialog);

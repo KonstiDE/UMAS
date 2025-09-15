@@ -20,10 +20,16 @@ public class Settings {
     public static File settingsPath;
 
     public static HashMap<Setting, String> settings = new HashMap<>(Map.ofEntries(
-            Map.entry(Setting.UITHEME, "Light"),
-            Map.entry(Setting.FULLSCREENATSTARTUP, "false"),
-            Map.entry(Setting.AGISOFTEXECPATH, ""),
-            Map.entry(Setting.TERRAEXECPATH, "")
+            Map.entry(Setting.UI_THEME, "Light"),
+            Map.entry(Setting.FULL_SCREEN_AT_START_UP, "false"),
+            Map.entry(Setting.AGISOFT_EXEC_PATH, ""),
+            Map.entry(Setting.AGISOFT_VERSION, ""),
+            Map.entry(Setting.AGISOFT_EXEC_PATH_VALID, "false"),
+            Map.entry(Setting.TERRA_EXEC_PATH, ""),
+            Map.entry(Setting.TERRA_VERSION, ""),
+            Map.entry(Setting.TERRA_EXEC_PATH_VALID, "false"),
+            Map.entry(Setting.DATABASE_CONNECTION_STRING, ""),
+            Map.entry(Setting.DATABASE_CONNECTION_STRING_VALID, "false")
     ));
 
     public static void createSettingsFile() throws IOException {
@@ -42,8 +48,7 @@ public class Settings {
                 reader.close();
 
                 if (json != null && !json.isEmpty()) {
-                    settings = gson.fromJson(json, new TypeToken<HashMap<Setting, String>>() {
-                    }.getType());
+                    settings = gson.fromJson(json, new TypeToken<HashMap<Setting, String>>() {}.getType());
                 }
             }
             settingsPath = settingsFile;
@@ -68,7 +73,7 @@ public class Settings {
     }
 
     public static boolean useDarkLayout(){
-        return settings.get(Setting.UITHEME).equals("Dark");
+        return settings.get(Setting.UI_THEME).equals("Dark");
     }
 
 }

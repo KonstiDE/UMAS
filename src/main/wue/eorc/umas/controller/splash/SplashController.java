@@ -25,6 +25,8 @@ import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.concurrent.CompletableFuture;
 
+import static java.util.concurrent.TimeUnit.MILLISECONDS;
+
 public class SplashController implements FutureController {
 
 
@@ -38,26 +40,32 @@ public class SplashController implements FutureController {
                 label.setText("Checking system files...");
                 ProjectCache.createRecentProjectsFile();
                 Settings.createSettingsFile();
+            } catch (IOException ignored) {}
+
+            try{
                 Thread.sleep(1000);
-            } catch (IOException | InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            }catch(InterruptedException ignored){}
 
             Platform.runLater(() -> label.setText("Testing database connection..."));
             try {
                 Thread.sleep(500);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
+            } catch (InterruptedException ignored) {}
 
-            String uri = "mongodb://localhost:27017";
+            String uri = "mongodb://132.187.202.30:27017";
             ServerApi serverApi = ServerApi.builder()
                     .version(ServerApiVersion.V1)
                     .build();
+
             MongoClientSettings settings = MongoClientSettings.builder()
                     .applyConnectionString(new ConnectionString(uri))
+                    .applyToSocketSettings(builder -> {
+                        builder.connectTimeout(2000, MILLISECONDS);
+                        builder.readTimeout(2000, MILLISECONDS);
+                    })
+                    .applyToClusterSettings( builder -> builder.serverSelectionTimeout(2000, MILLISECONDS))
                     .serverApi(serverApi)
                     .build();
+
             Platform.runLater(() -> label.setText("Built database connection string..."));
             try {
                 Thread.sleep(200);
@@ -74,34 +82,39 @@ public class SplashController implements FutureController {
 
                     Platform.runLater(() -> label.setText("Successfully pinged database..."));
 
-                    Thread.sleep(2000);
+                    try{
+                        Thread.sleep(2000);
+                    }catch (InterruptedException ignored){}
 
                 } catch (MongoException me) {
                     Platform.runLater(() -> label.setText("Could not connect to database..."));
                     try {
                         Thread.sleep(2000);
-                    } catch (InterruptedException e) {
-                        throw new RuntimeException(e);
-                    }
-                } catch (InterruptedException e) {
-                    throw new RuntimeException(e);
+                    } catch (InterruptedException ignored) {}
                 }
             }
             Platform.runLater(() -> label.setText("Verifying Agisoft Metashape version..."));
 
             try {
                 String version = new AgisoftCaller(null, null, display)
-                        .checkAgisoftVersion(Settings.getSetting(Setting.AGISOFTEXECPATH));
-                Platform.runLater(() -> label.setText("Verified: " + version));
+                        .checkAgisoftVersion(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
 
-                Thread.sleep(2000);
-            } catch (InterruptedException | URISyntaxException e) {
+                if(version != null){
+                    Platform.runLater(() -> label.setText("Verified: " + version));
+                }else{
+                    Platform.runLater(() -> label.setText("Could not verify Agisoft executable..."));
+                }
+
+
+                try{
+                    Thread.sleep(2000);
+                }catch (InterruptedException ignored){}
+
+            } catch (URISyntaxException | InterruptedException e) {
                 Platform.runLater(() -> label.setText("Could not verify Agisoft executable..."));
                 try {
                     Thread.sleep(2000);
-                } catch (InterruptedException ex) {
-                    throw new RuntimeException(ex);
-                }
+                } catch (InterruptedException ignored) {}
             }
 
         });

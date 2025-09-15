@@ -58,7 +58,7 @@ public class Main extends Application {
 
                     Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
 
-                    if(Boolean.parseBoolean(Settings.getSetting(Setting.FULLSCREENATSTARTUP))){
+                    if(Boolean.parseBoolean(Settings.getSetting(Setting.FULL_SCREEN_AT_START_UP))){
                         primaryStage.setMaximized(true);
                     }else{
                         primaryStage.setWidth(1440);
@@ -68,10 +68,6 @@ public class Main extends Application {
                         primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
                     }
 
-                    primaryStage.getIcons().add(new Image(
-                            Objects.requireNonNull(getClass().
-                                    getClassLoader().getResourceAsStream("assets/icons/logo_jm.PNG"))
-                    ));
                     primaryStage.hide();
                     primaryStage.close();
 
@@ -79,6 +75,11 @@ public class Main extends Application {
                     stage.initStyle(StageStyle.DECORATED);
                     stage.setScene(scene);
                     stage.setTitle("UAS Management Application System");
+
+                    stage.getIcons().add(new Image(
+                            Objects.requireNonNull(getClass().
+                                    getClassLoader().getResourceAsStream("assets/icons/logo_jm.PNG"))
+                    ));
 
                     stage.setOnCloseRequest(windowEvent -> {
                         if (AgisoftCaller.isRunning){

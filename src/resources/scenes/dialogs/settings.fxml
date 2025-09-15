@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ButtonType?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.DialogPane?>
 <?import javafx.scene.control.Label?>
@@ -18,7 +19,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.ToggleSwitch?>
 
-<DialogPane prefHeight="578.0" prefWidth="634.0"  xmlns:fx="http://javafx.com/fxml/1">
+<DialogPane prefHeight="578.0" prefWidth="634.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/24.0.1">
    <content>
       <AnchorPane depthTest="DISABLE" prefHeight="651.0" prefWidth="634.0">
          <children>
@@ -40,12 +41,13 @@
                            <rowConstraints>
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                            </rowConstraints>
                            <children>
                               <Label text="UI Theme" />
                               <ComboBox id="settings.uitheme" prefHeight="26.0" prefWidth="229.0" promptText="Theme" GridPane.columnIndex="1" />
-                              <ToggleSwitch id="settings.fullscreenatstartup" prefHeight="20.0" prefWidth="16.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <Label text="Fullscreen at start-up" GridPane.rowIndex="1" />
+                              <ToggleSwitch id="settings.fullscreenatstartup" prefHeight="20.0" prefWidth="16.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label text="Fullscreen at start-up" GridPane.rowIndex="2" />
                            </children>
                         </GridPane>
                         <Pane prefHeight="33.0" prefWidth="571.0" />
@@ -97,24 +99,50 @@
                               </HBox>
                            </children>
                         </GridPane>
+                        <Label text="Database">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <Separator prefWidth="200.0" />
+                        <GridPane>
+                           <columnConstraints>
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="389.0" minWidth="10.0" prefWidth="256.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="315.0" minWidth="10.0" prefWidth="315.0" />
+                           </columnConstraints>
+                           <rowConstraints>
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="10.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                           </rowConstraints>
+                           <children>
+                              <Label text="Host / Port" />
+                              <HBox prefHeight="100.0" prefWidth="256.0" spacing="12.0" GridPane.columnIndex="1">
+                                 <children>
+                                    <TextField id="settings.database.host" prefHeight="25.0" prefWidth="401.0" HBox.hgrow="ALWAYS" />
+                                    <TextField id="settings.database.port" maxWidth="50.0" minWidth="50.0" prefWidth="50.0" HBox.hgrow="NEVER" />
+                                 </children>
+                              </HBox>
+                              <HBox prefHeight="100.0" prefWidth="256.0" spacing="12.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                 <children>
+                                    <Button id="settings.database.test" mnemonicParsing="false" text="Test connection" />
+                                 </children>
+                              </HBox>
+                           </children>
+                        </GridPane>
                      </children>
                      <padding>
                         <Insets left="12.0" top="12.0" />
                      </padding>
                   </VBox>
-                  <Button id="settings.save" defaultButton="true" layoutX="553.0" layoutY="552.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="76.0" text="   Save   ">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Button>
-                  <Button id="settings.cancel" layoutX="469.0" layoutY="552.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="76.0" text="Cancel">
-                     <font>
-                        <Font size="13.0" />
-                     </font>
-                  </Button>
                </children>
             </AnchorPane>
          </children>
       </AnchorPane>
    </content>
+   <buttonTypes>
+      <ButtonType fx:constant="CANCEL" />
+      <ButtonType fx:constant="APPLY" />
+   </buttonTypes>
 </DialogPane>
