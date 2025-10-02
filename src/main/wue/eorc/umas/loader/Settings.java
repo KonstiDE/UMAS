@@ -1,8 +1,11 @@
 package wue.eorc.umas.loader;
 
 import com.google.gson.Gson;
+import com.google.gson.JsonSyntaxException;
 import com.google.gson.reflect.TypeToken;
+import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.Setting;
+import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.utils.DirectoryUtils;
 
 import java.io.*;
@@ -48,7 +51,18 @@ public class Settings {
                 reader.close();
 
                 if (json != null && !json.isEmpty()) {
-                    settings = gson.fromJson(json, new TypeToken<HashMap<Setting, String>>() {}.getType());
+                    try{
+                        settings = gson.fromJson(json, new TypeToken<HashMap<Setting, String>>() {}.getType());
+                    } catch (JsonSyntaxException e) {
+                        // Settings file is malformed due to an update of the software
+                        boolean success = settingsFile.delete();
+                        if(success){
+                            createSettingsFile();
+                        }else{
+                            throw new RuntimeException("Settings file is malformed and cannot be deleted. " +
+                                    "Please delete it manually. Path: " + settingsFile.getAbsolutePath());
+                        }
+                    }
                 }
             }
             settingsPath = settingsFile;
