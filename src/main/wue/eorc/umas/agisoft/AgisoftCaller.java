@@ -110,7 +110,7 @@ public class AgisoftCaller {
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r", filePath.toFile().getAbsolutePath(),
                 "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType),
                 "-photo_folders", flightFolders.size() > 1 ? String.join(",", flightFolders) : flightFolders.get(0),
-                "-calib_folders", calibFolders.size() > 1 ? String.join(",", calibFolders) : calibFolders.get(0),
+                "-calib_folders", calibFolders.size() > 1 ? String.join(",", calibFolders) : calibFolders.isEmpty() ? "" : calibFolders.get(0),
                 "-batch", "" + batch);
 
         enqueue(workflowType, AgisoftTask.ADD_PHOTOS, stackPane, pb, true);

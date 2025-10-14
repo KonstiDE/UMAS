@@ -43,32 +43,33 @@ def add_photos(file, chunk_lab, folders, calib_folders, batch):
             )
 
 
-        calib_group = chunk.addCameraGroup()
-        calib_group.label = "calibration images"
+        if not calib_folders[0] == "":
+            calib_group = chunk.addCameraGroup()
+            calib_group.label = "calibration images"
 
-        for folder in calib_folders:
-            photos = os.listdir(folder)
-            photos = [os.path.join(folder, photo) for photo in photos]
+            for folder in calib_folders:
+                photos = os.listdir(folder)
+                photos = [os.path.join(folder, photo) for photo in photos]
 
-            num_before = len(chunk.cameras)
+                num_before = len(chunk.cameras)
 
-            chunk.addPhotos(
-                filenames=photos,
-                layout=ms.UndefinedLayout, # options: UndefinedLayout, FlatLayout, MultiframeLayout, MultiplaneLayout
-                strip_extensions=True,  # if False, adds ".JPG" to image name
-                load_reference=True,
-                load_xmp_calibration=True,
-                load_xmp_orientation=True,
-                load_xmp_accuracy=False,
-                load_xmp_antenna=True,
-                load_rpc_txt=False,
-                progress=report_progress
-            )
+                chunk.addPhotos(
+                    filenames=photos,
+                    layout=ms.UndefinedLayout, # options: UndefinedLayout, FlatLayout, MultiframeLayout, MultiplaneLayout
+                    strip_extensions=True,  # if False, adds ".JPG" to image name
+                    load_reference=True,
+                    load_xmp_calibration=True,
+                    load_xmp_orientation=True,
+                    load_xmp_accuracy=False,
+                    load_xmp_antenna=True,
+                    load_rpc_txt=False,
+                    progress=report_progress
+                )
 
-            new_cameras = chunk.cameras[num_before:]
+                new_cameras = chunk.cameras[num_before:]
 
-            for camera in new_cameras:
-                camera.group = calib_group
+                for camera in new_cameras:
+                    camera.group = calib_group
 
 
 
