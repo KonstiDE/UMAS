@@ -17,7 +17,6 @@ def check_chunk(file, demFile, orthoFile, reportFile, chunk_lab):
     if len(doc.chunks) > 0:
         for chunk in doc.chunks:
             if chunk.label == chunk_lab:
-                print("vn:ADD_PHOTOS_CHECK:true")
                 found = True
                 break
 
@@ -38,6 +37,11 @@ def check_chunk(file, demFile, orthoFile, reportFile, chunk_lab):
         chunk = get_chunk(doc.chunks, chunk_lab)
 
         if chunk is not None:
+            # add_photos check
+            if len(chunk.cameras) > 0:
+                print("vn:ADD_PHOTOS_CHECK:true")
+            else:
+                print("vn:ADD_PHOTOS_CHECK:false")
 
             # set_brightness check
             if chunk.image_brightness == 100 and chunk.image_contrast == 100:
