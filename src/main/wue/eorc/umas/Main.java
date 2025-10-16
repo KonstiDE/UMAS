@@ -109,6 +109,11 @@ public class Main extends Application {
             });
         });
 
+        primaryStage.getIcons().add(new Image(
+                Objects.requireNonNull(getClass().
+                        getClassLoader().getResourceAsStream("assets/icons/logo_jm.PNG"))
+        ));
+
         Scene scene = new Scene(splashRoot, 600, 400);
 
         primaryStage.setScene(scene);

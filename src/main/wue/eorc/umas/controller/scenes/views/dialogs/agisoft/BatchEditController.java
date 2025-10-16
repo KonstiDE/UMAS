@@ -55,14 +55,14 @@ public class BatchEditController implements StaticDialogController {
             i++;
 
             switch (agisoftTask){
-                case SET_BRIGHTNESS -> dialogs.put(SET_BRIGHTNESS, setupDialogRegion(display, AgisoftDialog.SET_BRIGHTNESS, new SetBrightnessController(processActionsPreparer), dialog));
-                case ALIGN_IMAGES -> dialogs.put(ALIGN_IMAGES, setupDialogRegion(display, AgisoftDialog.ALIGN_IMAGES, new AlignImagesController(), dialog));
-                case OPTIMIZE_CAMERAS -> dialogs.put(OPTIMIZE_CAMERAS, setupDialogRegion(display, AgisoftDialog.OPTIMIZE_CAMERAS, new OptimizeCamerasController(), dialog));
-                case BUILD_POINT_CLOUD -> dialogs.put(BUILD_POINT_CLOUD, setupDialogRegion(display, AgisoftDialog.BUILD_POINT_CLOUD, new BuildPointCloudController(), dialog));
-                case BUILD_DEM -> dialogs.put(BUILD_DEM, setupDialogRegion(display, AgisoftDialog.BUILD_DEM, new BuildDemController(), dialog));
-                case BUILD_ORTHOMOSAIC -> dialogs.put(BUILD_ORTHOMOSAIC, setupDialogRegion(display, AgisoftDialog.BUILD_ORTHOMOSAIC, new BuildOrthomosaicController(), dialog));
-                case EXPORT_DEM -> dialogs.put(EXPORT_DEM, setupDialogRegion(display, AgisoftDialog.EXPORT_DEM, new ExportDemController(), dialog));
-                case EXPORT_ORTHOMOSAIC -> dialogs.put(EXPORT_ORTHOMOSAIC, setupDialogRegion(display, AgisoftDialog.EXPORT_ORTHOMOSAIC, new ExportOrthomosaicController(), dialog));
+                case SET_BRIGHTNESS -> dialogs.put(SET_BRIGHTNESS, setupDialogRegion(display, AgisoftDialog.SET_BRIGHTNESS, new SetBrightnessController(processActionsPreparer)));
+                case ALIGN_IMAGES -> dialogs.put(ALIGN_IMAGES, setupDialogRegion(display, AgisoftDialog.ALIGN_IMAGES, new AlignImagesController()));
+                case OPTIMIZE_CAMERAS -> dialogs.put(OPTIMIZE_CAMERAS, setupDialogRegion(display, AgisoftDialog.OPTIMIZE_CAMERAS, new OptimizeCamerasController()));
+                case BUILD_POINT_CLOUD -> dialogs.put(BUILD_POINT_CLOUD, setupDialogRegion(display, AgisoftDialog.BUILD_POINT_CLOUD, new BuildPointCloudController()));
+                case BUILD_DEM -> dialogs.put(BUILD_DEM, setupDialogRegion(display, AgisoftDialog.BUILD_DEM, new BuildDemController()));
+                case BUILD_ORTHOMOSAIC -> dialogs.put(BUILD_ORTHOMOSAIC, setupDialogRegion(display, AgisoftDialog.BUILD_ORTHOMOSAIC, new BuildOrthomosaicController()));
+                case EXPORT_DEM -> dialogs.put(EXPORT_DEM, setupDialogRegion(display, AgisoftDialog.EXPORT_DEM, new ExportDemController()));
+                case EXPORT_ORTHOMOSAIC -> dialogs.put(EXPORT_ORTHOMOSAIC, setupDialogRegion(display, AgisoftDialog.EXPORT_ORTHOMOSAIC, new ExportOrthomosaicController()));
             }
 
         }
@@ -72,11 +72,13 @@ public class BatchEditController implements StaticDialogController {
     }
 
     private Dialog<String> setupDialogRegion(DisplayController display, AgisoftDialog agisoftDialogDefinition,
-                                             StaticDialogController controller, Dialog<String> mainDialog) throws UMASException {
+                                             StaticDialogController controller) throws UMASException {
 
         Dialog<String> newDialog = new Dialog<>();
         DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene(agisoftDialogDefinition.getDialogId());
         dialogPane.getButtonTypes().clear();
+
+        newDialog.setDialogPane(dialogPane);
 
         grid.addRow(i, dialogPane);
         i++;
@@ -89,22 +91,26 @@ public class BatchEditController implements StaticDialogController {
     @Override
     public void setupResultConverter(Dialog<String> dialog) {
         dialog.setResultConverter(buttonType -> {
-            Gson gson = new Gson();
+            if(buttonType == ButtonType.OK){
+                Gson gson = new Gson();
 
-            HashMap<String, String> completeResult = new HashMap<>();
+                HashMap<String, String> completeResult = new HashMap<>();
 
-            for (Map.Entry<AgisoftTask, Dialog<String>> entry : dialogs.entrySet()) {
-                Callback<ButtonType, String> converter = entry.getValue().getResultConverter();
+                for (Map.Entry<AgisoftTask, Dialog<String>> entry : dialogs.entrySet()) {
+                    Callback<ButtonType, String> converter = entry.getValue().getResultConverter();
 
-                if (converter != null) {
-                    String value = converter.call(ButtonType.OK);
-                    completeResult.put(entry.getKey().name(), value);
-                } else {
-                    completeResult.put(entry.getKey().name(), null);
+                    if (converter != null) {
+                        String value = converter.call(ButtonType.OK);
+                        completeResult.put(entry.getKey().name(), value);
+                    } else {
+                        completeResult.put(entry.getKey().name(), null);
+                    }
                 }
-            }
 
-            return gson.toJson(completeResult, GsonTypeTokens.hashmapToken);
+                return gson.toJson(completeResult, GsonTypeTokens.hashmapToken);
+            }else{
+                return null;
+            }
         });
     }
 

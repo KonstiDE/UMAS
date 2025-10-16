@@ -14,7 +14,9 @@ public class ItemSearcher {
 
     public static <T extends Node> T getItemById(String query, Parent root, Class<T> type) throws UMASException {
         if(root instanceof DialogPane){
-            root = (Parent) ((DialogPane) root).getContent();
+            if(((DialogPane) root).getContent() != null){
+                root = (Parent) ((DialogPane) root).getContent();
+            }
         }
 
         ArrayList<Node> list = getAllNodes(root);
