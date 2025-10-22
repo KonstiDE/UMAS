@@ -24,6 +24,10 @@ public class ProjectCache {
     public static void createRecentProjectsFile() throws IOException {
         File cacheFolder = DirectoryUtils.initCache();
 
+        if(!cacheFolder.exists()){
+            boolean success = cacheFolder.mkdir();
+        }
+
         if(cacheFolder.exists()){
             File cacheFile = Paths.get(cacheFolder.getAbsolutePath(), "recent_projects").toFile();
             if(!cacheFile.exists()){

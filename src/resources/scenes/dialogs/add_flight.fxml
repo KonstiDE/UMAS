@@ -21,7 +21,7 @@
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.CheckComboBox?>
 
-<DialogPane expanded="true" prefHeight="811.0" prefWidth="772.0"  xmlns:fx="http://javafx.com/fxml/1">
+<DialogPane expanded="true" prefHeight="811.0" prefWidth="772.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25">
    <content>
       <AnchorPane prefHeight="200.0" prefWidth="200.0">
          <children>
@@ -122,8 +122,9 @@
                         <ComboBox id="addflight.chain" prefWidth="150.0" promptText="Select Chain" GridPane.columnIndex="1" GridPane.rowIndex="9" />
                      </children>
                   </GridPane>
-                  <HBox alignment="BOTTOM_RIGHT" prefWidth="726.0">
+                  <HBox alignment="BOTTOM_RIGHT" prefWidth="726.0" spacing="12.0">
                      <children>
+                        <Button id="addflight.cancel" mnemonicParsing="false" text="   Cancel   " />
                         <Button id="addflight.finish" defaultButton="true" mnemonicParsing="false" prefWidth="70.0" text="Finish" textAlignment="CENTER" />
                      </children>
                   </HBox>

@@ -92,6 +92,7 @@ public class AddFlightController implements StaticDialogController, CopyProgress
         this.progressBar = ItemSearcher.getItemById("addflight.progress", pane, ProgressBar.class);
         this.progressLabel = ItemSearcher.getItemById("addflight.progressLabel", pane, Label.class);
 
+        Button cancel = ItemSearcher.getItemById("addflight.cancel", pane, Button.class);
         Button finish = ItemSearcher.getItemById("addflight.finish", pane, Button.class);
 
         selectUAV.getItems().addAll(Stream.of(UAV.values()).map(UAV::getName).toList());
@@ -226,6 +227,26 @@ public class AddFlightController implements StaticDialogController, CopyProgress
         notes.textProperty().addListener(_ignored -> this.notes = notes.textProperty().get());
         this.notes = notes.textProperty().get();
 
+        cancel.setOnAction(_ignored -> {
+            if(this.copyJob != null && !this.copyJob.isDone()){
+                Alert alert = new Alert(Alert.AlertType.WARNING,
+                        "Files are still being copied. Do you want to cancel this operation?",
+                        ButtonType.YES,
+                        ButtonType.NO);
+                alert.setTitle("Date format warning");
+                Optional<ButtonType> result = alert.showAndWait();
+
+                if(result.isPresent() && result.get() == ButtonType.YES){
+                    this.copyJob.cancel(true);
+                    dialog.setResult("");
+                    dialog.close();
+                }
+            }else{
+                dialog.setResult("");
+                dialog.close();
+            }
+        });
+
         finish.setOnAction(_ignored -> {
             if(validate()){
                 Path baseDirectory = Paths.get(ProjectCache.currentlyOpenedProject.getFile().getParent());
@@ -261,27 +282,6 @@ public class AddFlightController implements StaticDialogController, CopyProgress
                     UMASException.throwWindow(ErrorType.USER, "Could not create the folder structure for flights.");
                 }
 
-            }
-        });
-
-        dialog.getDialogPane().getScene().getWindow().setOnCloseRequest(windowEvent -> {
-            if(this.copyJob != null && !this.copyJob.isDone()){
-                Alert alert = new Alert(Alert.AlertType.WARNING,
-                                "Files are still being copied. Do you want to cancel this operation?",
-                                ButtonType.YES,
-                                ButtonType.NO);
-                alert.setTitle("Date format warning");
-                Optional<ButtonType> result = alert.showAndWait();
-
-                if(result.isPresent() && result.get() == ButtonType.YES){
-                    this.copyJob.cancel(true);
-                    dialog.setResult(null);
-                    dialog.close();
-                }else{
-                    windowEvent.consume();
-                }
-            }else{
-                dialog.close();
             }
         });
 

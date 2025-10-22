@@ -42,7 +42,7 @@ public class SplashController implements FutureController {
                 Settings.createSettingsFile();
             } catch (IOException ignored) {}
 
-            try{
+            /*try{
                 Thread.sleep(1000);
             }catch(InterruptedException ignored){}
 
@@ -115,7 +115,7 @@ public class SplashController implements FutureController {
                 try {
                     Thread.sleep(2000);
                 } catch (InterruptedException ignored) {}
-            }
+            }*/
 
         });
     }
