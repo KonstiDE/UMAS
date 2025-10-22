@@ -543,6 +543,7 @@ public class ProcessActionsPreparer {
         final MenuItem remove = new MenuItem("Remove " + toRemoveFromAgisoftTask(agisoftTask));
         final MenuItem modifyBatch = new MenuItem("Modify Batch");
         final MenuItem runBatch = new MenuItem("Run Batch");
+        final MenuItem runFromHere = new MenuItem("Run from here");
 
         if(eventHandler != null) {
             modify.setOnAction(eventHandler);
@@ -555,11 +556,13 @@ public class ProcessActionsPreparer {
         }
 
         modifyBatch.setOnAction(handleModifyBatch());
-        runBatch.setOnAction(handleRunBatch());
+        runBatch.setOnAction(handleRunBatch(0));
+        runFromHere.setOnAction(handleRunBatch(3));
 
         contextMenu.getItems().add(modifyBatch);
         contextMenu.getItems().add(separator);
         contextMenu.getItems().add(runBatch);
+        contextMenu.getItems().add(runFromHere);
         contextMenu.show(getWorkflowPane().getScene().getWindow(), mouseEvent.getScreenX(), mouseEvent.getScreenY());
     }
 
@@ -615,7 +618,7 @@ public class ProcessActionsPreparer {
         };
     }
 
-    public EventHandler<ActionEvent> handleRunBatch(){
+    public EventHandler<ActionEvent> handleRunBatch(int fromWhere){
         return actionEvent -> {
             switch (workflowType) {
                 case RGB -> agisoftCaller.completeBuildRGB(
@@ -629,7 +632,7 @@ public class ProcessActionsPreparer {
                             getDefaultParameters(BuildDem.values()),
                             getDefaultParameters(BuildOrthomosaic.values()),
                             getDefaultParameters(ExportDem.values()),
-                            getDefaultParameters( ExportOrthomosaic.values())
+                            getDefaultParameters(ExportOrthomosaic.values())
                     ),
                     flight.getOriginFlightDirs(),
                     DirectoryUtils.figureAgisoftFilePath(flight),

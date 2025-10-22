@@ -6,8 +6,8 @@ import java.util.List;
 
 public enum SetBrightness implements AgisoftParameter {
 
-    BRIGHTNESS("brightness", AgiSoftList.of("100"), 100),
-    CONTRAST("contrast", AgiSoftList.of("100"), 100);
+    BRIGHTNESS("brightness", AgiSoftList.of("100"), 0),
+    CONTRAST("contrast", AgiSoftList.of("100"), 0);
 
     private final String id;
     private final List<String> choices;
