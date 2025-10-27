@@ -12,7 +12,7 @@ import javafx.scene.chart.XYChart;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
-import wue.eorc.umas.utils.Colors;
+import wue.eorc.umas.utils.system.Colors;
 
 import java.util.List;
 

@@ -3,6 +3,7 @@ package wue.eorc.umas.enums.agisoft;
 public enum AgisoftDialog {
 
     SET_BRIGHTNESS("agisoft_set_brightness"),
+    CALIBRATE_REFLECTANCE("agisoft_calibrate_reflectance"),
     ALIGN_IMAGES("agisoft_align_photos"),
     OPTIMIZE_CAMERAS("agisoft_optimize_cameras"),
     BUILD_POINT_CLOUD("agisoft_build_point_cloud"),

@@ -3,14 +3,13 @@ package wue.eorc.umas.controller.scenes.views.dialogs;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.control.*;
 import javafx.scene.control.Dialog;
-import javafx.scene.layout.Pane;
 import org.apache.commons.csv.CSVFormat;
 import org.apache.commons.csv.CSVRecord;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.models.CoordinateSystem;
-import wue.eorc.umas.utils.ItemSearcher;
+import wue.eorc.umas.utils.ui.ItemSearcher;
 
 import java.io.*;
 import java.net.URISyntaxException;

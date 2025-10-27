@@ -1,6 +1,6 @@
 package wue.eorc.umas.enums.agisoft;
 
-import wue.eorc.umas.utils.AgiSoftList;
+import wue.eorc.umas.utils.agisoft.AgiSoftList;
 
 import java.util.List;
 

@@ -19,9 +19,9 @@ import wue.eorc.umas.enums.ProcessingChain;
 import wue.eorc.umas.enums.WorkflowType;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.models.Flight;
-import wue.eorc.umas.utils.Colors;
-import wue.eorc.umas.utils.DirectoryUtils;
-import wue.eorc.umas.utils.ItemSearcher;
+import wue.eorc.umas.utils.system.Colors;
+import wue.eorc.umas.utils.system.DirectoryUtils;
+import wue.eorc.umas.utils.ui.ItemSearcher;
 
 import java.io.IOException;
 import java.net.URISyntaxException;

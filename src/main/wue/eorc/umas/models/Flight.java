@@ -3,7 +3,7 @@ package wue.eorc.umas.models;
 import com.google.gson.Gson;
 import wue.eorc.umas.enums.*;
 import wue.eorc.umas.exception.UMASException;
-import wue.eorc.umas.utils.DirectoryUtils;
+import wue.eorc.umas.utils.system.DirectoryUtils;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -11,9 +11,6 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.attribute.BasicFileAttributes;
 import java.nio.file.attribute.FileTime;
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;

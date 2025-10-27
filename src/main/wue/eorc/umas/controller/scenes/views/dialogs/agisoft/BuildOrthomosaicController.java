@@ -11,9 +11,9 @@ import wue.eorc.umas.enums.agisoft.BuildDem;
 import wue.eorc.umas.enums.agisoft.BuildOrthomosaic;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.models.CoordinateSystem;
-import wue.eorc.umas.utils.AgisoftParamInitiator;
-import wue.eorc.umas.utils.GsonTypeTokens;
-import wue.eorc.umas.utils.ItemSearcher;
+import wue.eorc.umas.utils.agisoft.AgisoftParamInitiator;
+import wue.eorc.umas.utils.system.GsonTypeTokens;
+import wue.eorc.umas.utils.ui.ItemSearcher;
 
 import java.util.HashMap;
 import java.util.Optional;

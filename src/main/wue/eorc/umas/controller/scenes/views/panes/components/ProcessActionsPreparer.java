@@ -24,12 +24,11 @@ import wue.eorc.umas.enums.WorkflowType;
 import wue.eorc.umas.enums.agisoft.*;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.models.Flight;
-import wue.eorc.umas.utils.DirectoryUtils;
-import wue.eorc.umas.utils.GsonTypeTokens;
-import wue.eorc.umas.utils.ItemSearcher;
+import wue.eorc.umas.utils.system.DirectoryUtils;
+import wue.eorc.umas.utils.system.GsonTypeTokens;
+import wue.eorc.umas.utils.ui.ItemSearcher;
 
 import java.nio.file.Paths;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -207,12 +206,25 @@ public class ProcessActionsPreparer {
         calibrateReflectance.setCursor(Cursor.HAND);
         calibrateReflectance.setOnMouseClicked(mouseEvent -> {
             if(mouseEvent.getButton() == MouseButton.PRIMARY){
-                agisoftCaller.calibrateReflectance(calibrateReflectance, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                        this.workflowType, new HashMap<>() {  }, false);
+                DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene(AgisoftDialog.CALIBRATE_REFLECTANCE.getDialogId());
+                Dialog<String> dialog = new UMASDialog(dialogPane, "Calibrate Reflectance", true, true);
+
+                CalibrateReflectanceController controller = new CalibrateReflectanceController();
+                try {
+                    controller.init(display, dialog);
+                } catch (UMASException e) {
+                    throw new RuntimeException(e);
+                }
+
+                Optional<String> result = dialog.showAndWait();
+
+                if(result.isPresent()){
+                    HashMap<String, String> agisoftParameters = gson.fromJson(result.get(), GsonTypeTokens.hashmapToken);
+                    agisoftCaller.setBrightness(setBrightness, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType, agisoftParameters);
+                }
 
             }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
                 setupModificationDialog(calibrateReflectance, mouseEvent, CALIBRATE_REFLECTANCE, event -> {});
-
             }
         });
 

@@ -2,14 +2,13 @@ package wue.eorc.umas.controller.scenes.views.dialogs.agisoft;
 
 import com.google.gson.Gson;
 import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
 import wue.eorc.umas.enums.agisoft.AlignImages;
 import wue.eorc.umas.exception.UMASException;
-import wue.eorc.umas.utils.AgisoftParamInitiator;
-import wue.eorc.umas.utils.GsonTypeTokens;
-import wue.eorc.umas.utils.ItemSearcher;
+import wue.eorc.umas.utils.agisoft.AgisoftParamInitiator;
+import wue.eorc.umas.utils.system.GsonTypeTokens;
+import wue.eorc.umas.utils.ui.ItemSearcher;
 
 import java.util.HashMap;
 

@@ -1,5 +1,17 @@
 package wue.eorc.umas;
 
+import boofcv.abst.fiducial.QrCodeDetector;
+import boofcv.alg.fiducial.qrcode.QrCode;
+import boofcv.factory.fiducial.ConfigQrCode;
+import boofcv.factory.fiducial.FactoryFiducial;
+import boofcv.io.UtilIO;
+import boofcv.io.image.ConvertBufferedImage;
+import boofcv.io.image.UtilImageIO;
+import boofcv.struct.image.GrayU8;
+import com.beust.ah.A;
+import com.google.zxing.*;
+import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
+import com.google.zxing.common.HybridBinarizer;
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.application.Application;
@@ -11,6 +23,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import org.opencv.core.Mat;
+import org.opencv.imgcodecs.Imgcodecs;
+import org.opencv.imgproc.Imgproc;
 import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.RootController;
 import wue.eorc.umas.controller.customs.UMASDialog;
@@ -21,10 +36,14 @@ import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.SceneLoader;
 import wue.eorc.umas.loader.Settings;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.List;
+import java.awt.image.BufferedImage;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 import java.util.concurrent.CompletableFuture;
 
 public class Main extends Application {
@@ -33,9 +52,13 @@ public class Main extends Application {
         launch(args);
     }
 
+    static {
+        System.load("C:\\Users\\fkt40ea\\IdeaProjects\\UMAS\\libs\\opencv_java4120.dll");
+    }
+
     @Override
-    public void start(Stage primaryStage) throws IOException, UMASException, URISyntaxException {
-        primaryStage.initStyle(StageStyle.UNDECORATED);
+    public void start(Stage primaryStage) throws IOException, UMASException, URISyntaxException, NotFoundException {
+        /*primaryStage.initStyle(StageStyle.UNDECORATED);
 
         SceneLoader loader = new SceneLoader(this.getClass().getClassLoader());
 
@@ -120,7 +143,26 @@ public class Main extends Application {
         ));
 
         primaryStage.setScene(scene);
-        primaryStage.show();
+        //primaryStage.show();*/
+
+        BufferedImage input = UtilImageIO.loadImageNotNull(UtilIO.pathExample("C:/Users/fkt40ea/Desktop/DJI_20241208052736_0006_D.JPG"));
+        GrayU8 gray = ConvertBufferedImage.convertFrom(input, (GrayU8)null);
+
+        var config = new ConfigQrCode();
+        QrCodeDetector<GrayU8> detector = FactoryFiducial.qrcode(config, GrayU8.class);
+
+        detector.process(gray);
+
+        ArrayList<QrCode> detections = new ArrayList<>(detector.getDetections());
+
+        for (QrCode qr : detections) {
+            System.out.println("message: '" + qr.message + "'");
+        }
+
+        ArrayList<QrCode> failures = new ArrayList<>(detector.getFailures());
+        for (QrCode qr : failures) {
+            System.out.println("message: '" + qr.message + "'");
+        }
 
     }
 }

@@ -1,14 +1,12 @@
 package wue.eorc.umas.controller.scenes.views.dialogs.agisoft;
 
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
-import javafx.scene.layout.Pane;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
 import wue.eorc.umas.exception.UMASException;
-import wue.eorc.umas.utils.ItemSearcher;
+import wue.eorc.umas.utils.ui.ItemSearcher;
 
 public class AgisoftErrorController implements StaticDialogController {
 

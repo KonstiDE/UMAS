@@ -1,10 +1,7 @@
 package wue.eorc.umas.controller.scenes.views.dialogs.agisoft;
 
 import com.google.gson.Gson;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.scene.control.*;
-import javafx.scene.layout.Pane;
 import wue.eorc.umas.controller.customs.UMASDialog;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.controller.scenes.views.dialogs.CoordinateSelector;
@@ -13,9 +10,9 @@ import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.agisoft.BuildDem;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.models.CoordinateSystem;
-import wue.eorc.umas.utils.AgisoftParamInitiator;
-import wue.eorc.umas.utils.GsonTypeTokens;
-import wue.eorc.umas.utils.ItemSearcher;
+import wue.eorc.umas.utils.agisoft.AgisoftParamInitiator;
+import wue.eorc.umas.utils.system.GsonTypeTokens;
+import wue.eorc.umas.utils.ui.ItemSearcher;
 
 import java.util.HashMap;
 import java.util.Optional;

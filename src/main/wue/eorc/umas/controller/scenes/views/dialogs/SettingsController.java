@@ -12,7 +12,7 @@ import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.Setting;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.Settings;
-import wue.eorc.umas.utils.ItemSearcher;
+import wue.eorc.umas.utils.ui.ItemSearcher;
 
 import java.io.File;
 import java.io.IOException;

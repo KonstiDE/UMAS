@@ -7,7 +7,7 @@ import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.ProjectCache;
 import wue.eorc.umas.models.Project;
-import wue.eorc.umas.utils.ItemSearcher;
+import wue.eorc.umas.utils.ui.ItemSearcher;
 
 import java.io.IOException;
 

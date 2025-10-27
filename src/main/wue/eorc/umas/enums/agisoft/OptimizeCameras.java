@@ -1,8 +1,7 @@
 package wue.eorc.umas.enums.agisoft;
 
-import wue.eorc.umas.utils.AgiSoftList;
+import wue.eorc.umas.utils.agisoft.AgiSoftList;
 
-import java.util.HashMap;
 import java.util.List;
 
 public enum OptimizeCameras implements AgisoftParameter {

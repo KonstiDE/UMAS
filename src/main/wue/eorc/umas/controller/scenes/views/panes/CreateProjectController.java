@@ -9,10 +9,9 @@ import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.SplitPanePosition;
 import wue.eorc.umas.exception.UMASException;
-import wue.eorc.umas.loader.SceneLoader;
 import wue.eorc.umas.models.Project;
-import wue.eorc.umas.utils.FormValidator;
-import wue.eorc.umas.utils.ItemSearcher;
+import wue.eorc.umas.utils.ui.FormValidator;
+import wue.eorc.umas.utils.ui.ItemSearcher;
 
 import java.io.File;
 import java.io.IOException;

@@ -6,7 +6,6 @@ import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.util.Callback;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
@@ -16,8 +15,8 @@ import wue.eorc.umas.enums.WorkflowType;
 import wue.eorc.umas.enums.agisoft.AgisoftDialog;
 import wue.eorc.umas.enums.agisoft.AgisoftTask;
 import wue.eorc.umas.exception.UMASException;
-import wue.eorc.umas.utils.GsonTypeTokens;
-import wue.eorc.umas.utils.ItemSearcher;
+import wue.eorc.umas.utils.system.GsonTypeTokens;
+import wue.eorc.umas.utils.ui.ItemSearcher;
 
 import java.util.HashMap;
 import java.util.Map;

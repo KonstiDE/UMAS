@@ -1,31 +1,17 @@
 package wue.eorc.umas.controller.splash;
 
-import com.mongodb.*;
-import com.mongodb.client.MongoClient;
-import com.mongodb.client.MongoClients;
-import com.mongodb.client.MongoDatabase;
-import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.control.ProgressBar;
 import javafx.scene.layout.Pane;
-import org.bson.BsonDocument;
-import org.bson.BsonInt64;
-import org.bson.Document;
-import org.bson.conversions.Bson;
-import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.controller.scenes.views.panes.FutureController;
-import wue.eorc.umas.enums.Setting;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.ProjectCache;
 import wue.eorc.umas.loader.Settings;
-import wue.eorc.umas.utils.ItemSearcher;
+import wue.eorc.umas.utils.ui.ItemSearcher;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.concurrent.CompletableFuture;
-
-import static java.util.concurrent.TimeUnit.MILLISECONDS;
 
 public class SplashController implements FutureController {
 

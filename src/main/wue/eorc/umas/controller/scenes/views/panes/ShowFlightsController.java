@@ -18,9 +18,8 @@ import wue.eorc.umas.enums.ImageType;
 import wue.eorc.umas.enums.SplitPanePosition;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.ProjectCache;
-import wue.eorc.umas.loader.SceneLoader;
 import wue.eorc.umas.models.Flight;
-import wue.eorc.umas.utils.ItemSearcher;
+import wue.eorc.umas.utils.ui.ItemSearcher;
 
 import java.awt.*;
 import java.io.File;

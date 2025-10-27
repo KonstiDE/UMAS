@@ -3,7 +3,7 @@ package wue.eorc.umas.loader;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 import wue.eorc.umas.models.Project;
-import wue.eorc.umas.utils.DirectoryUtils;
+import wue.eorc.umas.utils.system.DirectoryUtils;
 
 import java.io.*;
 import java.nio.file.Paths;
