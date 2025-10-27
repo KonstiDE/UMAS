@@ -43,71 +43,69 @@ public class Main extends Application {
         SplashController splashController = new SplashController();
         CompletableFuture<Void> splash = splashController.init(splashRoot, null);
 
-        splash.thenRun(() -> {
-            Platform.runLater(() -> {
-                try {
-                    VBox root = (VBox) loader.getScene("main");
-                    RootController rootController = new RootController(root, loader);
+        splash.thenRun(() -> Platform.runLater(() -> {
+            try {
+                VBox root = (VBox) loader.getScene("main");
+                RootController rootController = new RootController(root, loader);
 
-                    Scene scene = new Scene(root, 1440, 900);
+                Scene scene = new Scene(root, 1440, 900);
 
-                    // Check settings
-                    if(Settings.useDarkLayout()){
-                        scene.getStylesheets().add(Settings.darkMode);
-                    }
-
-                    Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-
-                    if(Boolean.parseBoolean(Settings.getSetting(Setting.FULL_SCREEN_AT_START_UP))){
-                        primaryStage.setMaximized(true);
-                    }else{
-                        primaryStage.setWidth(1440);
-                        primaryStage.setHeight(900);
-
-                        primaryStage.setX((primScreenBounds.getWidth() - primaryStage.getWidth()) / 2);
-                        primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
-                    }
-
-                    primaryStage.hide();
-                    primaryStage.close();
-
-                    Stage stage = new Stage();
-                    stage.initStyle(StageStyle.DECORATED);
-                    stage.setScene(scene);
-                    stage.setTitle("UAS Management Application System");
-
-                    stage.getIcons().add(new Image(
-                            Objects.requireNonNull(getClass().
-                                    getClassLoader().getResourceAsStream("assets/icons/logo_jm.PNG"))
-                    ));
-
-                    stage.setOnCloseRequest(windowEvent -> {
-                        if (AgisoftCaller.isRunning){
-                            DialogPane dialogPane = (DialogPane) loader.getScene("decision_for_closing");
-                            ClosingController closingController = new ClosingController();
-
-                            UMASDialog closingDialog = new UMASDialog(dialogPane, "Over and out!", true, true);
-
-                            Optional<String> close = closingDialog.showAndWait();
-                            closingDialog.hide();
-                            closingDialog.close();
-
-                            if (close.isPresent()){
-                                AgisoftCaller.killAll();
-
-                                primaryStage.hide();
-                                primaryStage.close();
-                            }
-
-                        }
-                    });
-
-                    stage.show();
-                } catch (UMASException e) {
-                    e.printStackTrace();
+                // Check settings
+                if(Settings.useDarkLayout()){
+                    scene.getStylesheets().add(Settings.darkMode);
                 }
-            });
-        });
+
+                Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+
+                if(Boolean.parseBoolean(Settings.getSetting(Setting.FULL_SCREEN_AT_START_UP))){
+                    primaryStage.setMaximized(true);
+                }else{
+                    primaryStage.setWidth(1440);
+                    primaryStage.setHeight(900);
+
+                    primaryStage.setX((primScreenBounds.getWidth() - primaryStage.getWidth()) / 2);
+                    primaryStage.setY((primScreenBounds.getHeight() - primaryStage.getHeight()) / 2);
+                }
+
+                primaryStage.hide();
+                primaryStage.close();
+
+                Stage stage = new Stage();
+                stage.initStyle(StageStyle.DECORATED);
+                stage.setScene(scene);
+                stage.setTitle("UAS Management Application System");
+
+                stage.getIcons().add(new Image(
+                        Objects.requireNonNull(getClass().
+                                getClassLoader().getResourceAsStream("assets/icons/logo_jm.PNG"))
+                ));
+
+                stage.setOnCloseRequest(windowEvent -> {
+                    if (AgisoftCaller.isRunning){
+                        DialogPane dialogPane = (DialogPane) loader.getScene("decision_for_closing");
+                        ClosingController closingController = new ClosingController();
+
+                        UMASDialog closingDialog = new UMASDialog(dialogPane, "Over and out!", true, true);
+
+                        Optional<String> close = closingDialog.showAndWait();
+                        closingDialog.hide();
+                        closingDialog.close();
+
+                        if (close.isPresent()){
+                            AgisoftCaller.killAll();
+
+                            primaryStage.hide();
+                            primaryStage.close();
+                        }
+
+                    }
+                });
+
+                stage.show();
+            } catch (UMASException e) {
+                e.printStackTrace();
+            }
+        }));
 
         primaryStage.getIcons().add(new Image(
                 Objects.requireNonNull(getClass().
@@ -115,6 +113,11 @@ public class Main extends Application {
         ));
 
         Scene scene = new Scene(splashRoot, 600, 400);
+
+        primaryStage.getIcons().add(new Image(
+                Objects.requireNonNull(getClass().
+                        getClassLoader().getResourceAsStream("assets/icons/logo_jm.PNG"))
+        ));
 
         primaryStage.setScene(scene);
         primaryStage.show();
