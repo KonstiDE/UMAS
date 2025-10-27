@@ -4,6 +4,8 @@ import boofcv.abst.fiducial.QrCodeDetector;
 import boofcv.alg.fiducial.qrcode.QrCode;
 import boofcv.factory.fiducial.ConfigQrCode;
 import boofcv.factory.fiducial.FactoryFiducial;
+import boofcv.gui.feature.VisualizeShapes;
+import boofcv.gui.image.ShowImages;
 import boofcv.io.UtilIO;
 import boofcv.io.image.ConvertBufferedImage;
 import boofcv.io.image.UtilImageIO;
@@ -33,6 +35,7 @@ import wue.eorc.umas.controller.scenes.views.dialogs.ClosingController;
 import wue.eorc.umas.controller.splash.SplashController;
 import wue.eorc.umas.enums.Setting;
 import wue.eorc.umas.exception.UMASException;
+import wue.eorc.umas.futures.qrcode.QRCodeScanner;
 import wue.eorc.umas.loader.SceneLoader;
 import wue.eorc.umas.loader.Settings;
 
@@ -145,24 +148,7 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         //primaryStage.show();*/
 
-        BufferedImage input = UtilImageIO.loadImageNotNull(UtilIO.pathExample("C:/Users/fkt40ea/Desktop/DJI_20241208052736_0006_D.JPG"));
-        GrayU8 gray = ConvertBufferedImage.convertFrom(input, (GrayU8)null);
-
-        var config = new ConfigQrCode();
-        QrCodeDetector<GrayU8> detector = FactoryFiducial.qrcode(config, GrayU8.class);
-
-        detector.process(gray);
-
-        ArrayList<QrCode> detections = new ArrayList<>(detector.getDetections());
-
-        for (QrCode qr : detections) {
-            System.out.println("message: '" + qr.message + "'");
-        }
-
-        ArrayList<QrCode> failures = new ArrayList<>(detector.getFailures());
-        for (QrCode qr : failures) {
-            System.out.println("message: '" + qr.message + "'");
-        }
+        new QRCodeScanner();
 
     }
 }
