@@ -61,7 +61,7 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws IOException, UMASException, URISyntaxException, NotFoundException {
-        /*primaryStage.initStyle(StageStyle.UNDECORATED);
+        primaryStage.initStyle(StageStyle.UNDECORATED);
 
         SceneLoader loader = new SceneLoader(this.getClass().getClassLoader());
 
@@ -146,9 +146,9 @@ public class Main extends Application {
         ));
 
         primaryStage.setScene(scene);
-        //primaryStage.show();*/
+        primaryStage.show();
 
-        new QRCodeScanner();
+        //new QRCodeScanner();
 
     }
 }

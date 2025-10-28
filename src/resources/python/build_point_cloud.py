@@ -48,7 +48,7 @@ def build_point_cloud(file, chunk_lab, quality, depthFiltering, reuseDepthMaps,
 
     batch = rb(batch)
 
-    if chunk.dense_cloud is not None and not batch:
+    if chunk.point_cloud is not None and not batch:
         print("ve:Chunk already has a point cloud!~For this chunk, a dense (point) cloud was already processed which cannot be overwritten.~Please remove the current dense (point) cloud.")
         print("vn:BUILD_POINT_CLOUD:false")
     else:

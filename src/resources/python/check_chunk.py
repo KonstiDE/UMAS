@@ -57,7 +57,7 @@ def check_chunk(file, demFile, orthoFile, reportFile, chunk_lab):
 
 
             # align_images check
-            if chunk.point_cloud is None:
+            if chunk.tie_points is None:
                 print("vn:ALIGN_IMAGES_CHECK:false")
             else:
                 print("vn:ALIGN_IMAGES_CHECK:true")
@@ -75,7 +75,7 @@ def check_chunk(file, demFile, orthoFile, reportFile, chunk_lab):
 
 
             # build_point_cloud / dense_cloud check
-            if chunk.dense_cloud is None:
+            if chunk.point_cloud is None:
                 print("vn:BUILD_POINT_CLOUD_CHECK:false")
             else:
                 print("vn:BUILD_POINT_CLOUD_CHECK:true")

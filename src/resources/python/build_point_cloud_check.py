@@ -13,7 +13,7 @@ def build_point_cloud_check(file, chunk_lab):
 
     chunk = get_chunk(doc.chunks, chunk_lab)
 
-    if chunk.dense_cloud is not None:
+    if chunk.point_cloud is not None:
         print("vn:BUILD_POINT_CLOUD_CHECK:true")
     else:
         print("vn:BUILD_POINT_CLOUD_CHECK:false")

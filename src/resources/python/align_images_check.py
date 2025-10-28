@@ -13,7 +13,7 @@ def align_photos_check(file, chunk_lab):
 
     chunk = get_chunk(doc.chunks, chunk_lab)
 
-    if chunk.point_cloud is None:
+    if chunk.tie_points is None:
         print("vn:ALIGN_IMAGES_CHECK:false")
     else:
         print("vn:ALIGN_IMAGES_CHECK:true")

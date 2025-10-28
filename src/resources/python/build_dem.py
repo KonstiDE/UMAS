@@ -4,7 +4,7 @@ import sys
 import Metashape
 import Metashape as ms
 
-from utils import get_arg, report_progress, get_chunk
+from utils import get_arg, report_progress, get_chunk, rb
 
 
 def build_dem(file, chunk_lab, coordinate_system, source_data, quality, interpolation, batch):
@@ -13,6 +13,7 @@ def build_dem(file, chunk_lab, coordinate_system, source_data, quality, interpol
     doc.open(path=file, read_only=False, ignore_lock=True)
 
     chunk = get_chunk(doc.chunks, chunk_lab)
+    batch = rb(batch)
 
     chunk.crs = ms.CoordinateSystem(coordinate_system)
 
