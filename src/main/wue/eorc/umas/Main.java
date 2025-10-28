@@ -31,6 +31,7 @@ import org.opencv.imgproc.Imgproc;
 import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.RootController;
 import wue.eorc.umas.controller.customs.UMASDialog;
+import wue.eorc.umas.controller.scenes.main.StatusController;
 import wue.eorc.umas.controller.scenes.views.dialogs.ClosingController;
 import wue.eorc.umas.controller.splash.SplashController;
 import wue.eorc.umas.enums.Setting;
@@ -56,7 +57,7 @@ public class Main extends Application {
     }
 
     static {
-        System.load("C:\\Users\\fkt40ea\\IdeaProjects\\UMAS\\libs\\opencv_java4120.dll");
+        System.load(Objects.requireNonNull(Main.class.getClassLoader().getResource("compiled/opencv_java4120.dll")).getFile());
     }
 
     @Override
@@ -107,7 +108,7 @@ public class Main extends Application {
                 ));
 
                 stage.setOnCloseRequest(windowEvent -> {
-                    if (AgisoftCaller.isRunning){
+                    if (StatusController.isRunning){
                         DialogPane dialogPane = (DialogPane) loader.getScene("decision_for_closing");
                         ClosingController closingController = new ClosingController();
 
@@ -118,7 +119,7 @@ public class Main extends Application {
                         closingDialog.close();
 
                         if (close.isPresent()){
-                            AgisoftCaller.killAll();
+                            StatusController.killAll();
 
                             primaryStage.hide();
                             primaryStage.close();

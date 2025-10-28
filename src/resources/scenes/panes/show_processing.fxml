@@ -3,12 +3,9 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -18,7 +15,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="920.0" prefWidth="542.0"  xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="920.0" prefWidth="542.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25">
    <children>
       <VBox prefHeight="911.0" prefWidth="542.0" spacing="8.0">
          <children>
@@ -88,23 +85,6 @@
                 </Tab>
               </tabs>
             </TabPane>
-            <Label text="Queue Information">
-               <font>
-                  <Font size="16.0" />
-               </font>
-            </Label>
-            <HBox prefWidth="518.0" spacing="4.0">
-               <children>
-                  <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
-                     <image>
-                        <Image url="@../../assets/processing/hourglass.png" />
-                     </image>
-                  </ImageView>
-                  <Label text="Currently processing" />
-                  <Label id="showprocess.queue.current" />
-               </children>
-            </HBox>
-            <ListView id="showprocess.queue.listview" prefHeight="167.0" prefWidth="518.0" />
          </children>
          <opaqueInsets>
             <Insets />

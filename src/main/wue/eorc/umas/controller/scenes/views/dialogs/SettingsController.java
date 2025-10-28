@@ -16,7 +16,6 @@ import wue.eorc.umas.utils.ui.ItemSearcher;
 
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.util.Objects;
 
 public class SettingsController implements StaticDialogController {
@@ -83,7 +82,7 @@ public class SettingsController implements StaticDialogController {
 
             File file = fileChooser.showOpenDialog(display.rootControl.getScene().getWindow());
             try {
-                String version = new AgisoftCaller(null, null, display)
+                String version = new AgisoftCaller(null, display)
                         .checkAgisoftVersion(file.getAbsolutePath());
 
                 if(version != null){
@@ -100,7 +99,7 @@ public class SettingsController implements StaticDialogController {
 
                 agisoftExecPath.setText(file.getAbsolutePath());
 
-            } catch (InterruptedException | URISyntaxException e) {
+            } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
 

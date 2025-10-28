@@ -567,7 +567,7 @@ public class ProcessActionsPreparer {
             contextMenu.getItems().add(remove);
         }
 
-        modifyBatch.setOnAction(handleModifyBatch());
+        modifyBatch.setOnAction(handleModifyBatch(this.workflowType));
         runBatch.setOnAction(handleRunBatch(0));
         runFromHere.setOnAction(handleRunBatch(3));
 
@@ -578,7 +578,7 @@ public class ProcessActionsPreparer {
         contextMenu.show(getWorkflowPane().getScene().getWindow(), mouseEvent.getScreenX(), mouseEvent.getScreenY());
     }
 
-    public EventHandler<ActionEvent> handleModifyBatch(){
+    public EventHandler<ActionEvent> handleModifyBatch(WorkflowType workflowType){
         return actionEvent -> {
             switch (workflowType){
                 case RGB -> {

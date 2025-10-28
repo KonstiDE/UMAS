@@ -1,6 +1,8 @@
 package wue.eorc.umas.controller.scenes.views.panes;
 
 import javafx.beans.binding.Bindings;
+import javafx.collections.ObservableList;
+import javafx.scene.control.Dialog;
 import javafx.scene.control.MenuItem;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.scene.Cursor;
@@ -8,14 +10,20 @@ import javafx.scene.control.*;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import wue.eorc.umas.agisoft.AgisoftCaller;
+import wue.eorc.umas.controller.customs.UMASDialog;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
+import wue.eorc.umas.controller.scenes.main.StatusController;
 import wue.eorc.umas.controller.scenes.views.dialogs.AddFlightController;
+import wue.eorc.umas.controller.scenes.views.panes.components.ProcessActionsPreparer;
 import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.ImageType;
 import wue.eorc.umas.enums.SplitPanePosition;
+import wue.eorc.umas.enums.WorkflowType;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.ProjectCache;
 import wue.eorc.umas.models.Flight;
@@ -26,17 +34,19 @@ import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
+import java.util.List;
 
 public class ShowFlightsController implements ViewController {
+
+    public List<ShowProcessingController> loadedControllers = new ArrayList<>();
 
     @Override
     public void init(Pane pane, DisplayController display) throws UMASException {
         TableView<Flight> tableView = ItemSearcher.getGenericControlById("showflights.table", pane, TableView.class, Flight.class);
         tableView.getItems().clear();
         tableView.setEditable(false);
+        tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         initTableViewCellFactories(tableView, display);
 
         Button button = ItemSearcher.getItemById("showflights.refresh", pane, Button.class);
@@ -49,55 +59,59 @@ public class ShowFlightsController implements ViewController {
             }
         });
 
-        tableView.setRowFactory(tableView1 -> {
-            final TableRow<Flight> row = new TableRow<>();
-            final ContextMenu contextMenu = new ContextMenu();
+        tableView.setOnMouseClicked(me -> {
+            if(me.getButton() == MouseButton.SECONDARY){
+                final ContextMenu contextMenu = new ContextMenu();
 
-            final MenuItem separator = new SeparatorMenuItem();
+                final MenuItem separator = new SeparatorMenuItem();
 
-            final MenuItem buildRGBOrtho = new MenuItem("Build Quick Look");
-            buildRGBOrtho.setOnAction(event -> {
+                ObservableList<Flight> flights = tableView.getSelectionModel().getSelectedItems();
+                Set<WorkflowType> possibleWorkflowTypes = possibleWorkflowTypes(flights);
 
-            });
-
-            final MenuItem removeMenuItem = new MenuItem("Delete flight");
-            removeMenuItem.setOnAction(event -> {
-                ButtonType yes = new ButtonType("Yes", ButtonBar.ButtonData.OK_DONE);
-                ButtonType no = new ButtonType("No", ButtonBar.ButtonData.CANCEL_CLOSE);
-                Alert alert = new Alert(Alert.AlertType.WARNING,
-                        "Do you really want to delete this flight?", yes, no);
-
-                alert.setTitle("Date format warning");
-                Optional<ButtonType> result = alert.showAndWait();
-
-                if (result.orElse(no) == yes) {
-                    try {
-                        boolean success = ProjectCache.currentlyOpenedProject.removeFlight(row.getItem());
-                        if(success){
-                            ProjectCache.currentlyOpenedProject.save();
-                            tableView1.getItems().remove(row.getItem());
-                        }else{
-                            UMASException.throwWindow(ErrorType.INTERNAL, "Could not remove flight. Please remove it manually!");
+                for(WorkflowType workflowType : possibleWorkflowTypes){
+                    final MenuItem buildBatch = new MenuItem("Build Batch (" + workflowType.getName() + ")");
+                    buildBatch.setOnAction(event -> {
+                        for(Flight flight : flights){
+                            ShowProcessingController controller = new ShowProcessingController(flight, display);
+                            loadedControllers.add(controller);
                         }
-                    } catch (IOException e) {
-                        UMASException.throwWindow(ErrorType.INTERNAL, "Could not remove flight. Please remove it manually!");
-                    }
-                    initTableViewCellFactories(tableView, display);
+                    });
+                    contextMenu.getItems().add(buildBatch);
                 }
-            });
-            contextMenu.getItems().add(buildRGBOrtho);
-            contextMenu.getItems().add(separator);
-            contextMenu.getItems().add(removeMenuItem);
-            row.contextMenuProperty().bind(
-                    Bindings.when(row.emptyProperty())
-                            .then((ContextMenu)null)
-                            .otherwise(contextMenu)
-            );
 
-            return row;
+                final MenuItem removeMenuItem = new MenuItem("Delete flight");
+                removeMenuItem.setOnAction(event -> {
+                    DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene("decision_for_deleting");
+                    Dialog<String> dialog = new UMASDialog(dialogPane, "Delete Flight(s)?", true, true);
+
+                    Optional<String> yes = dialog.showAndWait();
+                    dialog.hide();
+                    dialog.close();
+
+                    if (yes.isPresent() && yes.get().equals(ButtonType.OK.getText())) {
+                        for(Flight flight : flights){
+                            try {
+                                boolean success = ProjectCache.currentlyOpenedProject.removeFlight(flight);
+                                if (success) {
+                                    ProjectCache.currentlyOpenedProject.save();
+                                    tableView.getItems().remove(flight);
+                                } else {
+                                    UMASException.throwWindow(ErrorType.INTERNAL, "Could not remove flight. Please remove it manually!");
+                                }
+                            } catch (IOException e) {
+                                UMASException.throwWindow(ErrorType.INTERNAL, "Could not remove flight. Please remove it manually!");
+                            }
+                        }
+                        initTableViewCellFactories(tableView, display);
+                    }
+                });
+                contextMenu.getItems().add(separator);
+                contextMenu.getItems().add(removeMenuItem);
+                contextMenu.show(tableView.getScene().getWindow(), me.getScreenX(), me.getScreenY());
+            }
         });
 
-        for(Flight flight : ProjectCache.currentlyOpenedProject.getFlights()){
+        for (Flight flight : ProjectCache.currentlyOpenedProject.getFlights()) {
             tableView.getItems().add(flight);
         }
 
@@ -110,10 +124,10 @@ public class ShowFlightsController implements ViewController {
                     new AddFlightController()
             );
 
-            if(flight != null){
+            if (flight != null) {
                 tableView.getItems().add(flight);
 
-                if(flight.getFlightParameters() != null){
+                if (flight.getFlightParameters() != null) {
                     display.getMapController().showFlightArea(flight.getFlightParameters().getCoordinates(), flight.getFlightParameters().getWaypoints());
                 }
 
@@ -123,7 +137,7 @@ public class ShowFlightsController implements ViewController {
                 } catch (IOException e) {
                     throw new RuntimeException(e);
                 }
-            }else{
+            } else {
                 UMASException.throwWindow(ErrorType.INTERNAL, "Flight now added.");
             }
 
@@ -133,7 +147,8 @@ public class ShowFlightsController implements ViewController {
                 (_ignored, oldT, newT) -> {
                     try {
                         display.getMapController().showFlightArea(newT.getFlightParameters().getCoordinates(), newT.getFlightParameters().getWaypoints());
-                    } catch (NullPointerException ignored) {  }
+                    } catch (NullPointerException ignored) {
+                    }
                 });
 
     }
@@ -186,8 +201,8 @@ public class ShowFlightsController implements ViewController {
             private static ArrayList<ImageView> getImageViews(Flight flight) {
                 ArrayList<ImageView> imageViewList = new ArrayList<>();
 
-                for(ImageType imageType : flight.getImageTypes().keySet()) {
-                    String iconPath = "assets/imgicons/" + switch(imageType) {
+                for (ImageType imageType : flight.getImageTypes().keySet()) {
+                    String iconPath = "assets/imgicons/" + switch (imageType) {
                         case RGB -> "rgb.png";
                         case MULTISPECTRAL -> "ms.png";
                         case HYPERSPECTRAL -> "hyper.png";
@@ -196,7 +211,7 @@ public class ShowFlightsController implements ViewController {
                         case CALIBRATION -> null;
                     };
 
-                    if(imageType != ImageType.CALIBRATION){
+                    if (imageType != ImageType.CALIBRATION) {
                         ImageView icon = new ImageView(new Image(iconPath));
                         icon.setFitHeight(16);
                         icon.setFitWidth(16);
@@ -211,7 +226,7 @@ public class ShowFlightsController implements ViewController {
         heightCol.setCellValueFactory(cellData -> {
             try {
                 return new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getFlightParameters().getHeight()));
-            } catch (NullPointerException e){
+            } catch (NullPointerException e) {
                 return new ReadOnlyObjectWrapper<>("");
             }
         });
@@ -220,7 +235,7 @@ public class ShowFlightsController implements ViewController {
         speedCol.setCellValueFactory(cellData -> {
             try {
                 return new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getFlightParameters().getSpeed()));
-            } catch (NullPointerException e){
+            } catch (NullPointerException e) {
                 return new ReadOnlyObjectWrapper<>("");
             }
         });
@@ -229,7 +244,7 @@ public class ShowFlightsController implements ViewController {
         fontOvCol.setCellValueFactory(cellData -> {
             try {
                 return new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getFlightParameters().getFrontOverlap()));
-            } catch (NullPointerException e){
+            } catch (NullPointerException e) {
                 return new ReadOnlyObjectWrapper<>("");
             }
         });
@@ -238,7 +253,7 @@ public class ShowFlightsController implements ViewController {
         sideOvCol.setCellValueFactory(cellData -> {
             try {
                 return new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getFlightParameters().getSideOverlap()));
-            } catch (NullPointerException e){
+            } catch (NullPointerException e) {
                 return new ReadOnlyObjectWrapper<>("");
             }
         });
@@ -253,7 +268,6 @@ public class ShowFlightsController implements ViewController {
         folderCol.setCellFactory(_ignored -> new TableCell<>() {
             private final ImageView imageView = new ImageView();
             private final StackPane container = new StackPane();
-
             {
                 imageView.setFitHeight(16);
                 imageView.setFitWidth(16);
@@ -320,17 +334,22 @@ public class ShowFlightsController implements ViewController {
                 imageView.setOnMouseClicked(_ignored -> {
                     File flightDir = new File(flight.getFlightDirectory());
 
-                    if(flightDir.exists()) {
-                        try {
+                    if (flightDir.exists()) {
+                        if(loadedControllers.stream().anyMatch(pc -> pc.getFlight().equals(flight))) {
                             display.switchSceneTo(
                                     SplitPanePosition.RIGHT,
                                     display.getSceneLoader().getScene("show_processing"),
-                                    new ShowProcessingController(flight, display)
+                                    loadedControllers.stream().filter(pc -> pc.getFlight().equals(flight)).findFirst().get()
                             );
-                        } catch (URISyntaxException e) {
-                            UMASException.throwWindow(ErrorType.USER, "Could not find the path to Agisoft. Please update this in the settings.");
+                        }else{
+                            ShowProcessingController controller = new ShowProcessingController(flight, display);
+                            display.switchSceneTo(
+                                    SplitPanePosition.RIGHT,
+                                    display.getSceneLoader().getScene("show_processing"),
+                                    controller
+                            );
                         }
-                    }else{
+                    } else {
                         UMASException.throwWindow(ErrorType.USER, "Please fix all explorer issues before start processing.");
                     }
                 });
@@ -341,6 +360,14 @@ public class ShowFlightsController implements ViewController {
 
         });
 
+    }
+
+    private Set<WorkflowType> possibleWorkflowTypes(ObservableList<Flight> flights) {
+        Set<WorkflowType> possibleWorkflowTypes = new HashSet<>();
+        for (Flight flight : flights) {
+            possibleWorkflowTypes.addAll(WorkflowType.getWorkflowTypesFromImageTypes(flight.getImageTypes().keySet()));
+        }
+        return possibleWorkflowTypes;
     }
 
 }

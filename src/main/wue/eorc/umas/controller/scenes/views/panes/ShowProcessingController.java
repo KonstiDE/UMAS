@@ -1,6 +1,5 @@
 package wue.eorc.umas.controller.scenes.views.panes;
 
-import javafx.application.Platform;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.StackPane;
@@ -9,8 +8,7 @@ import javafx.scene.shape.Circle;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.layout.Pane;
 import wue.eorc.umas.agisoft.AgisoftCaller;
-import wue.eorc.umas.controller.listeners.AgisoftCallbackListener;
-import wue.eorc.umas.controller.listeners.AgisoftQueueListener;
+import wue.eorc.umas.controller.listeners.CallbackListener;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
 import wue.eorc.umas.controller.scenes.views.panes.components.ProcessActionsPreparer;
 import wue.eorc.umas.enums.agisoft.AgisoftTask;
@@ -24,18 +22,16 @@ import wue.eorc.umas.utils.system.DirectoryUtils;
 import wue.eorc.umas.utils.ui.ItemSearcher;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.nio.file.Paths;
-import java.util.NoSuchElementException;
 
-public class ShowProcessingController implements ViewController, AgisoftQueueListener, AgisoftCallbackListener {
+public class ShowProcessingController implements ViewController, CallbackListener {
 
     private final AgisoftCaller agisoftCaller;
     private final Flight flight;
 
-    public ShowProcessingController(Flight flight, DisplayController display) throws URISyntaxException {
+    public ShowProcessingController(Flight flight, DisplayController display) {
         this.flight = flight;
-        this.agisoftCaller = new AgisoftCaller(this, this, display);
+        this.agisoftCaller = new AgisoftCaller(this, display);
     }
 
     public Pane processingPaneRoot;
@@ -64,7 +60,7 @@ public class ShowProcessingController implements ViewController, AgisoftQueueLis
             try {
                 boolean success = agisoftCaller.createProject(DirectoryUtils.figureAgisoftFilePath(this.flight));
 
-                //TODO Somehow this is still false... Although I return vn:CREATE_PROJECT:true
+                //TODO Somehow this shit is still false... Although I return vn:CREATE_PROJECT:true. ass code!
                 //need to check for if(success){ ... }
                 refresh(pane, display);
 
@@ -156,34 +152,7 @@ public class ShowProcessingController implements ViewController, AgisoftQueueLis
     }
 
     @Override
-    public void enqueue(WorkflowType workflowType, AgisoftTask agisoftTask) {
-        Platform.runLater(() -> processingListView.getItems().add(workflowType.name() + " - " + agisoftTask.name()));
-    }
-
-    @Override
-    public void started(WorkflowType workflowType, AgisoftTask agisoftTask) {
-        Platform.runLater(() -> {
-            try{
-                processingListView.getItems().removeFirst();
-            }catch(NoSuchElementException ignored){}
-            currentlyProcessing.textProperty().set(workflowType.name() + " - " + agisoftTask.name());
-        });
-    }
-
-    @Override
-    public void finish(WorkflowType workflowType, AgisoftTask agisoftTask) {
-        Platform.runLater(() -> {
-            if(!processingListView.getItems().isEmpty()){
-                currentlyProcessing.textProperty().set(processingListView.getItems().get(0));
-                //processingListView.getItems().remove(0);
-            }else{
-                currentlyProcessing.textProperty().set("");
-            }
-        });
-    }
-
-    @Override
-    public void callback(Pane source, WorkflowType workflowType, AgisoftTask task, String result) throws UMASException {
+    public void callbackAgisoft(Pane source, WorkflowType workflowType, AgisoftTask task, String result) throws UMASException {
         switch (task){
             case ADD_PHOTOS_CHECK, ALIGN_IMAGES_CHECK, OPTIMIZE_CAMERAS_CHECK, BUILD_DEM_CHECK, BUILD_ORTHOMOSAIC_CHECK,
                  EXPORT_DEM_CHECK, EXPORT_ORTHOMOSAIC_CHECK, BUILD_POINT_CLOUD_CHECK, SET_BRIGHTNESS_CHECK,
@@ -228,6 +197,10 @@ public class ShowProcessingController implements ViewController, AgisoftQueueLis
     @Override
     public void progress(float f) {
         this.displayController.getRootController().getStatusController().updateStatus(f);
+    }
+
+    public Flight getFlight() {
+        return flight;
     }
 
 }

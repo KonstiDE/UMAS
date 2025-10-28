@@ -8,9 +8,10 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Pair;
 import wue.eorc.umas.controller.customs.UMASDialog;
-import wue.eorc.umas.controller.listeners.AgisoftCallbackListener;
-import wue.eorc.umas.controller.listeners.AgisoftQueueListener;
+import wue.eorc.umas.controller.listeners.CallbackListener;
+import wue.eorc.umas.controller.listeners.QueueListener;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
+import wue.eorc.umas.controller.scenes.main.StatusController;
 import wue.eorc.umas.controller.scenes.views.dialogs.agisoft.AgisoftErrorController;
 import wue.eorc.umas.enums.agisoft.AgisoftParameter;
 import wue.eorc.umas.enums.agisoft.AgisoftTask;
@@ -20,7 +21,6 @@ import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.Settings;
 
 import java.io.*;
-import java.net.URISyntaxException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.*;
@@ -28,20 +28,14 @@ import java.util.concurrent.CompletableFuture;
 
 public class AgisoftCaller {
 
-    public static final Queue<Runnable> queue = new LinkedList<>();
-    public static Process currentProcess;
-    public static boolean isRunning = false;
+    private final String snippetsPath = Objects.requireNonNull(getClass().getClassLoader().getResource("python")).getFile();
 
-    private final String snippetsPath = Path.of(Objects.requireNonNull(getClass().getClassLoader().getResource("python")).toURI()).toString();
-
-    public final AgisoftQueueListener agisoftQueueListener;
-    public final AgisoftCallbackListener agisoftCallbackListener;
+    public final CallbackListener callbackListener;
 
     public final DisplayController display;
 
-    public AgisoftCaller(AgisoftQueueListener agisoftQueueListener, AgisoftCallbackListener agisoftCallbackListener, DisplayController display) throws URISyntaxException {
-        this.agisoftQueueListener = agisoftQueueListener;
-        this.agisoftCallbackListener = agisoftCallbackListener;
+    public AgisoftCaller(CallbackListener callbackListener, DisplayController display) {
+        this.callbackListener = callbackListener;
         this.display = display;
     }
 
@@ -379,8 +373,8 @@ public class AgisoftCaller {
     }
 
     public void completeBuildRGB(List<StackPane> stackPanes, List<HashMap<String, String>> agisoftParameters,
-                                List<String> folders, String psxFile, String demFile, String orthoFile,
-                                String reportFile, String flightName, String reportDescription){
+                                 List<String> folders, String psxFile, String demFile, String orthoFile,
+                                 String reportFile, String flightName, String reportDescription){
 
         addPhotos(stackPanes.get(0), psxFile, folders, List.of(), WorkflowType.RGB, true);
         setBrightness(stackPanes.get(1), psxFile, WorkflowType.RGB, agisoftParameters.get(0));
@@ -395,134 +389,6 @@ public class AgisoftCaller {
 
     }
 
-
-    private void enqueue(WorkflowType workflowType, AgisoftTask task, Pane pane, ProcessBuilder pb, boolean nextIfFailed){
-        this.agisoftQueueListener.enqueue(workflowType, task);
-
-        queue.add(() -> CompletableFuture.supplyAsync(() -> {
-            this.agisoftQueueListener.started(workflowType, task);
-            try{
-                pb.redirectErrorStream(true);
-                Process p = pb.start();
-                currentProcess = p;
-
-                Pair<AgisoftTask, String> success = watchForSignal("vn:", p.getInputStream(), agisoftCallbackListener, workflowType, task, pane);
-
-                int exitCode = p.waitFor();
-
-                if (exitCode != 0) return new Pair<>(AgisoftTask.UNDEFINED, "False");
-
-                return success;
-            }catch (IOException | InterruptedException e){
-                return new Pair<>(AgisoftTask.UNDEFINED, "False");
-            }
-        }) .thenAcceptAsync(result -> {
-            boolean success = Boolean.parseBoolean(result.getValue());
-
-            try {
-                agisoftCallbackListener.callback(pane, workflowType, task, result.getValue());
-            } catch (UMASException e) {
-                throw new RuntimeException(e);
-            }
-
-            agisoftQueueListener.finish(workflowType, result.getKey());
-
-            if(success) {
-                isRunning = true;
-                processNext();
-            }else{
-                if(nextIfFailed) {
-                    isRunning = true;
-                    processNext();
-                }else{
-                    isRunning = false;
-                }
-            }
-
-        }));
-
-        if (!isRunning) {
-            isRunning = true;
-            processNext();
-        }
-    }
-
-    // !!!Signal key must be 4 chars long!!!
-    public Pair<AgisoftTask, String> watchForSignal(String signalKey, InputStream inputStream, AgisoftCallbackListener listener, WorkflowType workflowType, AgisoftTask task, Pane pane) throws IOException {
-        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
-            String line;
-            while ((line = reader.readLine()) != null) {
-                System.out.println(line);
-                if(listener != null && (line.startsWith("vp: ") || line.startsWith("xvp: "))) {
-                    String finalLine = line;
-                    Platform.runLater(() -> {
-                        try{
-                            listener.progress(Float.parseFloat(finalLine.substring(4)));
-                        } catch (NumberFormatException ignored) {  }
-                    });
-                }
-                if(line.startsWith(signalKey)){
-                    String[] split = line.split(":");
-
-                    AgisoftTask currentTask = AgisoftTask.valueOf(split[1]);
-
-                    if(currentTask == task){
-                        if(listener != null)
-                            Platform.runLater(() -> listener.progress(0));
-
-                        return new Pair<>(currentTask, split[2]);
-                    }else{
-                        if(listener != null && pane != null)
-                            listener.callback(pane, workflowType, currentTask, split[2]);
-                    }
-                }
-                if(line.startsWith("ve:")){
-                    final String[] split = line.split(":");
-
-                    Platform.runLater(() -> {
-                        AgisoftTask currentTask = AgisoftTask.valueOf(split[1]);
-
-                        DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene("agisoft_error_dialog");
-                        Dialog<String> dialog = new UMASDialog(dialogPane, "Error", true, true);
-
-                        String[] splitForError = split[2].split("~");
-
-                        AgisoftErrorController errorController = new AgisoftErrorController(
-                                splitForError[0], splitForError[1], splitForError[2]);
-
-                        try {
-                            errorController.init(display, dialog);
-                        } catch (UMASException e) {
-                            throw new RuntimeException(e);
-                        }
-
-                        dialog.show();
-                    });
-
-                }
-            }
-        } catch (UMASException e) {
-            throw new RuntimeException(e);
-        }
-        return new Pair<>(AgisoftTask.UNDEFINED, Boolean.FALSE.toString());
-    }
-
-    private synchronized void processNext() {
-        Runnable nextTask = queue.poll();
-        if (nextTask != null) {
-            nextTask.run();
-        } else {
-            isRunning = false;
-        }
-    }
-
-    public static void killAll(){
-        for(int i = 0; i < queue.size(); i++){
-            queue.remove();
-        }
-
-        currentProcess.destroy();
-    }
 
     private String chunkLabel(WorkflowType workflowType){
         return workflowType.name();
