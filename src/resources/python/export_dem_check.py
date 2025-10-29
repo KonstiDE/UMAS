@@ -4,7 +4,7 @@ import sys
 import Metashape
 import Metashape as ms
 
-from utils import get_arg, get_chunk
+from utils import get_arg, get_chunk, extend_file_name
 
 
 def export_dem_check(psx_file, dem_file, chunk_lab):
@@ -13,6 +13,8 @@ def export_dem_check(psx_file, dem_file, chunk_lab):
     doc.open(path=psx_file, read_only=True)
 
     chunk = get_chunk(doc.chunks, chunk_lab)
+
+    dem_file = extend_file_name(dem_file, chunk_lab)
 
     if chunk is not None:
         if os.path.exists(dem_file):

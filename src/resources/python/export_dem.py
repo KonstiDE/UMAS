@@ -4,7 +4,7 @@ import sys
 import Metashape
 import Metashape as ms
 
-from utils import get_arg, report_progress, get_chunk, rb
+from utils import get_arg, report_progress, get_chunk, rb, extend_file_name
 
 
 def export_dem(psx_file, dem_file, chunk_lab, coordinate_system, raster_transform, no_data_value, write_kml,
@@ -18,6 +18,7 @@ def export_dem(psx_file, dem_file, chunk_lab, coordinate_system, raster_transfor
     chunk = get_chunk(doc.chunks, chunk_lab)
 
     batch = rb(batch)
+    dem_file = extend_file_name(dem_file, chunk_lab)
 
     if raster_transform == "None":
         raster_transform_mode = ms.RasterTransformNone

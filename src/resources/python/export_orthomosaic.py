@@ -4,7 +4,7 @@ import sys
 import Metashape
 import Metashape as ms
 
-from utils import get_arg, report_progress, get_chunk, rb
+from utils import get_arg, report_progress, get_chunk, rb, extend_file_name
 
 
 def export_orthomosaic(psx_file, ortho_file, chunk_lab, coordinate_system, background_color, write_kml,
@@ -17,6 +17,8 @@ def export_orthomosaic(psx_file, ortho_file, chunk_lab, coordinate_system, backg
     doc.open(path=psx_file, read_only=False, ignore_lock=True)
 
     chunk = get_chunk(doc.chunks, chunk_lab)
+
+    ortho_file = extend_file_name(ortho_file, chunk_lab)
 
     compression = Metashape.ImageCompression()
     compression.tiff_tiled = rb(write_tiled_tiff)

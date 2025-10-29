@@ -4,18 +4,20 @@ import sys
 import Metashape
 import Metashape as ms
 
-from utils import get_arg, get_chunk
+from utils import get_arg, get_chunk, extend_file_name
 
 
-def export_orthomosaic_check(psx_file, dem_file, chunk_lab):
+def export_orthomosaic_check(psx_file, ortho_file, chunk_lab):
     doc = ms.Document()
 
     doc.open(path=psx_file, read_only=True)
 
     chunk = get_chunk(doc.chunks, chunk_lab)
 
+    ortho_file = extend_file_name(ortho_file, chunk_lab)
+
     if chunk is not None:
-        if os.path.exists(dem_file):
+        if os.path.exists(ortho_file):
             print("vn:EXPORT_ORTHOMOSAIC_CHECK:true")
         else:
             print("vn:EXPORT_ORTHOMOSAIC_CHECK:false")

@@ -4,7 +4,7 @@ import sys
 import Metashape
 import Metashape as ms
 
-from utils import get_arg, report_progress, get_chunk, rb
+from utils import get_arg, report_progress, get_chunk, rb, extend_file_name
 
 
 def generate_report(psx_file, report_file, flight_name, desc, chunk_lab, batch):
@@ -13,6 +13,8 @@ def generate_report(psx_file, report_file, flight_name, desc, chunk_lab, batch):
     doc.open(path=psx_file, read_only=False, ignore_lock=True)
 
     chunk = get_chunk(doc.chunks, chunk_lab)
+
+    report_file = extend_file_name(report_file, chunk_lab)
 
     batch = rb(batch)
 

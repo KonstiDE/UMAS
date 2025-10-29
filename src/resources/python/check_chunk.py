@@ -3,7 +3,7 @@ import sys
 
 import Metashape as ms
 
-from utils import get_arg, get_chunk, rb
+from utils import get_arg, get_chunk, rb, extend_file_name
 
 
 def check_chunk(file, demFile, orthoFile, reportFile, chunk_lab):
@@ -35,6 +35,10 @@ def check_chunk(file, demFile, orthoFile, reportFile, chunk_lab):
         print("vn:CHECK_CHUNK:false")
     else:
         chunk = get_chunk(doc.chunks, chunk_lab)
+
+        demFile = extend_file_name(demFile, chunk_lab)
+        orthoFile = extend_file_name(orthoFile, chunk_lab)
+        reportFile = extend_file_name(reportFile, chunk_lab)
 
         if chunk is not None:
             # add_photos check

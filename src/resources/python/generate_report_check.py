@@ -4,7 +4,7 @@ import sys
 import Metashape
 import Metashape as ms
 
-from utils import get_arg, get_chunk
+from utils import get_arg, get_chunk, extend_file_name
 
 
 def generate_report_check(psx_file, report_file, chunk_lab):
@@ -13,6 +13,8 @@ def generate_report_check(psx_file, report_file, chunk_lab):
     doc.open(path=psx_file, read_only=True)
 
     chunk = get_chunk(doc.chunks, chunk_lab)
+
+    report_file = extend_file_name(report_file, chunk_lab)
 
     if chunk is not None:
         if os.path.exists(report_file):
