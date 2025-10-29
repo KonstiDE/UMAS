@@ -25,6 +25,31 @@ def add_photos(file, chunk_lab, folders, calib_folders, batch):
         chunk = doc.addChunk()
         chunk.label = chunk_lab
 
+        # Ho boi, big stinky hack to first add the calib images, then rest of imgs has no group. But works lol
+        if not calib_folders[0] == "":
+            calib_group = chunk.addCameraGroup()
+            calib_group.label = "calibration images"
+
+            for folder in calib_folders:
+                photos = os.listdir(folder)
+                photos = [os.path.join(folder, photo) for photo in photos]
+
+                chunk.addPhotos(
+                    filenames=photos,
+                    layout=ms.UndefinedLayout, # options: UndefinedLayout, FlatLayout, MultiframeLayout, MultiplaneLayout
+                    strip_extensions=True,  # if False, adds ".JPG" to image name
+                    load_reference=True,
+                    load_xmp_calibration=True,
+                    load_xmp_orientation=True,
+                    load_xmp_accuracy=False,
+                    load_xmp_antenna=True,
+                    load_rpc_txt=False,
+                    progress=report_progress
+                )
+
+                for camera in chunk.cameras:
+                    camera.group = calib_group
+
         for folder in folders:
             photos = os.listdir(folder)
             photos = [os.path.join(folder, photo) for photo in photos] # supplies full names
@@ -41,37 +66,6 @@ def add_photos(file, chunk_lab, folders, calib_folders, batch):
                 load_rpc_txt=False,
                 progress=report_progress
             )
-
-
-        if not calib_folders[0] == "":
-            calib_group = chunk.addCameraGroup()
-            calib_group.label = "calibration images"
-
-            for folder in calib_folders:
-                photos = os.listdir(folder)
-                photos = [os.path.join(folder, photo) for photo in photos]
-
-                num_before = len(chunk.cameras)
-
-                chunk.addPhotos(
-                    filenames=photos,
-                    layout=ms.UndefinedLayout, # options: UndefinedLayout, FlatLayout, MultiframeLayout, MultiplaneLayout
-                    strip_extensions=True,  # if False, adds ".JPG" to image name
-                    load_reference=True,
-                    load_xmp_calibration=True,
-                    load_xmp_orientation=True,
-                    load_xmp_accuracy=False,
-                    load_xmp_antenna=True,
-                    load_rpc_txt=False,
-                    progress=report_progress
-                )
-
-                new_cameras = chunk.cameras[num_before:]
-
-                for camera in new_cameras:
-                    camera.group = calib_group
-
-
 
         doc.save(file)
 
