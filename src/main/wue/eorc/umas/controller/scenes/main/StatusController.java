@@ -61,6 +61,7 @@ public class StatusController implements QueueListener {
         Platform.runLater(() -> {
             try{
                 Node pane = visQueue.getChildren().removeFirst();
+                System.out.println("Hello World!");
                 currentLabel.textProperty().set(workflowType.name() + " - " + agisoftTask.name());
                 current = pane;
             }catch(NoSuchElementException ignored){
@@ -73,9 +74,7 @@ public class StatusController implements QueueListener {
     @Override
     public void finishAgisoft(WorkflowType workflowType, AgisoftTask agisoftTask) {
         Platform.runLater(() -> {
-            if(!visQueue.getChildren().isEmpty()){
-                visQueue.getChildren().removeFirst();
-            }else{
+            if(visQueue.getChildren().isEmpty()){
                 currentLabel.textProperty().set("");
                 current = new StackPane();
             }
