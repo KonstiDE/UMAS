@@ -27,6 +27,7 @@ import wue.eorc.umas.enums.WorkflowType;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.ProjectCache;
 import wue.eorc.umas.models.Flight;
+import wue.eorc.umas.utils.system.DirectoryUtils;
 import wue.eorc.umas.utils.ui.ItemSearcher;
 
 import java.awt.*;
@@ -60,20 +61,32 @@ public class ShowFlightsController implements ViewController {
         });
 
         tableView.setOnMouseClicked(me -> {
+            ObservableList<Flight> flights = tableView.getSelectionModel().getSelectedItems();
+            Set<WorkflowType> possibleWorkflowTypes = possibleWorkflowTypes(flights);
+
             if(me.getButton() == MouseButton.SECONDARY){
                 final ContextMenu contextMenu = new ContextMenu();
 
                 final MenuItem separator = new SeparatorMenuItem();
-
-                ObservableList<Flight> flights = tableView.getSelectionModel().getSelectedItems();
-                Set<WorkflowType> possibleWorkflowTypes = possibleWorkflowTypes(flights);
 
                 for(WorkflowType workflowType : possibleWorkflowTypes){
                     final MenuItem buildBatch = new MenuItem("Build Batch (" + workflowType.getName() + ")");
                     buildBatch.setOnAction(event -> {
                         for(Flight flight : flights){
                             ShowProcessingController controller = new ShowProcessingController(flight, display);
+                            try {
+                                controller.getAgisoftCaller().createProject(DirectoryUtils.figureAgisoftFilePath(flight));
+                            } catch (IOException | InterruptedException e) {
+                                throw new RuntimeException(e);
+                            }
                             loadedControllers.add(controller);
+                            try {
+                                ProcessActionsPreparer processActionsPreparer = new ProcessActionsPreparer(flight, workflowType, display, controller, controller.getAgisoftCaller(), false);
+                                processActionsPreparer.runBatch(0);
+                            } catch (UMASException e) {
+                                throw new RuntimeException(e);
+                            }
+
                         }
                     });
                     contextMenu.getItems().add(buildBatch);
@@ -101,12 +114,13 @@ public class ShowFlightsController implements ViewController {
                             } catch (IOException e) {
                                 UMASException.throwWindow(ErrorType.INTERNAL, "Could not remove flight. Please remove it manually!");
                             }
-                        }
-                        try {
-                            tableView.getItems().clear();
-                            init(pane, display);
-                        } catch (UMASException e) {
-                            throw new RuntimeException(e);
+                            try {
+                                tableView.getItems().clear();
+                                init(pane, display);
+                            } catch (UMASException e) {
+                                throw new RuntimeException(e);
+                            }
+
                         }
                     }
                 });
@@ -123,8 +137,7 @@ public class ShowFlightsController implements ViewController {
         Button add = ItemSearcher.getItemById("showflights.add", pane, Button.class);
 
         add.setOnAction(_ignored -> {
-            Flight flight;
-            flight = display.openFlightDialog(
+            Flight flight = display.openFlightDialog(
                     (DialogPane) display.getSceneLoader().getScene("add_flight"),
                     new AddFlightController()
             );

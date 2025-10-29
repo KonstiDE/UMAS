@@ -4,6 +4,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import wue.eorc.umas.controller.RootController;
 import wue.eorc.umas.controller.customs.UMASDialog;
 import wue.eorc.umas.controller.scenes.views.dialogs.StaticDialogController;
@@ -60,6 +61,7 @@ public class DisplayController {
 
     public Flight openFlightDialog(DialogPane pane, StaticDialogController trigger) {
         Dialog<String> dialog = new UMASDialog(pane, "New flight", true, false);
+        dialog.initModality(Modality.NONE);
 
         try{
             trigger.init(this, dialog);

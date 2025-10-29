@@ -66,7 +66,7 @@ public class ProcessActionsPreparer {
     public StackPane exportOrthomosaic;
     public StackPane generateReport;
 
-    public ProcessActionsPreparer(Flight flight, WorkflowType workflowType, DisplayController display, ShowProcessingController showProcessingController, AgisoftCaller agisoftCaller) throws UMASException {
+    public ProcessActionsPreparer(Flight flight, WorkflowType workflowType, DisplayController display, ShowProcessingController showProcessingController, AgisoftCaller agisoftCaller, boolean checkImidiately) throws UMASException {
         this.flight = flight;
         this.workflowPane = switch (workflowType){
             case RGB -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
@@ -81,10 +81,10 @@ public class ProcessActionsPreparer {
         this.display = display;
         this.agisoftCaller = agisoftCaller;
 
-        setupWorkflowActions();
+        setupWorkflowActions(checkImidiately);
     }
 
-    public void setupWorkflowActions() throws UMASException {
+    public void setupWorkflowActions(boolean checkProject) throws UMASException {
         switch (this.workflowType){
             case RGB -> {
                 this.addPhotos = setupAddPhotos();
@@ -98,7 +98,7 @@ public class ProcessActionsPreparer {
                 this.exportOrthomosaic = setupExportOrthomosaic();
                 this.generateReport = setupGenerateReports();
 
-                setupCheckProject();
+                setupCheckProject(checkProject);
             }
             case MULTISPECTRAL, RGB_PLUS_MULTISPECTRAL -> {
                 this.addPhotos = setupAddPhotos();
@@ -113,7 +113,7 @@ public class ProcessActionsPreparer {
                 this.exportOrthomosaic = setupExportOrthomosaic();
                 this.generateReport = setupGenerateReports();
 
-                setupCheckProject();
+                setupCheckProject(checkProject);
             }
             case IR -> {}
             case LIDAR -> {}
@@ -121,14 +121,15 @@ public class ProcessActionsPreparer {
         }
     }
 
-    private void setupCheckProject() throws UMASException {
+    private void setupCheckProject(boolean checkProject) throws UMASException {
         AnchorPane workflowParent = ItemSearcher.getItemById("workflowpane", this.workflowPane, AnchorPane.class);
 
         String demFile = Paths.get(DirectoryUtils.figureExportPath(this.flight), this.flight.getExportDemName()).toFile().getAbsolutePath();
         String orthoFile = Paths.get(DirectoryUtils.figureExportPath(this.flight), this.flight.getExportOrthomosaicName()).toFile().getAbsolutePath();
         String reportFile = Paths.get(DirectoryUtils.figureReportPath(this.flight), this.flight.getGenerateReportName()).toFile().getAbsolutePath();
 
-        agisoftCaller.checkChunk(workflowParent, DirectoryUtils.figureAgisoftFilePath(this.flight), demFile,
+        if(checkProject)
+            agisoftCaller.checkChunk(workflowParent, DirectoryUtils.figureAgisoftFilePath(this.flight), demFile,
                 orthoFile, reportFile, this.workflowType);
     }
 
@@ -220,7 +221,7 @@ public class ProcessActionsPreparer {
 
                 if(result.isPresent()){
                     HashMap<String, String> agisoftParameters = gson.fromJson(result.get(), GsonTypeTokens.hashmapToken);
-                    agisoftCaller.setBrightness(setBrightness, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType, agisoftParameters);
+                    agisoftCaller.calibrateReflectance(calibrateReflectance, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType, agisoftParameters, false);
                 }
 
             }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
@@ -567,9 +568,9 @@ public class ProcessActionsPreparer {
             contextMenu.getItems().add(remove);
         }
 
-        modifyBatch.setOnAction(handleModifyBatch(this.workflowType));
-        runBatch.setOnAction(handleRunBatch(0));
-        runFromHere.setOnAction(handleRunBatch(3));
+        modifyBatch.setOnAction(runModifyBatch(this.workflowType));
+        runBatch.setOnAction(actionEvent -> runBatch(0));
+        //runFromHere.setOnAction(runBatch(3));
 
         contextMenu.getItems().add(modifyBatch);
         contextMenu.getItems().add(separator);
@@ -578,7 +579,7 @@ public class ProcessActionsPreparer {
         contextMenu.show(getWorkflowPane().getScene().getWindow(), mouseEvent.getScreenX(), mouseEvent.getScreenY());
     }
 
-    public EventHandler<ActionEvent> handleModifyBatch(WorkflowType workflowType){
+    public EventHandler<ActionEvent> runModifyBatch(WorkflowType workflowType){
         return actionEvent -> {
             switch (workflowType){
                 case RGB -> {
@@ -630,34 +631,33 @@ public class ProcessActionsPreparer {
         };
     }
 
-    public EventHandler<ActionEvent> handleRunBatch(int fromWhere){
-        return actionEvent -> {
-            switch (workflowType) {
-                case RGB -> agisoftCaller.completeBuildRGB(
-                    List.of(addPhotos, setBrightness, alignImages, optimizeCameras, buildPointCloud, buildDem,
-                            buildOrthomosaic, exportDem, exportOrthomosaic, generateReport),
-                    List.of(
-                            getDefaultParameters(SetBrightness.values()),
-                            getDefaultParameters(AlignImages.values()),
-                            getDefaultParameters(OptimizeCameras.values()),
-                            getDefaultParameters(BuildPointCloud.values()),
-                            getDefaultParameters(BuildDem.values()),
-                            getDefaultParameters(BuildOrthomosaic.values()),
-                            getDefaultParameters(ExportDem.values()),
-                            getDefaultParameters(ExportOrthomosaic.values())
-                    ),
-                    flight.getOriginFlightDirs(),
-                    DirectoryUtils.figureAgisoftFilePath(flight),
-                    Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportDemName()).toFile().getAbsolutePath(),
-                    Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportOrthomosaicName()).toFile().getAbsolutePath(),
-                    Paths.get(DirectoryUtils.figureReportPath(flight), flight.getGenerateReportName()).toFile().getAbsolutePath(),
-                    flight.getGenerateReportName(),
-                    "Automatically generated Report"
-                );
-                case IR, LIDAR, HYPERSPECTRAL, MULTISPECTRAL, RGB_PLUS_IR, RGB_PLUS_MULTISPECTRAL -> {
-                }
+    public void runBatch(int fromWhere){
+        switch (workflowType) {
+            case RGB -> agisoftCaller.completeBuildRGB(
+                List.of(addPhotos, setBrightness, alignImages, optimizeCameras, buildPointCloud, buildDem,
+                        buildOrthomosaic, exportDem, exportOrthomosaic, generateReport),
+                List.of(
+                        getDefaultParameters(SetBrightness.values()),
+                        getDefaultParameters(AlignImages.values()),
+                        getDefaultParameters(OptimizeCameras.values()),
+                        getDefaultParameters(BuildPointCloud.values()),
+                        getDefaultParameters(BuildDem.values()),
+                        getDefaultParameters(BuildOrthomosaic.values()),
+                        getDefaultParameters(ExportDem.values()),
+                        getDefaultParameters(ExportOrthomosaic.values())
+                ),
+                flight.getOriginFlightDirs(),
+                DirectoryUtils.figureAgisoftFilePath(flight),
+                Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportDemName()).toFile().getAbsolutePath(),
+                Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportOrthomosaicName()).toFile().getAbsolutePath(),
+                Paths.get(DirectoryUtils.figureReportPath(flight), flight.getGenerateReportName()).toFile().getAbsolutePath(),
+                flight.getGenerateReportName(),
+                "Automatically generated Report"
+            );
+            case IR, LIDAR, HYPERSPECTRAL, MULTISPECTRAL, RGB_PLUS_IR, RGB_PLUS_MULTISPECTRAL -> {
             }
-        };
+        }
+
     }
 
     public EventHandler<ActionEvent> handleRemove(StackPane stackPane, AgisoftTask agisoftTask){

@@ -72,7 +72,7 @@ public class ShowProcessingController implements ViewController, CallbackListene
                 tab.setText(workflowType.getName());
 
                 ProcessActionsPreparer preparer = new ProcessActionsPreparer(
-                        flight, workflowType, display, this, agisoftCaller);
+                        flight, workflowType, display, this, agisoftCaller, true);
 
                 AnchorPane anchorPane = new AnchorPane();
                 anchorPane.getChildren().add(preparer.getWorkflowPane());
@@ -190,11 +190,17 @@ public class ShowProcessingController implements ViewController, CallbackListene
 
     @Override
     public void progress(float f) {
-        this.displayController.getRootController().getStatusController().updateStatus(f);
+        if(this.displayController != null){
+            this.displayController.getRootController().getStatusController().updateProgress(f);
+        }
     }
 
     public Flight getFlight() {
-        return flight;
+        return this.flight;
+    }
+
+    public AgisoftCaller getAgisoftCaller(){
+        return this.agisoftCaller;
     }
 
 }
