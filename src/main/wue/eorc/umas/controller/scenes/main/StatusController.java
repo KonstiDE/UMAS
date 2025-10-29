@@ -27,6 +27,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class StatusController implements QueueListener {
 
+    // When I built this, it was Wednesday, my dudes.
     public static final Queue<Runnable> queue = new LinkedList<>();
 
     public Label statusLabel;

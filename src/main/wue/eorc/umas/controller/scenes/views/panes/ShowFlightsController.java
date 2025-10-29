@@ -88,7 +88,7 @@ public class ShowFlightsController implements ViewController {
                     dialog.hide();
                     dialog.close();
 
-                    if (yes.isPresent() && yes.get().equals(ButtonType.OK.getText())) {
+                    if (yes.isPresent() && yes.get().equals("OK")) {
                         for(Flight flight : flights){
                             try {
                                 boolean success = ProjectCache.currentlyOpenedProject.removeFlight(flight);
@@ -102,7 +102,12 @@ public class ShowFlightsController implements ViewController {
                                 UMASException.throwWindow(ErrorType.INTERNAL, "Could not remove flight. Please remove it manually!");
                             }
                         }
-                        initTableViewCellFactories(tableView, display);
+                        try {
+                            tableView.getItems().clear();
+                            init(pane, display);
+                        } catch (UMASException e) {
+                            throw new RuntimeException(e);
+                        }
                     }
                 });
                 contextMenu.getItems().add(separator);

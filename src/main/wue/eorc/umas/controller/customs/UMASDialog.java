@@ -2,6 +2,7 @@ package wue.eorc.umas.controller.customs;
 
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
@@ -13,6 +14,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
 import javafx.scene.text.Font;
 import javafx.stage.StageStyle;
+import javafx.util.Callback;
 import wue.eorc.umas.loader.Settings;
 
 import java.util.Objects;
@@ -96,6 +98,9 @@ public class UMASDialog extends Dialog<String> {
         if (Settings.useDarkLayout()){
             this.getDialogPane().getScene().getStylesheets().add(Settings.darkModeDialog);
         }
+
+        // Set default result converter to ensure string return-type
+        this.setResultConverter(ButtonType::getText);
 
     }
 
