@@ -36,18 +36,12 @@ public class ShowProcessingController implements ViewController, CallbackListene
 
     public Pane processingPaneRoot;
 
-    public Label currentlyProcessing;
-    public ListView<String> processingListView;
-
     public DisplayController displayController;
 
     @Override
     public void init(Pane pane, DisplayController display) throws UMASException {
         displayController = display;
         processingPaneRoot = pane;
-
-        currentlyProcessing = ItemSearcher.getItemById("showprocess.queue.current", pane, Label.class);
-        processingListView = ItemSearcher.getGenericControlById("showprocess.queue.listview", pane, ListView.class, String.class);
 
         Button refresh = ItemSearcher.getItemById("showprocess.refresh", pane, Button.class);
         refresh.setOnAction(_ignored -> refresh(pane, display));

@@ -16,6 +16,7 @@ import wue.eorc.umas.utils.ui.ItemSearcher;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URISyntaxException;
 import java.util.Objects;
 
 public class SettingsController implements StaticDialogController {

@@ -119,7 +119,7 @@ public class Main extends Application {
                         closingDialog.close();
 
                         if (close.isPresent()){
-                            StatusController.killAll();
+                            AgisoftCaller.killAll();
 
                             primaryStage.hide();
                             primaryStage.close();

@@ -68,7 +68,7 @@ def build_point_cloud(file, chunk_lab, quality, depthFiltering, reuseDepthMaps,
             progress=report_progress
         )
 
-        chunk.buildDenseCloud(
+        chunk.buildPointCloud(
             point_colors=rb(calculatePointColors),
             point_confidence=rb(calculatePointConfidence),
             keep_depth=True,

@@ -15,9 +15,9 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="920.0" prefWidth="542.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25">
+<AnchorPane prefWidth="542.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
    <children>
-      <VBox prefHeight="911.0" prefWidth="542.0" spacing="8.0">
+      <VBox prefWidth="542.0" spacing="8.0">
          <children>
             <HBox alignment="CENTER_LEFT" spacing="24.0">
                <children>

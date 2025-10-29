@@ -28,13 +28,16 @@ import java.util.concurrent.CompletableFuture;
 
 public class AgisoftCaller {
 
-    private final String snippetsPath = Objects.requireNonNull(getClass().getClassLoader().getResource("python")).getFile();
+    private final String snippetsPath = new File(Objects.requireNonNull(
+            getClass().getClassLoader().getResource("python")).getFile()).getAbsolutePath();
 
+    public final QueueListener queueListener;
     public final CallbackListener callbackListener;
 
     public final DisplayController display;
 
-    public AgisoftCaller(CallbackListener callbackListener, DisplayController display) {
+    public AgisoftCaller(CallbackListener callbackListener, DisplayController display){
+        this.queueListener = display.getRootController().getStatusController();
         this.callbackListener = callbackListener;
         this.display = display;
     }
@@ -387,6 +390,133 @@ public class AgisoftCaller {
         exportOrtho(stackPanes.get(8), psxFile, orthoFile, WorkflowType.RGB, agisoftParameters.get(7), true);
         generateReport(stackPanes.get(9), psxFile, reportFile, flightName, reportDescription, WorkflowType.RGB, true);
 
+    }
+
+    public void enqueue(WorkflowType workflowType, AgisoftTask task, Pane pane, ProcessBuilder pb, boolean nextIfFailed){
+        queueListener.enqueueAgisoft(workflowType, task);
+
+        StatusController.queue.add(() -> CompletableFuture.supplyAsync(() -> {
+            queueListener.startedAgisoft(workflowType, task);
+
+            try{
+                pb.redirectErrorStream(true);
+                Process p = pb.start();
+                StatusController.currentProcess = p;
+
+                Pair<AgisoftTask, String> success = watchForSignal("vn:", p.getInputStream(), callbackListener, workflowType, task, pane);
+
+                int exitCode = p.waitFor();
+
+                if (exitCode != 0) return new Pair<>(AgisoftTask.UNDEFINED, "False");
+
+                return success;
+            }catch (IOException | InterruptedException e){
+                return new Pair<>(AgisoftTask.UNDEFINED, "False");
+            }
+        }) .thenAcceptAsync(result -> {
+            boolean success = Boolean.parseBoolean(result.getValue());
+
+            try {
+                queueListener.finishAgisoft(workflowType, task);
+                callbackListener.callbackAgisoft(pane, workflowType, task, result.getValue());
+            } catch (UMASException e) {
+                throw new RuntimeException(e);
+            }
+
+            if(success) {
+                StatusController.isRunning = true;
+                processNext();
+            }else{
+                if(nextIfFailed) {
+                    StatusController.isRunning = true;
+                    processNext();
+                }else{
+                    StatusController.isRunning = false;
+                }
+            }
+
+        }));
+
+        if (!StatusController.isRunning) {
+            StatusController.isRunning = true;
+            processNext();
+        }
+    }
+
+    public Pair<AgisoftTask, String> watchForSignal(String signalKey, InputStream inputStream, CallbackListener listener, WorkflowType workflowType, AgisoftTask task, Pane pane) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+                if(listener != null && (line.startsWith("vp: ") || line.startsWith("xvp: "))) {
+                    String finalLine = line;
+                    Platform.runLater(() -> {
+                        try{
+                            listener.progress(Float.parseFloat(finalLine.substring(4)));
+                        } catch (NumberFormatException ignored) {  }
+                    });
+                }
+                if(line.startsWith(signalKey)){
+                    String[] split = line.split(":");
+
+                    AgisoftTask currentTask = AgisoftTask.valueOf(split[1]);
+
+                    if(currentTask == task){
+                        if(listener != null)
+                            Platform.runLater(() -> listener.progress(0));
+
+                        return new Pair<>(currentTask, split[2]);
+                    }else{
+                        if(listener != null && pane != null)
+                            listener.callbackAgisoft(pane, workflowType, currentTask, split[2]);
+                    }
+                }
+                if(line.startsWith("ve:")){
+                    final String[] split = line.split(":");
+
+                    Platform.runLater(() -> {
+                        AgisoftTask currentTask = AgisoftTask.valueOf(split[1]);
+
+                        DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene("agisoft_error_dialog");
+                        Dialog<String> dialog = new UMASDialog(dialogPane, "Error", true, true);
+
+                        String[] splitForError = split[2].split("~");
+
+                        AgisoftErrorController errorController = new AgisoftErrorController(
+                                splitForError[0], splitForError[1], splitForError[2]);
+
+                        try {
+                            errorController.init(display, dialog);
+                        } catch (UMASException e) {
+                            throw new RuntimeException(e);
+                        }
+
+                        dialog.show();
+                    });
+
+                }
+            }
+        } catch (UMASException e) {
+            throw new RuntimeException(e);
+        }
+        return new Pair<>(AgisoftTask.UNDEFINED, Boolean.FALSE.toString());
+    }
+
+    private synchronized void processNext() {
+        Runnable nextTask = StatusController.queue.poll();
+        if (nextTask != null) {
+            nextTask.run();
+        } else {
+            StatusController.isRunning = false;
+        }
+    }
+
+    public static void killAll(){
+        for(int i = 0; i < StatusController.queue.size(); i++){
+            StatusController.queue.remove();
+        }
+
+        StatusController.currentProcess.destroy();
     }
 
 
