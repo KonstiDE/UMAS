@@ -189,10 +189,8 @@ public class ShowProcessingController implements ViewController, CallbackListene
     }
 
     @Override
-    public void progress(float f) {
-        if(this.displayController != null){
-            this.displayController.getRootController().getStatusController().updateProgress(f);
-        }
+    public void progress(DisplayController display, float f) {
+        display.getRootController().getStatusController().updateProgress(f);
     }
 
     public Flight getFlight() {

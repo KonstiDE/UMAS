@@ -453,7 +453,7 @@ public class AgisoftCaller {
                     String finalLine = line;
                     Platform.runLater(() -> {
                         try{
-                            listener.progress(Float.parseFloat(finalLine.substring(4)));
+                            listener.progress(display, Float.parseFloat(finalLine.substring(4)));
                         } catch (NumberFormatException ignored) {  }
                     });
                 }
@@ -464,7 +464,7 @@ public class AgisoftCaller {
 
                     if(currentTask == task){
                         if(listener != null)
-                            Platform.runLater(() -> listener.progress(0));
+                            Platform.runLater(() -> listener.progress(display, 0));
 
                         return new Pair<>(currentTask, split[2]);
                     }else{
