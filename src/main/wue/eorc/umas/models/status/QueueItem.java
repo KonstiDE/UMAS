@@ -1,7 +1,6 @@
 package wue.eorc.umas.models.status;
 
-import javafx.scene.Node;
-import javafx.scene.control.ContextMenu;
+import javafx.scene.control.Tooltip;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
@@ -33,6 +32,17 @@ public class QueueItem {
 
         stackPane.setBackground(Background.fill(Color.rgb(255, 255, 255)));
         stackPane.getChildren().add(imageView);
+
+        Tooltip toolTipTxt = new Tooltip(description);
+        Tooltip.install(stackPane, toolTipTxt);
+
+        stackPane.hoverProperty().addListener((ov, oldV, newV) -> {
+            if(newV){
+                stackPane.setBackground(Background.fill(Color.rgb(163, 221, 255)));
+            }else{
+                stackPane.setBackground(Background.fill(Color.rgb(255, 255, 255)));
+            }
+        });
     }
 
     public StackPane getNode() {

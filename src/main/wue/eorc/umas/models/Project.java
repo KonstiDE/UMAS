@@ -19,7 +19,7 @@ public class Project implements Serializable {
     private String pilot;
     private String location;
     private File directory;
-    private ArrayList<Flight> flights;
+    private final ArrayList<Flight> flights;
 
     public Project(String name, String pilot, String location, File directory) {
         this.name = name;
@@ -35,6 +35,14 @@ public class Project implements Serializable {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getLocation() {
+        return location;
+    }
+
+    public void setLocation(String location) {
+        this.location = location;
     }
 
     public String getPilot() {

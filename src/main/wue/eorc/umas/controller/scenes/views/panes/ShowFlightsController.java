@@ -114,13 +114,12 @@ public class ShowFlightsController implements ViewController {
                             } catch (IOException e) {
                                 UMASException.throwWindow(ErrorType.INTERNAL, "Could not remove flight. Please remove it manually!");
                             }
-                            try {
-                                tableView.getItems().clear();
-                                init(pane, display);
-                            } catch (UMASException e) {
-                                throw new RuntimeException(e);
-                            }
-
+                        }
+                        try {
+                            tableView.getItems().clear();
+                            init(pane, display);
+                        } catch (UMASException e) {
+                            throw new RuntimeException(e);
                         }
                     }
                 });

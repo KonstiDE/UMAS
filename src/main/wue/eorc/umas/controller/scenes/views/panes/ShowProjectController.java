@@ -13,7 +13,7 @@ import java.io.IOException;
 
 public class ShowProjectController implements ViewController {
 
-    private Project project;
+    private final Project project;
 
     public ShowProjectController(Project project) throws IOException, ClassNotFoundException {
         this.project = project;
@@ -32,7 +32,7 @@ public class ShowProjectController implements ViewController {
 
         projectName.setText(project.getName());
         projectPilot.setText(project.getPilot());
-        projectLocation.setText(projectLocation.getText());
+        projectLocation.setText(project.getLocation());
 
         projectName.setEditable(false);
         projectPilot.setEditable(false);
