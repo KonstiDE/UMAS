@@ -9,7 +9,7 @@ def get_chunk(cs, l):
     return None
 
 def rb(s):
-    return "True" in s
+    return "true" in s or "True" in s
 
 def report_progress(f):
     print("vp: {}".format(str(f)))

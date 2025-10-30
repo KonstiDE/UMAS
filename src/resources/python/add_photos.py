@@ -14,6 +14,7 @@ def add_photos(file, chunk_lab, folders, calib_folders, batch):
     chunk = get_chunk(doc.chunks, chunk_lab)
 
     batch = rb(batch)
+    print(batch)
 
     if chunk is not None and not batch:
         print(f"ve:ADD_PHOTOS:Images already exist!~The images were already added to the chunk.~Please remove them to continue.")

@@ -1,19 +1,5 @@
 package wue.eorc.umas;
 
-import boofcv.abst.fiducial.QrCodeDetector;
-import boofcv.alg.fiducial.qrcode.QrCode;
-import boofcv.factory.fiducial.ConfigQrCode;
-import boofcv.factory.fiducial.FactoryFiducial;
-import boofcv.gui.feature.VisualizeShapes;
-import boofcv.gui.image.ShowImages;
-import boofcv.io.UtilIO;
-import boofcv.io.image.ConvertBufferedImage;
-import boofcv.io.image.UtilImageIO;
-import boofcv.struct.image.GrayU8;
-import com.beust.ah.A;
-import com.google.zxing.*;
-import com.google.zxing.client.j2se.BufferedImageLuminanceSource;
-import com.google.zxing.common.HybridBinarizer;
 import javafx.application.Platform;
 import javafx.geometry.Rectangle2D;
 import javafx.application.Application;
@@ -25,9 +11,6 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import org.opencv.core.Mat;
-import org.opencv.imgcodecs.Imgcodecs;
-import org.opencv.imgproc.Imgproc;
 import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.RootController;
 import wue.eorc.umas.controller.customs.UMASDialog;
@@ -36,15 +19,10 @@ import wue.eorc.umas.controller.scenes.views.dialogs.ClosingController;
 import wue.eorc.umas.controller.splash.SplashController;
 import wue.eorc.umas.enums.Setting;
 import wue.eorc.umas.exception.UMASException;
-import wue.eorc.umas.futures.qrcode.QRCodeScanner;
 import wue.eorc.umas.loader.SceneLoader;
 import wue.eorc.umas.loader.Settings;
 
-import javax.imageio.ImageIO;
 import java.awt.*;
-import java.awt.List;
-import java.awt.image.BufferedImage;
-import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -61,7 +39,7 @@ public class Main extends Application {
     }
 
     @Override
-    public void start(Stage primaryStage) throws IOException, UMASException, URISyntaxException, NotFoundException {
+    public void start(Stage primaryStage) throws IOException, UMASException, URISyntaxException {
         primaryStage.initStyle(StageStyle.UNDECORATED);
 
         SceneLoader loader = new SceneLoader(this.getClass().getClassLoader());
