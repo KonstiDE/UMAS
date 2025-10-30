@@ -19,10 +19,12 @@ import wue.eorc.umas.controller.scenes.views.dialogs.ClosingController;
 import wue.eorc.umas.controller.splash.SplashController;
 import wue.eorc.umas.enums.Setting;
 import wue.eorc.umas.exception.UMASException;
+import wue.eorc.umas.futures.qrcode.QRCodeScanner;
 import wue.eorc.umas.loader.SceneLoader;
 import wue.eorc.umas.loader.Settings;
 
 import java.awt.*;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.*;
@@ -109,6 +111,8 @@ public class Main extends Application {
                 stage.show();
             } catch (UMASException e) {
                 e.printStackTrace();
+            } catch (FileNotFoundException e) {
+                throw new RuntimeException(e);
             }
         }));
 
@@ -127,7 +131,7 @@ public class Main extends Application {
         primaryStage.setScene(scene);
         primaryStage.show();
 
-        //new QRCodeScanner();
+        // new QRCodeScanner("C:/Users/fkt40ea/Desktop/DJI_20241208052736_0006_D.JPG");
 
     }
 }

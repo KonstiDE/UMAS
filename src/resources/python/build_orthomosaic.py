@@ -38,7 +38,10 @@ def build_ortho(file, chunk_lab, surface, blending_mode, refine_seamlines, enabl
             print("vn:BUILD_ORTHOMOSAIC:false")
         else:
             if batch:
-                chunk.remove(chunk.orthomosaic)
+                try:
+                    chunk.remove(chunk.orthomosaic)
+                except Exception as ignored:
+                    pass
 
             chunk.buildOrthomosaic(
                 surface_data=surface_mode,

@@ -23,20 +23,24 @@ import georegression.struct.point.Vector2D_F64;
 import org.opencv.core.*;
 import org.opencv.core.Point;
 import org.opencv.highgui.HighGui;
+import org.opencv.imgcodecs.Imgcodecs;
 import org.opencv.imgproc.Imgproc;
 
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.awt.image.DataBufferByte;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class QRCodeScanner {
 
     public List<BufferedImage> bufferedImages;
 
-    public QRCodeScanner() {
-        BufferedImage input = UtilImageIO.loadImageNotNull(UtilIO.pathExample("C:/Users/fkt40ea/Desktop/DJI_20241208052736_0006_D.JPG"));
+    public QRCodeScanner(String imagePath) {
+        // "C:/Users/fkt40ea/Desktop/DJI_20241208052736_0006_D.JPG"
+
+        BufferedImage input = UtilImageIO.loadImageNotNull(UtilIO.pathExample(imagePath));
         GrayU8 gray = ConvertBufferedImage.convertFrom(input, (GrayU8) null);
 
         var config = new ConfigQrCode();
@@ -89,16 +93,33 @@ public class QRCodeScanner {
                 openCVImage, mask, new Point(towardsMid.x, towardsMid.y), new Scalar(0, 255, 0), rect, loDiff, upDiff, flags
         );
 
-        System.out.println(filledPixels);
-
         Mat region = new Mat(mask, new Rect(1, 1, openCVImage.cols(), openCVImage.rows()));
         Core.multiply(region, new Scalar(255), region);
 
-        HighGui.imshow("Connected Region", mask);
-        HighGui.resizeWindow("Connected Region", 640, 480);
-        HighGui.waitKey(0);
-        HighGui.destroyAllWindows();
+    }
 
+    private static double getMedianOfMasked(Mat channel, Mat mask) {
+        // Flatten the pixels selected by the mask into a list
+        List<Double> values = new ArrayList<>();
+
+        for (int y = 0; y < channel.rows(); y++) {
+            for (int x = 0; x < channel.cols(); x++) {
+                double maskVal = mask.get(y, x)[0];
+                if (maskVal > 0) { // pixel selected
+                    values.add(channel.get(y, x)[0]);
+                }
+            }
+        }
+
+        if (values.isEmpty()) return 0.0;
+
+        Collections.sort(values);
+        int size = values.size();
+        if (size % 2 == 1) {
+            return values.get(size / 2);
+        } else {
+            return (values.get(size / 2 - 1) + values.get(size / 2)) / 2.0;
+        }
     }
 
     public static Mat bufferedImageToMat(BufferedImage bi) {

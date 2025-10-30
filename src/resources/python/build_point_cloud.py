@@ -53,8 +53,11 @@ def build_point_cloud(file, chunk_lab, quality, depthFiltering, reuseDepthMaps,
         print("vn:BUILD_POINT_CLOUD:false")
     else:
         if batch:
-            chunk.remove(chunk.depth_maps)
-            chunk.remove(chunk.dense_cloud)
+            try:
+                chunk.remove(chunk.depth_maps)
+                chunk.remove(chunk.dense_cloud)
+            except Exception as ignored:
+                pass
 
         chunk.buildDepthMaps(
             downscale=quality_mode,

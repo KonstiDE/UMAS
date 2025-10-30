@@ -8,6 +8,8 @@ import wue.eorc.umas.controller.scenes.main.*;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.SceneLoader;
 
+import java.io.FileNotFoundException;
+
 public class RootController {
 
     private final MenuController menuController;
@@ -16,7 +18,7 @@ public class RootController {
 
     private final SceneLoader sceneLoader;
 
-    public RootController(VBox vBox, SceneLoader sceneLoader) throws UMASException {
+    public RootController(VBox vBox, SceneLoader sceneLoader) throws UMASException, FileNotFoundException {
         this.menuController = new MenuController(this, (MenuBar) vBox.getChildren().get(0));
         this.splitPaneController = new DisplayController(this, (SplitPane) vBox.getChildren().get(1));
         this.statusController = new StatusController((HBox) vBox.getChildren().get(2), this.splitPaneController);

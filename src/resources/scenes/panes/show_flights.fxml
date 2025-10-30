@@ -10,11 +10,11 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1488.0"  xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="720.0" prefWidth="1488.0" xmlns:fx="http://javafx.com/fxml/1" xmlns="http://javafx.com/javafx/25">
    <children>
       <VBox spacing="12.0" AnchorPane.leftAnchor="12.0" AnchorPane.topAnchor="12.0">
          <children>
-            <HBox spacing="4.0">
+            <HBox spacing="8.0">
                <children>
                   <Label text="Flights">
                      <font>
@@ -23,7 +23,8 @@
                   </Label>
                   <Button id="showflights.add" mnemonicParsing="false" text="+" />
                   <HBox prefWidth="200.0" HBox.hgrow="ALWAYS" />
-                  <Button id="showflights.refresh" mnemonicParsing="false" text="Refresh" />
+                  <Button id="showflights.refresh" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="Refresh" />
+                  <Button id="showflights.export" mnemonicParsing="false" prefHeight="25.0" prefWidth="63.0" text="Export" />
                </children>
             </HBox>
             <Separator prefWidth="200.0" />

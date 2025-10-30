@@ -16,6 +16,7 @@ import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.SceneLoader;
 import wue.eorc.umas.models.Flight;
 
+import java.io.FileNotFoundException;
 import java.util.Optional;
 
 public class DisplayController {
@@ -30,7 +31,7 @@ public class DisplayController {
     private final ScrollPane center;
     private final AnchorPane right;
 
-    public DisplayController(RootController rootController, SplitPane rootControl){
+    public DisplayController(RootController rootController, SplitPane rootControl) throws FileNotFoundException {
         this.rootController = rootController;
         this.rootControl = rootControl;
 

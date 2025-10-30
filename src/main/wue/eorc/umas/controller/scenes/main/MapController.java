@@ -5,23 +5,105 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.geometry.Bounds;
 import javafx.geometry.Point2D;
-import javafx.scene.Group;
+import javafx.scene.*;
 import javafx.scene.chart.NumberAxis;
 import javafx.scene.chart.ScatterChart;
 import javafx.scene.chart.XYChart;
 import javafx.scene.layout.StackPane;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Polygon;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.PhongMaterial;
+import javafx.scene.shape.*;
+import javafx.scene.transform.Rotate;
 import wue.eorc.umas.utils.system.Colors;
 
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 public class MapController {
 
     public StackPane localRoot;
 
-    public MapController(StackPane localRoot) {
+    public MapController(StackPane localRoot) throws FileNotFoundException {
         this.localRoot = localRoot;
+
+        // Create 3D objects
+        Box box = new Box(100, 100, 100);
+
+        // Create semi-transparent material for outer sphere
+        PhongMaterial material = new PhongMaterial();
+        material.setDiffuseColor(Color.color(0.3, 0.5, 1.0, 0.3)); // Semi-transparent blue
+        material.setSpecularColor(Color.WHITE);
+        box.setMaterial(material);
+
+        float[] points = readTxtFile(new File("B:\\1_Projects\\FireMapping\\0_Flights\\01102025_Boma_North_MAVICM3MFIXEDM3M\\1_Agisoft\\test.txt"));
+        MeshView meshView = createPointCloud(points);
+
+        // Group all rotatable objects together
+        Group rotationGroup = new Group(box);
+
+        // Create lights
+        PointLight light = new PointLight(Color.WHITE);
+        light.setTranslateX(100);
+        light.setTranslateY(-100);
+        light.setTranslateZ(-200);
+
+        AmbientLight ambient = new AmbientLight(Color.color(0.3, 0.3, 0.3));
+
+        Group root3D = new Group(rotationGroup, light, ambient);
+
+        // Create SubScene for 3D content
+        SubScene subScene = new SubScene(root3D, 400, 300, true, SceneAntialiasing.BALANCED);
+        subScene.setFill(Color.gray(0.2));
+
+        // Create and position camera
+        PerspectiveCamera camera = new PerspectiveCamera(true);
+        camera.setTranslateZ(-300);
+        camera.setNearClip(0.1);
+        camera.setFarClip(2000.0);
+        camera.setFieldOfView(45);
+        subScene.setCamera(camera);
+
+        // Mouse rotation controls
+        final double[] mouseOldX = {0};
+        final double[] mouseOldY = {0};
+        final Rotate rotateX = new Rotate(0, Rotate.X_AXIS);
+        final Rotate rotateY = new Rotate(0, Rotate.Y_AXIS);
+
+        rotationGroup.getTransforms().addAll(rotateX, rotateY);
+
+        subScene.setOnMousePressed(event -> {
+            mouseOldX[0] = event.getSceneX();
+            mouseOldY[0] = event.getSceneY();
+        });
+
+        subScene.setOnMouseDragged(event -> {
+            double deltaX = event.getSceneX() - mouseOldX[0];
+            double deltaY = event.getSceneY() - mouseOldY[0];
+
+            rotateY.setAngle(rotateY.getAngle() - deltaX * 0.5);
+            rotateX.setAngle(rotateX.getAngle() + deltaY * 0.5);
+
+            mouseOldX[0] = event.getSceneX();
+            mouseOldY[0] = event.getSceneY();
+        });
+
+        // Scroll to zoom
+        subScene.setOnScroll(event -> {
+            double delta = event.getDeltaY();
+            camera.setTranslateZ(camera.getTranslateZ() + delta * 0.5);
+        });
+
+        // Add SubScene into StackPane
+        this.localRoot.getChildren().add(subScene);
+
+        this.localRoot.sceneProperty().addListener((obs, oldScene, newScene) -> {
+            if (newScene != null) {
+                Platform.runLater(() -> this.localRoot.requestFocus());
+            }
+        });
+
     }
 
     public void showFlightArea(List<String[]> coordinates, List<String[]> waypoints) {
@@ -130,6 +212,125 @@ public class MapController {
         }
 
         localRoot.getChildren().addAll(group);
+    }
+
+    private Cylinder createAxis(Color color, double x, double y, double z) {
+        Cylinder axis = new Cylinder(2, 120);
+        PhongMaterial material = new PhongMaterial();
+        material.setDiffuseColor(color);
+        material.setSpecularColor(color.brighter());
+        axis.setMaterial(material);
+        axis.setTranslateX(x);
+        axis.setTranslateY(y);
+        axis.setTranslateZ(z);
+        return axis;
+    }
+
+    private float[] readTxtFile(File file) throws FileNotFoundException {
+        List<Float> xs = new ArrayList<>();
+        List<Float> ys = new ArrayList<>();
+        List<Float> zs = new ArrayList<>();
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+
+        for(String line : reader.lines().toList()){
+            String[] split = line.split(" ");
+
+            // Switch y and z axis! Why the hell people doing this??
+            xs.add(Float.parseFloat(split[0]));
+            zs.add(Float.parseFloat(split[1]));
+            ys.add(Float.parseFloat(split[2]));
+        }
+
+        // Find middle point of x and z axis and shift
+        float xmin = Collections.max(xs);
+        float xmax = Collections.min(xs);
+        float zmin = Collections.max(zs);
+        float zmax = Collections.min(zs);
+
+        float shift_x = (Math.abs(xmax) - Math.abs(xmin)) / 2;
+        float shift_z = (Math.abs(zmax) - Math.abs(zmin)) / 2;
+
+        shift(xs, xmin, xmax, shift_x);
+        shift(zs, zmin, zmax, shift_z);
+
+        float ymin = Collections.min(ys);
+        ys.replaceAll(y -> y - ymin);
+
+        float[] pointArray = new float[xs.size() + ys.size() + zs.size()];
+        for (int i = 0; i < xs.size(); i+=3) {
+            pointArray[i] = xs.get(i);
+            pointArray[i+1] = ys.get(i);
+            pointArray[i+2] = zs.get(i);
+        }
+
+        // Ich muss noch um den betrag nach null shiften , die mitte die ich so toll ausgerechnet habe!!!!
+
+        return pointArray;
+
+    }
+
+    private void shift(List<Float> xs, float xmin, float xmax, float shift_x) {
+        if (xmin > 0 && xmax > 0){
+            _shift(shift_x, xs, ShiftDirection.L);
+        } else if(xmin < 0 && xmax < 0){
+            _shift(shift_x, xs, ShiftDirection.R);
+        } else {
+            if(Math.abs(xmin) > Math.abs(xmax)){
+                _shift(shift_x, xs, ShiftDirection.R);
+            }else{
+                _shift(shift_x, xs, ShiftDirection.L);
+            }
+        }
+    }
+
+    private void _shift(float shift, List<Float> vs, ShiftDirection direction) {
+        for (int i = 0; i < vs.size(); i++) {
+            if (direction == ShiftDirection.L) {
+                vs.set(i, vs.get(i) - shift);
+            } else {
+                vs.set(i, vs.get(i) + shift);
+            }
+        }
+    }
+
+    enum ShiftDirection {
+        R,
+        L
+    }
+
+    public MeshView createPointCloud(float[] points) {
+        TriangleMesh mesh = new TriangleMesh();
+        mesh.setVertexFormat(VertexFormat.POINT_NORMAL_TEXCOORD);
+
+        // Add points as vertices
+        mesh.getPoints().addAll(points); // x, y, z coordinates
+
+        // Dummy texture coordinates (required but not used)
+        mesh.getTexCoords().addAll(0, 0);
+
+        // Create tiny triangles for each point (makes them visible)
+        for (int i = 0; i < points.length / 3; i++) {
+            int idx = i * 3;
+            // Add 3 vertices very close together to form a tiny triangle
+            mesh.getPoints().addAll(
+                    points[idx], points[idx + 1], points[idx + 2],     // Same point
+                    points[idx], points[idx + 1], points[idx + 2],     // Same point
+                    points[idx], points[idx + 1], points[idx + 2]      // Same point
+            );
+
+            // Create face
+            int baseIdx = i * 3;
+            mesh.getFaces().addAll(
+                    baseIdx, 0, baseIdx + 1, 0, baseIdx + 2, 0
+            );
+        }
+
+        MeshView meshView = new MeshView(mesh);
+        PhongMaterial material = new PhongMaterial();
+        material.setDiffuseColor(Color.WHITE);
+        meshView.setMaterial(material);
+
+        return meshView;
     }
 
 }

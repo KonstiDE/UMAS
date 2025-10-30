@@ -14,10 +14,8 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import wue.eorc.umas.agisoft.AgisoftCaller;
 import wue.eorc.umas.controller.customs.UMASDialog;
 import wue.eorc.umas.controller.scenes.main.DisplayController;
-import wue.eorc.umas.controller.scenes.main.StatusController;
 import wue.eorc.umas.controller.scenes.views.dialogs.AddFlightController;
 import wue.eorc.umas.controller.scenes.views.panes.components.ProcessActionsPreparer;
 import wue.eorc.umas.enums.ErrorType;
@@ -27,13 +25,13 @@ import wue.eorc.umas.enums.WorkflowType;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.ProjectCache;
 import wue.eorc.umas.models.Flight;
+import wue.eorc.umas.utils.exports.Exporter;
 import wue.eorc.umas.utils.system.DirectoryUtils;
 import wue.eorc.umas.utils.ui.ItemSearcher;
 
 import java.awt.*;
 import java.io.File;
 import java.io.IOException;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.*;
 import java.util.List;
@@ -50,13 +48,22 @@ public class ShowFlightsController implements ViewController {
         tableView.getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
         initTableViewCellFactories(tableView, display);
 
-        Button button = ItemSearcher.getItemById("showflights.refresh", pane, Button.class);
-        button.setOnAction(_ignored -> {
+        Button refresh = ItemSearcher.getItemById("showflights.refresh", pane, Button.class);
+        refresh.setOnAction(_ignored -> {
             try {
                 tableView.getItems().clear();
                 init(pane, display);
             } catch (UMASException e) {
                 UMASException.throwWindow(ErrorType.INTERNAL, "Could not refresh tableview. Please restart the application.");
+            }
+        });
+
+        Button export = ItemSearcher.getItemById("showflights.export", pane, Button.class);
+        export.setOnAction(_ignored -> {
+            try {
+                Exporter.toFile(tableView, "output.pdf");
+            } catch (Exception ex) {
+                ex.printStackTrace();
             }
         });
 
@@ -251,7 +258,7 @@ public class ShowFlightsController implements ViewController {
         TableColumn<Flight, String> speedCol = (TableColumn<Flight, String>) tableView.getColumns().get(9);
         speedCol.setCellValueFactory(cellData -> {
             try {
-                return new ReadOnlyObjectWrapper<>(String.valueOf(cellData.getValue().getFlightParameters().getSpeed()));
+                return new ReadOnlyObjectWrapper<>(String.valueOf((double) Math.round(cellData.getValue().getFlightParameters().getSpeed() * 10) / 10));
             } catch (NullPointerException e) {
                 return new ReadOnlyObjectWrapper<>("");
             }

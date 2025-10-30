@@ -161,6 +161,8 @@ public class AgisoftCaller {
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "calibrate_reflectance.py");
 
+
+
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType),
                 "-batch", "" + batch);
@@ -390,6 +392,24 @@ public class AgisoftCaller {
         exportDem(stackPanes.get(7), psxFile, demFile, WorkflowType.RGB, agisoftParameters.get(6), true);
         exportOrtho(stackPanes.get(8), psxFile, orthoFile, WorkflowType.RGB, agisoftParameters.get(7), true);
         generateReport(stackPanes.get(9), psxFile, reportFile, flightName, reportDescription, WorkflowType.RGB, true);
+
+    }
+
+    public void completeBuildMS(List<StackPane> stackPanes, List<HashMap<String, String>> agisoftParameters,
+                                List<String> folders, String psxFile, String demFile, String orthoFile,
+                                String reportFile, String flightName, String reportDescription){
+
+        addPhotos(stackPanes.get(0), psxFile, folders, List.of(), WorkflowType.RGB, true);
+        setBrightness(stackPanes.get(1), psxFile, WorkflowType.RGB, agisoftParameters.get(0));
+        calibrateReflectance(stackPanes.get(2), psxFile, WorkflowType.MULTISPECTRAL, agisoftParameters.get(1), true);
+        alignPhotos(stackPanes.get(3), psxFile, WorkflowType.RGB, agisoftParameters.get(2), true);
+        optimizeCameras(stackPanes.get(4), psxFile, WorkflowType.RGB, agisoftParameters.get(3));
+        buildPointCloud(stackPanes.get(5), psxFile, WorkflowType.RGB, agisoftParameters.get(4), true);
+        buildDem(stackPanes.get(6), psxFile, WorkflowType.RGB, agisoftParameters.get(5), true);
+        buildOrthomosaic(stackPanes.get(7), psxFile, WorkflowType.RGB, agisoftParameters.get(6), true);
+        exportDem(stackPanes.get(8), psxFile, demFile, WorkflowType.RGB, agisoftParameters.get(7), true);
+        exportOrtho(stackPanes.get(9), psxFile, orthoFile, WorkflowType.RGB, agisoftParameters.get(8), true);
+        generateReport(stackPanes.get(10), psxFile, reportFile, flightName, reportDescription, WorkflowType.RGB, true);
 
     }
 

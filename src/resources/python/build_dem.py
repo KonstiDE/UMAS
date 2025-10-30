@@ -42,7 +42,10 @@ def build_dem(file, chunk_lab, coordinate_system, source_data, quality, interpol
             print("vn:ALIGN_IMAGES:false")
         else:
             if batch:
-                chunk.remove(chunk.elevation)
+                try:
+                    chunk.remove(chunk.elevation)
+                except Exception as ignored:
+                    pass
 
             chunk.buildDem(
                 source_data=source_data_mode, # options: TiePointsData, PointCloudData, DepthMapsData, ModelData, TiledModelData, ElevationData, OrthomosaicData, ImagesData
