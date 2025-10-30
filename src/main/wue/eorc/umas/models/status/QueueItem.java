@@ -6,6 +6,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
+import javafx.util.Duration;
 import wue.eorc.umas.enums.TaskType;
 
 import java.util.Objects;
@@ -34,6 +35,7 @@ public class QueueItem {
         stackPane.getChildren().add(imageView);
 
         Tooltip toolTipTxt = new Tooltip(description);
+        toolTipTxt.setShowDelay(Duration.ZERO);
         Tooltip.install(stackPane, toolTipTxt);
 
         stackPane.hoverProperty().addListener((ov, oldV, newV) -> {
