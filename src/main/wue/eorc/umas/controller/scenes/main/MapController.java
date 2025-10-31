@@ -15,6 +15,9 @@ import javafx.scene.paint.PhongMaterial;
 import javafx.scene.shape.*;
 import javafx.scene.transform.Rotate;
 import wue.eorc.umas.utils.system.Colors;
+import wue.eorc.umas.utils.threed.LocalPoint;
+import wue.eorc.umas.utils.threed.WGS84Point;
+import wue.eorc.umas.utils.threed.WGS84Transformer;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -44,7 +47,7 @@ public class MapController {
         material.setSpecularColor(Color.BLUE);
         box.setMaterial(material);
 
-        List<Box> boxes = readTxtFile(new File("B:\\1_Projects\\FireMapping\\0_Flights\\01102025_Boma_North_MAVICM3MFIXEDM3M\\1_Agisoft\\align_images.txt"));
+        List<Box> boxes = readTxtFile(new File("B:\\1_Projects\\FireMapping\\0_Flights\\01102025_Boma_North_MAVICM3MFIXEDM3M\\1_Agisoft\\align_images_coordinates.txt"));
         boxes.add(box);
 
         // Group all rotatable objects together
@@ -62,7 +65,7 @@ public class MapController {
 
         // Create SubScene for 3D content
         SubScene subScene = new SubScene(root3D, 400, 300, true, SceneAntialiasing.BALANCED);
-        subScene.setFill(Color.gray(0.2));
+        subScene.setFill(Color.WHITESMOKE);
 
         // Create and position camera
         PerspectiveCamera camera = new PerspectiveCamera(true);
@@ -222,6 +225,10 @@ public class MapController {
         localRoot.getChildren().addAll(group);
     }
 
+
+
+
+
     private Cylinder createAxis(Color color, double x, double y, double z) {
         Cylinder axis = new Cylinder(2, 120);
         PhongMaterial material = new PhongMaterial();
@@ -235,47 +242,42 @@ public class MapController {
     }
 
     private List<Box> readTxtFile(File file) throws FileNotFoundException {
-        List<Float> xs = new ArrayList<>();
-        List<Float> ys = new ArrayList<>();
-        List<Float> zs = new ArrayList<>();
-        BufferedReader reader = new BufferedReader(new FileReader(file));
-
-        for(String line : reader.lines().toList()){
-            String[] split = line.split(" ");
-
-            // Switch y and z axis! Why the hell people doing this??
-            xs.add(Float.parseFloat(split[0]));
-            zs.add(Float.parseFloat(split[1]));
-            ys.add(Float.parseFloat(split[2]));
-        }
-
-        // Find middle point of x and z axis and shift
-        float xmin = Collections.min(xs);
-        float xmax = Collections.max(xs);
-        float zmin = Collections.min(zs);
-        float zmax = Collections.max(zs);
-
-        float relative_mid_x = (Math.abs(xmax) - Math.abs(xmin)) / 2;
-        float relative_mid_z = (Math.abs(zmax) - Math.abs(zmin)) / 2;
-
-        shift(xs, xmin, xmax, relative_mid_x);
-        shift(zs, zmin, zmax, relative_mid_z);
-
-        float ymin = Collections.min(ys);
-        ys.replaceAll(y -> (y - ymin));
-
-        float ymaxNew = Collections.max(ys);
-
         List<Box> boxes = new ArrayList<>();
 
-        for(int i = 0; i < xs.size(); i++) {
+        List<WGS84Point> pointCloud = new ArrayList<>();
+
+        BufferedReader reader = new BufferedReader(new FileReader(file));
+
+        for(String line : reader.lines().toList()) {
+            String[] split = line.split(" ");
+
+            pointCloud.add(new WGS84Point(
+                    Float.parseFloat(split[0]),
+                    Float.parseFloat(split[1]),
+                    Float.parseFloat(split[2]))
+            );
+        }
+
+        WGS84Transformer converter = new WGS84Transformer(pointCloud);
+
+        List<LocalPoint> localPoints = new ArrayList<>();
+
+        double ymax = Double.MIN_VALUE;
+        for(WGS84Point point : pointCloud) {
+            LocalPoint localPoint = converter.transformPoint(point);
+            localPoints.add(localPoint);
+            if(Math.abs(localPoint.zLocal()) > ymax) ymax = Math.abs(localPoint.zLocal());
+        }
+
+        for(final LocalPoint point : localPoints) {
             Box box = new Box(.16, .16, .16);
-            box.setTranslateX(xs.get(i));
-            box.setTranslateY(ys.get(i) * -1);
-            box.setTranslateZ(zs.get(i));
+            box.setTranslateX(point.xLocal());
+            box.setTranslateY(point.zLocal() * -1);
+            box.setTranslateZ(point.yLocal());
 
             PhongMaterial material1 = new PhongMaterial();
-            double t = ys.get(i) / ymaxNew;
+
+            double t = Math.abs(point.zLocal()) / ymax;
 
             double r = VIR_DOWN.getRed() + t * (VIR_UP.getRed() - VIR_DOWN.getRed());
             double g = VIR_DOWN.getGreen() + t * (VIR_UP.getGreen() - VIR_DOWN.getGreen());
@@ -288,37 +290,9 @@ public class MapController {
             boxes.add(box);
         }
 
+
         return boxes;
 
-    }
-
-    private void shift(List<Float> xs, float xmin, float xmax, float relative_mid) {
-        if (xmin > 0 && xmax > 0){
-            _shift(xmin + relative_mid, xs, ShiftDirection.L);
-        } else if(xmin < 0 && xmax < 0){
-            _shift(Math.abs(xmin) + Math.abs(relative_mid), xs, ShiftDirection.R);
-        } else {
-            if(Math.abs(xmin) > Math.abs(xmax)){
-                _shift(Math.abs(relative_mid), xs, ShiftDirection.R);
-            }else{
-                _shift(Math.abs(relative_mid), xs, ShiftDirection.L);
-            }
-        }
-    }
-
-    private void _shift(float shift, List<Float> vs, ShiftDirection direction) {
-        for (int i = 0; i < vs.size(); i++) {
-            if (direction == ShiftDirection.L) {
-                vs.set(i, vs.get(i) - shift);
-            } else {
-                vs.set(i, vs.get(i) + shift);
-            }
-        }
-    }
-
-    enum ShiftDirection {
-        R,
-        L
     }
 
 }
