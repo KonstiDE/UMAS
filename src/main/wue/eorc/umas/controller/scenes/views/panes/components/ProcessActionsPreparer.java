@@ -240,7 +240,8 @@ public class ProcessActionsPreparer {
         alignPhotos.setOnMouseClicked(mouseEvent -> {
             if(mouseEvent.getButton() == MouseButton.PRIMARY){
                 agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                        this.workflowType, getDefaultParameters(AlignImages.values()), false);
+                        this.workflowType, getDefaultParameters(AlignImages.values()), false,
+                        DirectoryUtils.figureExportPathClouds(this.flight, ALIGN_IMAGES));
 
             }else if(mouseEvent.getButton() == MouseButton.SECONDARY){
                 setupModificationDialog(alignPhotos, mouseEvent, ALIGN_IMAGES, event -> {
@@ -262,7 +263,8 @@ public class ProcessActionsPreparer {
 
                     if (json.isPresent()){
                         agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                                this.workflowType, retrieveManualChoice(json.orElse(null)), false);
+                                this.workflowType, retrieveManualChoice(json.orElse(null)), false,
+                                DirectoryUtils.figureExportPathClouds(this.flight, ALIGN_IMAGES));
                     }
                 });
 
@@ -620,7 +622,9 @@ public class ProcessActionsPreparer {
                                 Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportOrthomosaicName()).toFile().getAbsolutePath(),
                                 Paths.get(DirectoryUtils.figureReportPath(flight), flight.getGenerateReportName()).toFile().getAbsolutePath(),
                                 flight.getGenerateReportName(),
-                                "Automatically generated Report"
+                                "Automatically generated Report",
+                                DirectoryUtils.figureExportPathClouds(flight, ALIGN_IMAGES),
+                                DirectoryUtils.figureExportPathClouds(flight, BUILD_POINT_CLOUD)
                         );
                     }else{
                         UMASException.throwWindow(ErrorType.INTERNAL, "Could not run process");
@@ -652,7 +656,9 @@ public class ProcessActionsPreparer {
                 Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportOrthomosaicName()).toFile().getAbsolutePath(),
                 Paths.get(DirectoryUtils.figureReportPath(flight), flight.getGenerateReportName()).toFile().getAbsolutePath(),
                 flight.getGenerateReportName(),
-                "Automatically generated Report"
+                "Automatically generated Report",
+                DirectoryUtils.figureExportPathClouds(flight, ALIGN_IMAGES),
+                DirectoryUtils.figureExportPathClouds(flight, BUILD_POINT_CLOUD)
             );
             case IR, LIDAR, HYPERSPECTRAL, MULTISPECTRAL, RGB_PLUS_IR, RGB_PLUS_MULTISPECTRAL -> {
             }

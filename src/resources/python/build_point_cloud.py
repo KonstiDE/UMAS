@@ -55,7 +55,7 @@ def build_point_cloud(file, chunk_lab, quality, depthFiltering, reuseDepthMaps,
         if batch:
             try:
                 chunk.remove(chunk.depth_maps)
-                chunk.remove(chunk.dense_cloud)
+                chunk.remove(chunk.point_cloud)
             except Exception as ignored:
                 pass
 

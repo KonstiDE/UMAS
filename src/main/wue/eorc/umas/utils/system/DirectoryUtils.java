@@ -4,6 +4,7 @@ import wue.eorc.umas.enums.ErrorType;
 import wue.eorc.umas.enums.ImageType;
 import wue.eorc.umas.enums.ProcessingChain;
 import wue.eorc.umas.enums.Sensor;
+import wue.eorc.umas.enums.agisoft.AgisoftTask;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.models.Flight;
 
@@ -403,6 +404,12 @@ public class DirectoryUtils {
     public static String figureReportPath(Flight flight) {
         return Paths.get(flight.getFlightDirectory(), flight.getProcessingChain() == ProcessingChain.AGISOFT ?
                 "2_Reports/": "3_Reports/").toFile().getAbsolutePath();
+    }
+
+    public static String figureExportPathClouds(Flight flight, AgisoftTask sourceTask) {
+        return Paths.get(flight.getFlightDirectory(), flight.getProcessingChain() == ProcessingChain.AGISOFT ?
+                "1_Agisoft/" :
+                "2_Agisoft/", sourceTask.name().toLowerCase() + ".txt").toFile().getAbsolutePath();
     }
 
 }

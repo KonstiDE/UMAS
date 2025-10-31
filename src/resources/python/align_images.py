@@ -17,7 +17,7 @@ def align_photos(file, chunk_lab,
                  exclude_stationary_tie_points,
                  guided_image_matching,
                  adaptive_camera_model_fitting,
-                 batch):
+                 batch, export_path):
 
     # Highest = 0
     # High = 1
@@ -90,6 +90,13 @@ def align_photos(file, chunk_lab,
                 subdivide_task=True,
                 progress=report_progress
             )
+
+            chunk.exportPointCloud(
+                path=export_path,
+                source_data=ms.TiePointsData,
+                format=ms.PointCloudFormatXYZ
+            )
+
         doc.save()
 
         print("vn:ALIGN_IMAGES:true")
@@ -114,6 +121,7 @@ if __name__ == '__main__':
     exclude_stationary_tie_points = get_arg(args, "-excludestationarytiepoints")
     guided_image_matching = get_arg(args, "-guidedimagematching")
     adaptive_camera_model_fitting = get_arg(args, "-adaptivecameramodelfitting")
+    export_path = get_arg(args, "-export_path")
 
     align_photos(
         project_file,
@@ -128,5 +136,6 @@ if __name__ == '__main__':
         exclude_stationary_tie_points,
         guided_image_matching,
         adaptive_camera_model_fitting,
-        batch_edit
+        batch_edit,
+        export_path
     )

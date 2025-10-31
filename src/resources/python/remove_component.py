@@ -25,15 +25,15 @@ def remove_component(file, chunk_lab, agisoft_task):
                 chunk.meta["ReflectanceCalibration"] = "False"
 
         elif agisoft_task == "ALIGN_IMAGES":
-            if chunk.point_cloud is not None:
-                chunk.point_cloud = None
+            if chunk.tie_points is not None:
+                chunk.tie_points = None
 
         elif agisoft_task == "BUILD_POINT_CLOUD":
             if chunk.depth_maps is not None:
                 chunk.remove(chunk.depth_maps)
 
-            if chunk.dense_cloud is not None:
-                chunk.remove(chunk.dense_cloud)
+            if chunk.point_cloud is not None:
+                chunk.remove(chunk.point_cloud)
 
         elif agisoft_task == "BUILD_DEM":
             if chunk.elevation is not None:
