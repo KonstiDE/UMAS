@@ -269,7 +269,7 @@ public class MapController {
         List<Box> boxes = new ArrayList<>();
 
         for(int i = 0; i < xs.size(); i++) {
-            Box box = new Box(.3, .3, .3);
+            Box box = new Box(.16, .16, .16);
             box.setTranslateX(xs.get(i));
             box.setTranslateY(ys.get(i) * -1);
             box.setTranslateZ(zs.get(i));

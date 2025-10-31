@@ -225,13 +225,13 @@ public class AgisoftCaller {
         enqueue(workflowType, AgisoftTask.BUILD_POINT_CLOUD_CHECK, stackPane, pb, true);
     }
 
-    public void buildPointCloud(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams, boolean batch){
+    public void buildPointCloud(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams, boolean batch, String exportPath){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "build_point_cloud.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType),
-                "-batch", "" + batch);
+                "-batch", "" + batch, "-export_path", exportPath);
         extendProcessBuilder(pb, agisoftParams);
 
         enqueue(workflowType, AgisoftTask.BUILD_POINT_CLOUD, stackPane, pb, false);
@@ -385,7 +385,7 @@ public class AgisoftCaller {
         setBrightness(stackPanes.get(1), psxFile, WorkflowType.RGB, agisoftParameters.get(0));
         alignPhotos(stackPanes.get(2), psxFile, WorkflowType.RGB, agisoftParameters.get(1), true, cloudExportTie);
         optimizeCameras(stackPanes.get(3), psxFile, WorkflowType.RGB, agisoftParameters.get(2));
-        buildPointCloud(stackPanes.get(4), psxFile, WorkflowType.RGB, agisoftParameters.get(3), true);
+        buildPointCloud(stackPanes.get(4), psxFile, WorkflowType.RGB, agisoftParameters.get(3), true, cloudExportDense);
         buildDem(stackPanes.get(5), psxFile, WorkflowType.RGB, agisoftParameters.get(4), true);
         buildOrthomosaic(stackPanes.get(6), psxFile, WorkflowType.RGB, agisoftParameters.get(5), true);
         exportDem(stackPanes.get(7), psxFile, demFile, WorkflowType.RGB, agisoftParameters.get(6), true);
@@ -404,7 +404,7 @@ public class AgisoftCaller {
         calibrateReflectance(stackPanes.get(2), psxFile, WorkflowType.MULTISPECTRAL, agisoftParameters.get(1), true);
         alignPhotos(stackPanes.get(3), psxFile, WorkflowType.RGB, agisoftParameters.get(2), true, cloudExportTie);
         optimizeCameras(stackPanes.get(4), psxFile, WorkflowType.RGB, agisoftParameters.get(3));
-        buildPointCloud(stackPanes.get(5), psxFile, WorkflowType.RGB, agisoftParameters.get(4), true);
+        buildPointCloud(stackPanes.get(5), psxFile, WorkflowType.RGB, agisoftParameters.get(4), true, cloudExportDense);
         buildDem(stackPanes.get(6), psxFile, WorkflowType.RGB, agisoftParameters.get(5), true);
         buildOrthomosaic(stackPanes.get(7), psxFile, WorkflowType.RGB, agisoftParameters.get(6), true);
         exportDem(stackPanes.get(8), psxFile, demFile, WorkflowType.RGB, agisoftParameters.get(7), true);
@@ -416,13 +416,22 @@ public class AgisoftCaller {
     public void enqueue(WorkflowType workflowType, AgisoftTask task, Pane pane, ProcessBuilder pb, boolean nextIfFailed){
         queueListener.enqueueAgisoft(workflowType, task);
 
-        StatusController.queue.add(() -> CompletableFuture.supplyAsync(() -> {
+        boolean isCheckCommand = task == AgisoftTask.CHECK_CHUNK;
+
+        Queue<Runnable> queue = isCheckCommand ? StatusController.checkQueue : StatusController.queue;
+
+        queue.add(() -> CompletableFuture.supplyAsync(() -> {
             queueListener.startedAgisoft(workflowType, task);
 
             try{
                 pb.redirectErrorStream(true);
                 Process p = pb.start();
-                StatusController.currentProcess = p;
+
+                if (isCheckCommand) {
+                    StatusController.currentCheckProcess = p;
+                } else {
+                    StatusController.currentProcess = p;
+                }
 
                 Pair<AgisoftTask, String> success = watchForSignal("vn:", p.getInputStream(), callbackListener, workflowType, task, pane);
 
@@ -445,22 +454,37 @@ public class AgisoftCaller {
             }
 
             if(success) {
-                StatusController.isRunning = true;
-                processNext();
+                if(isCheckCommand){
+                    StatusController.setRunningChecks(true);
+                }else{
+                    StatusController.setRunning(true);
+                }
+                processNext(queue);
             }else{
                 if(nextIfFailed) {
-                    StatusController.isRunning = true;
-                    processNext();
+                    if(isCheckCommand){
+                        StatusController.setRunningChecks(true);
+                    }else{
+                        StatusController.setRunning(true);
+                    }
+                    processNext(queue);
                 }else{
-                    StatusController.isRunning = false;
+                    if(isCheckCommand){
+                        StatusController.setRunningChecks(false);
+                    }else{
+                        StatusController.setRunning(false);
+                    }
                 }
             }
 
         }));
 
-        if (!StatusController.isRunning) {
-            StatusController.isRunning = true;
-            processNext();
+        if (task != AgisoftTask.CHECK_CHUNK && !StatusController.isRunning()) {
+            StatusController.setRunning(true);
+            processNext(queue);
+        } else if(task == AgisoftTask.CHECK_CHUNK && !StatusController.isRunningChecks()) {
+            StatusController.setRunningChecks(true);
+            processNext(queue);
         }
     }
 
@@ -523,12 +547,10 @@ public class AgisoftCaller {
         return new Pair<>(AgisoftTask.UNDEFINED, Boolean.FALSE.toString());
     }
 
-    private synchronized void processNext() {
-        Runnable nextTask = StatusController.queue.poll();
+    private synchronized void processNext(Queue<Runnable> queue) {
+        Runnable nextTask = queue.poll();
         if (nextTask != null) {
             nextTask.run();
-        } else {
-            StatusController.isRunning = false;
         }
     }
 
@@ -536,9 +558,18 @@ public class AgisoftCaller {
         for(int i = 0; i < StatusController.queue.size(); i++){
             StatusController.queue.remove();
         }
-
-        StatusController.currentProcess.destroy();
+        for(int i = 0; i < StatusController.checkQueue.size(); i++){
+            StatusController.checkQueue.remove();
+        }
+        if(StatusController.currentProcess != null) {
+            StatusController.currentProcess.destroy();
+        }
+        if(StatusController.currentCheckProcess != null) {
+            StatusController.currentCheckProcess.destroy();
+        }
     }
+
+
 
 
     private String chunkLabel(WorkflowType workflowType){

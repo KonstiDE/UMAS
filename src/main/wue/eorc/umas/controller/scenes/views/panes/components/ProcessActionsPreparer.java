@@ -319,7 +319,8 @@ public class ProcessActionsPreparer {
         buildPointCloud.setOnMouseClicked(mouseEvent -> {
             if (mouseEvent.getButton() == MouseButton.PRIMARY){
                 agisoftCaller.buildPointCloud(buildPointCloud, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                        this.workflowType, getDefaultParameters(BuildPointCloud.values()), false);
+                        this.workflowType, getDefaultParameters(BuildPointCloud.values()), false,
+                        DirectoryUtils.figureExportPathClouds(this.flight, BUILD_POINT_CLOUD));
 
             }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
                 setupModificationDialog(buildPointCloud, mouseEvent, BUILD_POINT_CLOUD, event -> {
@@ -341,7 +342,8 @@ public class ProcessActionsPreparer {
 
                     if (json.isPresent()){
                         agisoftCaller.buildPointCloud(buildPointCloud, DirectoryUtils.figureAgisoftFilePath(this.flight),
-                                this.workflowType, retrieveManualChoice(json.orElse(null)), false);
+                                this.workflowType, retrieveManualChoice(json.orElse(null)), false,
+                                DirectoryUtils.figureExportPathClouds(this.flight, BUILD_POINT_CLOUD));
                     }
                 });
             }

@@ -94,15 +94,30 @@
     <HBox id="HBox" alignment="CENTER_RIGHT" prefWidth="1024.0" spacing="5.0" VBox.vgrow="NEVER">
       <children>
             <Label text="Queue:" />
-            <HBox id="status.queue" alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="200.0" spacing="4.0" HBox.hgrow="ALWAYS" />
+            <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+               <children>
+                  <HBox id="status.checkQueue" alignment="CENTER_RIGHT" prefHeight="20.0" VBox.vgrow="NEVER" />
+                  <HBox id="status.queue" alignment="CENTER_RIGHT" prefHeight="20.0" prefWidth="200.0" spacing="4.0" />
+               </children>
+            </VBox>
             <ImageView fitHeight="20.0" fitWidth="20.0" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../assets/processing/hourglass.png" />
                </image>
             </ImageView>
             <Label text="Currently Processing:  " />
-            <Label id="status.currentLabel" minWidth="200.0" />
-            <StackPane id="status.current" prefHeight="20.0" prefWidth="20.0" />
+            <VBox minWidth="200.0">
+               <children>
+                  <Label id="status.currentCheckLabel" minWidth="200.0" />
+                  <Label id="status.currentLabel" minWidth="200.0" />
+               </children>
+            </VBox>
+            <VBox>
+               <children>
+                  <StackPane id="status.currentCheck" prefHeight="20.0" prefWidth="20.0" />
+                  <StackPane id="status.current" prefHeight="20.0" prefWidth="20.0" />
+               </children>
+            </VBox>
             <ProgressBar id="status.bar" prefWidth="200.0" progress="0.0" HBox.hgrow="SOMETIMES" />
             <Label id="status.label" text="0%" />
       </children>

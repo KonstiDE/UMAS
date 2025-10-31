@@ -26,12 +26,17 @@ public class StatusController implements QueueListener {
     public Label statusLabel;
     public ProgressBar progressBar;
     public HBox visQueue;
+    public HBox visCheckQueue;
 
     public Node current;
+    public Node currentCheck;
     public Label currentLabel;
+    public Label currentCheckLabel;
 
     public static Process currentProcess;
-    public static boolean isRunning = false;
+    public static Process currentCheckProcess;
+    public static boolean runningChecks = false;
+    public static boolean running = false;
 
     public DisplayController display;
 
@@ -39,8 +44,11 @@ public class StatusController implements QueueListener {
         this.progressBar = ItemSearcher.getItemById("status.bar", hBox, ProgressBar.class);
         this.statusLabel = ItemSearcher.getItemById("status.label", hBox, Label.class);
         this.visQueue = ItemSearcher.getItemById("status.queue", hBox, HBox.class);
+        this.visCheckQueue = ItemSearcher.getItemById("status.checkQueue", hBox, HBox.class);
         this.current = ItemSearcher.getItemById("status.current", hBox, StackPane.class);
+        this.currentCheck = ItemSearcher.getItemById("status.currentCheck", hBox, StackPane.class);
         this.currentLabel = ItemSearcher.getItemById("status.currentLabel", hBox, Label.class);
+        this.currentCheckLabel = ItemSearcher.getItemById("status.currentCheckLabel", hBox, Label.class);
         this.display = display;
     }
 
@@ -53,22 +61,36 @@ public class StatusController implements QueueListener {
     public void enqueueAgisoft(WorkflowType workflowType, AgisoftTask agisoftTask) {
         QueueItem queueItem = new QueueItem(TaskType.AGISOFT, workflowType.name() + " - " + agisoftTask.name());
 
-        Platform.runLater(() -> visQueue.getChildren().add(0, queueItem.getNode()));
+        switch(agisoftTask) {
+            case CHECK_CHUNK -> Platform.runLater(() -> visCheckQueue.getChildren().add(0, queueItem.getNode()));
+            default -> Platform.runLater(() -> visQueue.getChildren().add(0, queueItem.getNode()));
+        }
     }
 
     @Override
     public void startedAgisoft(WorkflowType workflowType, AgisoftTask agisoftTask) {
-        Platform.runLater(() -> {
-            try{
-                Node pane = visQueue.getChildren().removeFirst();
-                System.out.println("Hello World!");
-                currentLabel.textProperty().set(workflowType.name() + " - " + agisoftTask.name());
-                current = pane;
-            }catch(NoSuchElementException ignored){
-                currentLabel.textProperty().set("");
-                current = new StackPane();
-            }
-        });
+        switch(agisoftTask) {
+            case CHECK_CHUNK -> Platform.runLater(() -> {
+                try{
+                    Node pane = visCheckQueue.getChildren().removeFirst();
+                    currentCheckLabel.textProperty().set(workflowType.name() + " - " + agisoftTask.name());
+                    currentCheck = pane;
+                }catch(NoSuchElementException ignored){
+                    currentCheckLabel.textProperty().set("");
+                    currentCheck = new StackPane();
+                }
+            });
+            default -> Platform.runLater(() -> {
+                try{
+                    Node pane = visQueue.getChildren().removeFirst();
+                    currentLabel.textProperty().set(workflowType.name() + " - " + agisoftTask.name());
+                    current = pane;
+                }catch(NoSuchElementException ignored){
+                    currentLabel.textProperty().set("");
+                    current = new StackPane();
+                }
+            });
+        }
     }
 
     @Override
@@ -78,7 +100,28 @@ public class StatusController implements QueueListener {
                 currentLabel.textProperty().set("");
                 current = new StackPane();
             }
+            if(visCheckQueue.getChildren().isEmpty()){
+                currentCheckLabel.textProperty().set("");
+                currentCheck = new StackPane();
+            }
+
         });
+    }
+
+    public static boolean isRunning(){
+        return running;
+    }
+
+    public static boolean isRunningChecks(){
+        return runningChecks;
+    }
+
+    public static void setRunningChecks(boolean b){
+        runningChecks = b;
+    }
+
+    public static void setRunning(boolean b){
+        running = b;
     }
 
 }

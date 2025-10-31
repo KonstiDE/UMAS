@@ -19,7 +19,6 @@ import wue.eorc.umas.controller.scenes.views.dialogs.ClosingController;
 import wue.eorc.umas.controller.splash.SplashController;
 import wue.eorc.umas.enums.Setting;
 import wue.eorc.umas.exception.UMASException;
-import wue.eorc.umas.futures.qrcode.QRCodeScanner;
 import wue.eorc.umas.loader.SceneLoader;
 import wue.eorc.umas.loader.Settings;
 
@@ -88,7 +87,7 @@ public class Main extends Application {
                 ));
 
                 stage.setOnCloseRequest(windowEvent -> {
-                    if (StatusController.isRunning){
+                    if (StatusController.isRunning()){
                         DialogPane dialogPane = (DialogPane) loader.getScene("decision_for_closing");
                         ClosingController closingController = new ClosingController();
 
