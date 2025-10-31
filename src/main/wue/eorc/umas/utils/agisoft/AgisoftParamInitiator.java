@@ -18,7 +18,7 @@ public class AgisoftParamInitiator {
     }
 
     public static void initTextField(TextField textField, AgisoftParameter parameter){
-        textField.setText(parameter.getDefaultIndex() + "");
+        textField.setText(parameter.getChoices().get(parameter.getDefaultIndex()));
     }
 
     public static void initLabel(Label label, AgisoftParameter agisoftParameter){

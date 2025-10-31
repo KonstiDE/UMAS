@@ -40,7 +40,7 @@ public class MapController {
 
         // Create semi-transparent material for outer sphere
         PhongMaterial material = new PhongMaterial();
-        material.setDiffuseColor(Color.color(0.3, 0.5, 1.0, 0.3)); // Semi-transparent blue
+        material.setDiffuseColor(Color.color(0.3, 0.5, 1.0, 0.3));
         material.setSpecularColor(Color.BLUE);
         box.setMaterial(material);
 
