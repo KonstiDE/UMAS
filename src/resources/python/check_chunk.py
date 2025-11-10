@@ -32,7 +32,7 @@ def check_chunk(file, demFile, orthoFile, reportFile, chunk_lab):
         print("vn:EXPORT_DEM_CHECK:false")
         print("vn:EXPORT_ORTHOMOSAIC_CHECK:false")
         print("vn:GENERATE_REPORT_CHECK:false")
-        print("vn:CHECK_CHUNK:false")
+        print("vn:CHECK_CHUNK:true")
     else:
         chunk = get_chunk(doc.chunks, chunk_lab)
 
@@ -132,7 +132,7 @@ def check_chunk(file, demFile, orthoFile, reportFile, chunk_lab):
             print("vn:EXPORT_DEM_CHECK:false")
             print("vn:EXPORT_ORTHOMOSAIC_CHECK:false")
             print("vn:GENERATE_REPORT_CHECK:false")
-            print("vn:CHECK_CHUNK:false")
+            print("vn:CHECK_CHUNK:true")
 
 
     ms.app.quit()

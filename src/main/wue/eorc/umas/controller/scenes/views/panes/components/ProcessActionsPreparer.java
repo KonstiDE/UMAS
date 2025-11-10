@@ -66,7 +66,7 @@ public class ProcessActionsPreparer {
     public StackPane exportOrthomosaic;
     public StackPane generateReport;
 
-    public ProcessActionsPreparer(Flight flight, WorkflowType workflowType, DisplayController display, ShowProcessingController showProcessingController, AgisoftCaller agisoftCaller, boolean checkImidiately) throws UMASException {
+    public ProcessActionsPreparer(Flight flight, WorkflowType workflowType, DisplayController display, ShowProcessingController showProcessingController, AgisoftCaller agisoftCaller, boolean checkImmediately) throws UMASException {
         this.flight = flight;
         this.workflowPane = switch (workflowType){
             case RGB -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
@@ -81,7 +81,7 @@ public class ProcessActionsPreparer {
         this.display = display;
         this.agisoftCaller = agisoftCaller;
 
-        setupWorkflowActions(checkImidiately);
+        setupWorkflowActions(checkImmediately);
     }
 
     public void setupWorkflowActions(boolean checkProject) throws UMASException {
@@ -632,6 +632,9 @@ public class ProcessActionsPreparer {
                         UMASException.throwWindow(ErrorType.INTERNAL, "Could not run process");
                     }
                 }
+                case MULTISPECTRAL -> {
+
+                }
             }
 
         };
@@ -662,7 +665,7 @@ public class ProcessActionsPreparer {
                 DirectoryUtils.figureExportPathClouds(flight, ALIGN_IMAGES),
                 DirectoryUtils.figureExportPathClouds(flight, BUILD_POINT_CLOUD)
             );
-            case IR, LIDAR, HYPERSPECTRAL, MULTISPECTRAL, RGB_PLUS_IR, RGB_PLUS_MULTISPECTRAL -> {
+            case IR, LIDAR, HYPERSPECTRAL, RGB_PLUS_IR, RGB_PLUS_MULTISPECTRAL -> {
             }
         }
 
