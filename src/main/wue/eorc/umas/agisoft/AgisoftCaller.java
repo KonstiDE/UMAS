@@ -19,7 +19,6 @@ import wue.eorc.umas.enums.Setting;
 import wue.eorc.umas.enums.WorkflowType;
 import wue.eorc.umas.exception.UMASException;
 import wue.eorc.umas.loader.Settings;
-import wue.eorc.umas.utils.system.DirectoryUtils;
 
 import java.io.*;
 import java.nio.file.Path;
@@ -394,22 +393,23 @@ public class AgisoftCaller {
 
     }
 
-    public void completeBuildMS(List<StackPane> stackPanes, List<HashMap<String, String>> agisoftParameters,
-                                List<String> folders, String psxFile, String demFile, String orthoFile,
-                                String reportFile, String flightName, String reportDescription, String exportPath,
-                                String cloudExportTie, String cloudExportDense){
+    public void completeBuildMSOption(WorkflowType workflowType, List<StackPane> stackPanes,
+                                      List<HashMap<String, String>> agisoftParameters, List<String> folders,
+                                      String psxFile, String demFile, String orthoFile, String reportFile,
+                                      String flightName, String reportDescription, String cloudExportTie,
+                                      String cloudExportDense){
 
-        addPhotos(stackPanes.get(0), psxFile, folders, List.of(), WorkflowType.RGB, true);
-        setBrightness(stackPanes.get(1), psxFile, WorkflowType.RGB, agisoftParameters.get(0));
-        calibrateReflectance(stackPanes.get(2), psxFile, WorkflowType.MULTISPECTRAL, agisoftParameters.get(1), true);
-        alignPhotos(stackPanes.get(3), psxFile, WorkflowType.RGB, agisoftParameters.get(2), true, cloudExportTie);
-        optimizeCameras(stackPanes.get(4), psxFile, WorkflowType.RGB, agisoftParameters.get(3));
-        buildPointCloud(stackPanes.get(5), psxFile, WorkflowType.RGB, agisoftParameters.get(4), true, cloudExportDense);
-        buildDem(stackPanes.get(6), psxFile, WorkflowType.RGB, agisoftParameters.get(5), true);
-        buildOrthomosaic(stackPanes.get(7), psxFile, WorkflowType.RGB, agisoftParameters.get(6), true);
-        exportDem(stackPanes.get(8), psxFile, demFile, WorkflowType.RGB, agisoftParameters.get(7), true);
-        exportOrtho(stackPanes.get(9), psxFile, orthoFile, WorkflowType.RGB, agisoftParameters.get(8), true);
-        generateReport(stackPanes.get(10), psxFile, reportFile, flightName, reportDescription, WorkflowType.RGB, true);
+        addPhotos(stackPanes.get(0), psxFile, folders, List.of(), workflowType, true);
+        setBrightness(stackPanes.get(1), psxFile, workflowType, agisoftParameters.get(0));
+        calibrateReflectance(stackPanes.get(2), psxFile, workflowType, agisoftParameters.get(1), true);
+        alignPhotos(stackPanes.get(3), psxFile, workflowType, agisoftParameters.get(2), true, cloudExportTie);
+        optimizeCameras(stackPanes.get(4), psxFile, workflowType, agisoftParameters.get(3));
+        buildPointCloud(stackPanes.get(5), psxFile, workflowType, agisoftParameters.get(4), true, cloudExportDense);
+        buildDem(stackPanes.get(6), psxFile, workflowType, agisoftParameters.get(5), true);
+        buildOrthomosaic(stackPanes.get(7), psxFile, workflowType, agisoftParameters.get(6), true);
+        exportDem(stackPanes.get(8), psxFile, demFile, workflowType, agisoftParameters.get(7), true);
+        exportOrtho(stackPanes.get(9), psxFile, orthoFile, workflowType, agisoftParameters.get(8), true);
+        generateReport(stackPanes.get(10), psxFile, reportFile, flightName, reportDescription, workflowType, true);
 
     }
 

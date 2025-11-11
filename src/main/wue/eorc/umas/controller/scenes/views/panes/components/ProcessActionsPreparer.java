@@ -152,7 +152,9 @@ public class ProcessActionsPreparer {
                                     .filter(i -> this.workflowType.getImageTypes().contains(i) && i != ImageType.CALIBRATION)
                                     .map(i -> this.flight.getImageTypes().get(i)).toList(),
 
-                            List.of(this.flight.getImageTypes().get(ImageType.CALIBRATION)),
+                            this.flight.getImageTypes().containsKey(ImageType.CALIBRATION) ?
+                                    List.of(this.flight.getImageTypes().get(ImageType.CALIBRATION)) :
+                                    List.of(),
 
                             this.workflowType, false);
                 }
@@ -665,7 +667,31 @@ public class ProcessActionsPreparer {
                 DirectoryUtils.figureExportPathClouds(flight, ALIGN_IMAGES),
                 DirectoryUtils.figureExportPathClouds(flight, BUILD_POINT_CLOUD)
             );
-            case IR, LIDAR, HYPERSPECTRAL, RGB_PLUS_IR, RGB_PLUS_MULTISPECTRAL -> {
+            case MULTISPECTRAL, RGB_PLUS_MULTISPECTRAL -> agisoftCaller.completeBuildMSOption(workflowType,
+                List.of(addPhotos, setBrightness, setCalibrateReflectance, alignImages, optimizeCameras, buildPointCloud, buildDem,
+                        buildOrthomosaic, exportDem, exportOrthomosaic, generateReport),
+                List.of(
+                        getDefaultParameters(SetBrightness.values()),
+                        getDefaultParameters(CalibrateReflectance.values()),
+                        getDefaultParameters(AlignImages.values()),
+                        getDefaultParameters(OptimizeCameras.values()),
+                        getDefaultParameters(BuildPointCloud.values()),
+                        getDefaultParameters(BuildDem.values()),
+                        getDefaultParameters(BuildOrthomosaic.values()),
+                        getDefaultParameters(ExportDem.values()),
+                        getDefaultParameters(ExportOrthomosaic.values())
+                ),
+                flight.getOriginFlightDirs(),
+                DirectoryUtils.figureAgisoftFilePath(flight),
+                Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportDemName()).toFile().getAbsolutePath(),
+                Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportOrthomosaicName()).toFile().getAbsolutePath(),
+                Paths.get(DirectoryUtils.figureReportPath(flight), flight.getGenerateReportName()).toFile().getAbsolutePath(),
+                flight.getGenerateReportName(),
+                "Automatically generated Report",
+                DirectoryUtils.figureExportPathClouds(flight, ALIGN_IMAGES),
+                DirectoryUtils.figureExportPathClouds(flight, BUILD_POINT_CLOUD)
+            );
+            case IR, LIDAR, HYPERSPECTRAL, RGB_PLUS_IR -> {
             }
         }
 

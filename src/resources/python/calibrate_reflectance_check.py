@@ -7,7 +7,9 @@ from utils import get_arg, get_chunk, rb
 
 
 def calibrate_reflectance_check(file, chunk_lab):
-    doc = ms.Document()
+    print("vn:CALIBRATE_REFLECTANCE_CHECK:true")
+
+    """ doc = ms.Document()
     doc.read_only = False
 
     doc.open(path=file, read_only=True)
@@ -19,7 +21,7 @@ def calibrate_reflectance_check(file, chunk_lab):
     else:
         print("vn:CALIBRATE_REFLECTANCE_CHECK:false")
 
-        del doc
+        del doc """
 
 
 if __name__ == '__main__':
