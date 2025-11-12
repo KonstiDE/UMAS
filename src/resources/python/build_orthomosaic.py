@@ -65,12 +65,6 @@ def build_ortho(file, chunk_lab, surface, blending_mode, refine_seamlines, enabl
                 progress=report_progress
             )
 
-            chunk.exportPointCloud(
-                path=export_path,
-                source_data=ms.PointCloudData,
-                format=ms.PointCloudFormatXYZ
-            )
-
             doc.save()
 
             print("vn:BUILD_ORTHOMOSAIC:true")
@@ -95,7 +89,6 @@ if __name__ == '__main__':
     enable_hole_filling = get_arg(args, "-enableholefilling")
     enable_ghosting_filter = get_arg(args, "-enableghostingfilter")
     enable_backface_culling = get_arg(args, "-enablebackfaceculling")
-    export_path = get_arg(args, "export_path")
 
     build_ortho(project_file, chunk_label, surface, belnding_mode, refine_seamlines, enable_hole_filling,
-                enable_ghosting_filter, enable_backface_culling, batch_edit, export_path)
+                enable_ghosting_filter, enable_backface_culling, batch_edit)

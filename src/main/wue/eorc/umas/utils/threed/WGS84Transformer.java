@@ -94,6 +94,6 @@ public class WGS84Transformer {
                 + cos_lat0 * sin_lon0 * dy
                 + sin_lat0 * dz;
 
-        return new LocalPoint(east, north, up);
+        return new LocalPoint((float) east, (float) north, (float) up);
     }
 }

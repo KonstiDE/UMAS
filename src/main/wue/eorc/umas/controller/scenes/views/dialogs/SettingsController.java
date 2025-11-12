@@ -139,8 +139,10 @@ public class SettingsController implements StaticDialogController {
                 });
             }else{
                 if(Settings.getSetting(Setting.UI_THEME).equals("Light")){
-                    dialog.getDialogPane().getScene().getStylesheets().clear();
-                    displayController.rootControl.getScene().getStylesheets().clear();
+                    try {
+                        dialog.getDialogPane().getScene().getStylesheets().clear();
+                        displayController.rootControl.getScene().getStylesheets().clear();
+                    }catch (Exception ignored){ /* Exception can occur if canceling the dialog without changes */ }
                 }
 
                 Platform.runLater(() -> {

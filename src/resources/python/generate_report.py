@@ -18,8 +18,8 @@ def generate_report(psx_file, report_file, flight_name, desc, chunk_lab, batch):
 
     batch = rb(batch)
 
-    if chunk is not None and not batch:
-        if os.path.exists(report_file):
+    if chunk is not None:
+        if not batch and os.path.exists(report_file):
             print("ve:This report file already exists!~For this chunk, a report was already exported which cannot be overwritten.~Please remove the current report.")
             print("vn:GENERATE_REPORT:false")
         else:

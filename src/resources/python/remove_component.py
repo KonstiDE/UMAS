@@ -48,7 +48,7 @@ def remove_component(file, chunk_lab, agisoft_task):
         print("vn:REMOVE_COMPONENT:true")
 
     else:
-        print(f"ve:REMOVE_COMPONENT:Could not remove component!~The chunk on where you request to remove something does not exist.~Please restart UMAS.")
+        print("ve:REMOVE_COMPONENT:Could not remove component!~The chunk on where you request to remove something does not exist.~Please restart UMAS.")
         print("vn:REMOVE_COMPONENT:false")
 
     del doc

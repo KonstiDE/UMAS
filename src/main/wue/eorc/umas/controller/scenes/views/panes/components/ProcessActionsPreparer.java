@@ -243,7 +243,7 @@ public class ProcessActionsPreparer {
             if(mouseEvent.getButton() == MouseButton.PRIMARY){
                 agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
                         this.workflowType, getDefaultParameters(AlignImages.values()), false,
-                        DirectoryUtils.figureExportPathClouds(this.flight, ALIGN_IMAGES));
+                        DirectoryUtils.figureExportPathClouds(this.flight, ALIGN_IMAGES, this.workflowType));
 
             }else if(mouseEvent.getButton() == MouseButton.SECONDARY){
                 setupModificationDialog(alignPhotos, mouseEvent, ALIGN_IMAGES, event -> {
@@ -266,7 +266,7 @@ public class ProcessActionsPreparer {
                     if (json.isPresent()){
                         agisoftCaller.alignPhotos(alignPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
                                 this.workflowType, retrieveManualChoice(json.orElse(null)), false,
-                                DirectoryUtils.figureExportPathClouds(this.flight, ALIGN_IMAGES));
+                                DirectoryUtils.figureExportPathClouds(this.flight, ALIGN_IMAGES, this.workflowType));
                     }
                 });
 
@@ -322,7 +322,7 @@ public class ProcessActionsPreparer {
             if (mouseEvent.getButton() == MouseButton.PRIMARY){
                 agisoftCaller.buildPointCloud(buildPointCloud, DirectoryUtils.figureAgisoftFilePath(this.flight),
                         this.workflowType, getDefaultParameters(BuildPointCloud.values()), false,
-                        DirectoryUtils.figureExportPathClouds(this.flight, BUILD_POINT_CLOUD));
+                        DirectoryUtils.figureExportPathClouds(this.flight, BUILD_POINT_CLOUD, this.workflowType));
 
             }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
                 setupModificationDialog(buildPointCloud, mouseEvent, BUILD_POINT_CLOUD, event -> {
@@ -345,7 +345,7 @@ public class ProcessActionsPreparer {
                     if (json.isPresent()){
                         agisoftCaller.buildPointCloud(buildPointCloud, DirectoryUtils.figureAgisoftFilePath(this.flight),
                                 this.workflowType, retrieveManualChoice(json.orElse(null)), false,
-                                DirectoryUtils.figureExportPathClouds(this.flight, BUILD_POINT_CLOUD));
+                                DirectoryUtils.figureExportPathClouds(this.flight, BUILD_POINT_CLOUD, workflowType));
                     }
                 });
             }
@@ -627,8 +627,8 @@ public class ProcessActionsPreparer {
                                 Paths.get(DirectoryUtils.figureReportPath(flight), flight.getGenerateReportName()).toFile().getAbsolutePath(),
                                 flight.getGenerateReportName(),
                                 "Automatically generated Report",
-                                DirectoryUtils.figureExportPathClouds(flight, ALIGN_IMAGES),
-                                DirectoryUtils.figureExportPathClouds(flight, BUILD_POINT_CLOUD)
+                                DirectoryUtils.figureExportPathClouds(flight, ALIGN_IMAGES, workflowType),
+                                DirectoryUtils.figureExportPathClouds(flight, BUILD_POINT_CLOUD, workflowType)
                         );
                     }else{
                         UMASException.throwWindow(ErrorType.INTERNAL, "Could not run process");
@@ -664,8 +664,8 @@ public class ProcessActionsPreparer {
                 Paths.get(DirectoryUtils.figureReportPath(flight), flight.getGenerateReportName()).toFile().getAbsolutePath(),
                 flight.getGenerateReportName(),
                 "Automatically generated Report",
-                DirectoryUtils.figureExportPathClouds(flight, ALIGN_IMAGES),
-                DirectoryUtils.figureExportPathClouds(flight, BUILD_POINT_CLOUD)
+                DirectoryUtils.figureExportPathClouds(flight, ALIGN_IMAGES, workflowType),
+                DirectoryUtils.figureExportPathClouds(flight, BUILD_POINT_CLOUD, workflowType)
             );
             case MULTISPECTRAL, RGB_PLUS_MULTISPECTRAL -> agisoftCaller.completeBuildMSOption(workflowType,
                 List.of(addPhotos, setBrightness, setCalibrateReflectance, alignImages, optimizeCameras, buildPointCloud, buildDem,
@@ -688,8 +688,8 @@ public class ProcessActionsPreparer {
                 Paths.get(DirectoryUtils.figureReportPath(flight), flight.getGenerateReportName()).toFile().getAbsolutePath(),
                 flight.getGenerateReportName(),
                 "Automatically generated Report",
-                DirectoryUtils.figureExportPathClouds(flight, ALIGN_IMAGES),
-                DirectoryUtils.figureExportPathClouds(flight, BUILD_POINT_CLOUD)
+                DirectoryUtils.figureExportPathClouds(flight, ALIGN_IMAGES, workflowType),
+                DirectoryUtils.figureExportPathClouds(flight, BUILD_POINT_CLOUD, workflowType)
             );
             case IR, LIDAR, HYPERSPECTRAL, RGB_PLUS_IR -> {
             }

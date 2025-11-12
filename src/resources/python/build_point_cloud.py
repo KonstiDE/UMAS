@@ -8,7 +8,7 @@ from utils import get_arg, report_progress, get_chunk, rb
 
 
 def build_point_cloud(file, chunk_lab, quality, depthFiltering, reuseDepthMaps,
-                      calculatePointColors, calculatePointConfidence, batch):
+                      calculatePointColors, calculatePointConfidence, batch, export_path):
 
     doc = ms.Document()
 
@@ -49,7 +49,7 @@ def build_point_cloud(file, chunk_lab, quality, depthFiltering, reuseDepthMaps,
     batch = rb(batch)
 
     if chunk.point_cloud is not None and not batch:
-        print("ve:Chunk already has a point cloud!~For this chunk, a dense (point) cloud was already processed which cannot be overwritten.~Please remove the current dense (point) cloud.")
+        print("ve:BUILD_POINT_CLOUD:Chunk already has a point cloud!~For this chunk, a dense (point) cloud was already processed which cannot be overwritten.~Please remove the current dense (point) cloud.")
         print("vn:BUILD_POINT_CLOUD:false")
     else:
         if batch:
@@ -82,6 +82,12 @@ def build_point_cloud(file, chunk_lab, quality, depthFiltering, reuseDepthMaps,
             progress=report_progress
         )
 
+        chunk.exportPointCloud(
+            path=export_path,
+            source_data=ms.PointCloudData,
+            format=ms.PointCloudFormatXYZ
+        )
+
         doc.save()
 
         print("vn:BUILD_POINT_CLOUD:true")
@@ -101,6 +107,7 @@ if __name__ == '__main__':
     reuseDepthMaps = get_arg(args, "-reusedepthmaps")
     calculatePointColors = get_arg(args, "-calculatepointcolors")
     calculatePointConfidence = get_arg(args, "-calculatepointconfidence")
+    export_path = get_arg(args, "-export_path")
 
     build_point_cloud(project_file, chunk_label, quality, depthFiltering, reuseDepthMaps,
-                      calculatePointColors, calculatePointConfidence, batch_edit)
+                      calculatePointColors, calculatePointConfidence, batch_edit, export_path)

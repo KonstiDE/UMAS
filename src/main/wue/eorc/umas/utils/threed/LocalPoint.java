@@ -5,5 +5,5 @@ package wue.eorc.umas.utils.threed;
  * @param yLocal North
  * @param zLocal Up
  */
-public record LocalPoint(double xLocal, double yLocal, double zLocal) {
+public record LocalPoint(float xLocal, float yLocal, float zLocal) {
 }

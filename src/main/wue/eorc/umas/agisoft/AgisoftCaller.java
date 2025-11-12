@@ -470,12 +470,20 @@ public class AgisoftCaller {
                 }
             }else{
                 if(nextIfFailed) {
-                    if(isCheckCommand){
-                        StatusController.setRunningChecks(true);
-                    }else{
-                        StatusController.setRunning(true);
+                    if(!queue.isEmpty()){
+                        if(isCheckCommand){
+                            StatusController.setRunningChecks(true);
+                        }else{
+                            StatusController.setRunning(true);
+                        }
+                        processNext(queue);
+                    }else {
+                        if(isCheckCommand){
+                            StatusController.setRunningChecks(false);
+                        }else{
+                            StatusController.setRunning(false);
+                        }
                     }
-                    processNext(queue);
                 }else{
                     if(isCheckCommand){
                         StatusController.setRunningChecks(false);

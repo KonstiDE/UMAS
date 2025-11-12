@@ -270,7 +270,7 @@ public class MapController {
         }
 
         for(final LocalPoint point : localPoints) {
-            Box box = new Box(.16, .16, .16);
+            Box box = new Box(.1, .1, .1);
             box.setTranslateX(point.xLocal());
             box.setTranslateY(point.zLocal() * -1);
             box.setTranslateZ(point.yLocal());

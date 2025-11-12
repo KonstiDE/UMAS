@@ -27,8 +27,8 @@ def export_dem(psx_file, dem_file, chunk_lab, coordinate_system, raster_transfor
     else:
         raster_transform_mode = ms.RasterTransformNone
 
-    if chunk is not None and not batch:
-        if os.path.exists(dem_file):
+    if chunk is not None:
+        if not batch and os.path.exists(dem_file):
             print("ve:This DEM file already exists!~For this chunk, a DEM was already exported which cannot be overwritten.~Please remove the current DEM.")
             print("vn:EXPORT_DEM:false")
         else:
