@@ -36,6 +36,7 @@ def export_orthomosaic(psx_file, ortho_file, chunk_lab, coordinate_system, backg
         compression.tiff_compression = ms.ImageCompression.TiffCompressionLZW
 
     compression.jpeg_quality = int(jpeg_quality)
+    compression.tiff_big = True
 
 
     if background_color == "White":
