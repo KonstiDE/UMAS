@@ -229,9 +229,9 @@ public class ShowFlightsController implements ViewController {
                     String iconPath = "assets/imgicons/" + switch (imageType) {
                         case RGB -> "rgb.png";
                         case MULTISPECTRAL -> "ms.png";
-                        case HYPERSPECTRAL -> "hyper.png";
-                        case IR -> "thermal.png";
-                        case LIDAR -> "lidar.png";
+                        case HYPERSPECTRAL -> "hyper.jpg";
+                        case IR -> "thermal.jpg";
+                        case LIDAR -> "lidar.jpg";
                         case CALIBRATION -> null;
                     };
 

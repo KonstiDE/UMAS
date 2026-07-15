@@ -43,6 +43,8 @@ public class FileCopier {
     private void copyDroneImages(UAV uav, Set<ImageType> imageTypes, List<String> originFlightDirs, List<String> originCalibDirs, String flightDirectory) throws IOException, InterruptedException {
         switch(uav) {
             case MAVICM3M -> copyM3M(imageTypes, originFlightDirs, originCalibDirs, flightDirectory);
+            case MAVICM3T -> copyM3T(imageTypes, originFlightDirs, originCalibDirs, flightDirectory);
+            case MAVICM4T -> copyM4T(imageTypes, originFlightDirs, originCalibDirs, flightDirectory);
         }
     }
 
@@ -58,19 +60,19 @@ public class FileCopier {
 
     public void copyM3T(Set<ImageType> imageTypes, List<String> originFlightDirs, List<String> originCalibDirs, String flightDirectory) throws IOException {
         if(imageTypes.contains(ImageType.RGB)) {
-            copy(originFlightDirs, flightDirectory, ImageUtils::isJPGorAux, "0_Images", "0_RGB");
+            copy(originFlightDirs, flightDirectory, ImageUtils::isWJPG, "0_Images", "0_RGB");
         }
         if(imageTypes.contains(ImageType.IR)) {
-            copy(originFlightDirs, flightDirectory, ImageUtils::isTIForAux,"0_Images", "1_T");
+            copy(originFlightDirs, flightDirectory, ImageUtils::isThermalJPG,"0_Images", "1_T");
         }
     }
 
     public void copyM4T(Set<ImageType> imageTypes, List<String> originFlightDirs, List<String> originCalibDirs, String flightDirectory) throws IOException {
         if(imageTypes.contains(ImageType.RGB)) {
-            copy(originFlightDirs, flightDirectory, ImageUtils::isJPGorAux, "0_Images", "0_RGB");
+            copy(originFlightDirs, flightDirectory, ImageUtils::isWJPG, "0_Images", "0_RGB");
         }
         if(imageTypes.contains(ImageType.IR)) {
-            copy(originFlightDirs, flightDirectory, ImageUtils::isTIForAux,"0_Images", "1_T");
+            copy(originFlightDirs, flightDirectory, ImageUtils::isThermalJPG,"0_Images", "1_T");
         }
     }
 

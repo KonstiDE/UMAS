@@ -28,4 +28,12 @@ public class ImageUtils {
         return isTIF(name.getName()) || isAux(name.getName());
     }
 
+    public static boolean isThermalJPG(File name){
+        return isJPG(name.getName()) && name.getName().endsWith("_T.JPG");
+    }
+
+    public static boolean isWJPG(File name){
+        return isJPG(name.getName()) && name.getName().endsWith("_W.JPG");
+    }
+
 }

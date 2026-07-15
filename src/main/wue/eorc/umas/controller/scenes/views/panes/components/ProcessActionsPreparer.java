@@ -57,6 +57,7 @@ public class ProcessActionsPreparer {
     public StackPane addPhotos;
     public StackPane setBrightness;
     public StackPane setCalibrateReflectance;
+    public StackPane setCalibrateThermal;
     public StackPane alignImages;
     public StackPane optimizeCameras;
     public StackPane buildPointCloud;
@@ -118,7 +119,7 @@ public class ProcessActionsPreparer {
             case IR, RGB_PLUS_IR -> {
                 this.addPhotos = setupAddPhotos();
                 this.setBrightness = setupSetBrightness();
-                this.calibrateThermal = setupCalibrateThermal();
+                this.setCalibrateThermal = setupCalibrateThermal();
                 this.alignImages = setupAlignPhotos();
                 this.optimizeCameras = setupOptimizeCameras();
                 this.buildPointCloud = setupBuildPointCloud();
@@ -155,17 +156,17 @@ public class ProcessActionsPreparer {
                     case RGB -> agisoftCaller.addPhotos(addPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
                             this.flight.getImageTypes().keySet().stream()
                                     .filter(i -> this.workflowType.getImageTypes().contains(i))
-                                    .map(i -> this.flight.getImageTypes().get(i)).toList(),
+                                    .map(ImageType::getName).toList(),
                             List.of(),
                             this.workflowType, false);
                     case MULTISPECTRAL, RGB_PLUS_MULTISPECTRAL -> agisoftCaller.addPhotos(addPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
 
                             this.flight.getImageTypes().keySet().stream()
                                     .filter(i -> this.workflowType.getImageTypes().contains(i) && i != ImageType.CALIBRATION)
-                                    .map(i -> this.flight.getImageTypes().get(i)).toList(),
+                                    .map(ImageType::getName).toList(),
 
                             this.flight.getImageTypes().containsKey(ImageType.CALIBRATION) ?
-                                    List.of(this.flight.getImageTypes().get(ImageType.CALIBRATION)) :
+                                    List.of(ImageType.CALIBRATION.getName()) :
                                     List.of(),
 
                             this.workflowType, false);
@@ -250,10 +251,10 @@ public class ProcessActionsPreparer {
     }
 
     private StackPane setupCalibrateThermal() throws UMASException {
-        StackPane calibrateReflectance = ItemSearcher.getItemById("processing." + CALIBRATE_THERMAL, this.workflowPane, StackPane.class);
+        StackPane calibrateThermal = ItemSearcher.getItemById("processing." + CALIBRATE_THERMAL, this.workflowPane, StackPane.class);
 
-        calibrateReflectance.setCursor(Cursor.HAND);
-        calibrateReflectance.setOnMouseClicked(mouseEvent -> {
+        calibrateThermal.setCursor(Cursor.HAND);
+        calibrateThermal.setOnMouseClicked(mouseEvent -> {
             if(mouseEvent.getButton() == MouseButton.PRIMARY){
                 DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene(AgisoftDialog.CALIBRATE_THERMAL.getDialogId());
                 Dialog<String> dialog = new UMASDialog(dialogPane, "Calibrate Thermal", true, true);
@@ -269,15 +270,15 @@ public class ProcessActionsPreparer {
 
                 if(result.isPresent()){
                     HashMap<String, String> agisoftParameters = gson.fromJson(result.get(), GsonTypeTokens.hashmapToken);
-                    agisoftCaller.calibrate(calibrateReflectance, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType, agisoftParameters, false);
+                    agisoftCaller.calibrateThermal(calibrateThermal, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType, agisoftParameters, false);
                 }
 
             }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
-                setupModificationDialog(calibrateReflectance, mouseEvent, CALIBRATE_THERMAL, event -> {});
+                setupModificationDialog(calibrateThermal, mouseEvent, CALIBRATE_THERMAL, event -> {});
             }
         });
 
-        return calibrateReflectance;
+        return calibrateThermal;
 
     }
 

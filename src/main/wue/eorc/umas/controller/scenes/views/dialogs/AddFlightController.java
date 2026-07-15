@@ -143,6 +143,8 @@ public class AddFlightController implements StaticDialogController, CopyProgress
         selectChain.setOnAction(_ignored -> this.processingChain = ProcessingChain.fromName(selectChain.getValue()));
 
         selectImageTypes.getCheckModel().getCheckedIndices().addListener((ListChangeListener<Integer>) _ignored -> {
+            this.imageTypes.clear();
+
             for(ImageType imageType : selectImageTypes.getCheckModel().getCheckedItems()
                     .stream()
                     .map(ImageType::valueOf)
@@ -159,6 +161,7 @@ public class AddFlightController implements StaticDialogController, CopyProgress
                 browseCalib.setDisable(true);
                 calibDirs.setDisable(true);
             }
+
         });
 
         browse.setOnAction(_ignored -> {
@@ -250,6 +253,8 @@ public class AddFlightController implements StaticDialogController, CopyProgress
                 Path baseDirectory = Paths.get(ProjectCache.currentlyOpenedProject.getFile().getParent());
 
                 try {
+                    System.out.println(this.imageTypes);
+
                     Flight flight = new Flight(this.date, this.location, this.aoi, this.pilot, this.coPilot,
                             this.flightParameters, this.uav, this.sensor, this.imageTypes, this.processingChain,
                             baseDirectory.toFile().getAbsolutePath(), this.flightsOrigins, this.calibOrigins, this.notes);

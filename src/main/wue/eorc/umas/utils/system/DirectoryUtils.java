@@ -348,8 +348,8 @@ public class DirectoryUtils {
                 }
                 case IR -> {
                     File irDir1 = Paths.get(flight.getFlightDirectory(), "0_Images", "1_T").toFile();
-                    File irDir2 = Paths.get(flight.getFlightDirectory(), "0_Images", "1_TCal").toFile();
-                    if(irDir1.exists() && irDir2.exists()) flight.getImageTypes().put(type, irDir2.getAbsolutePath());
+                    File irDir2 = Paths.get(flight.getFlightDirectory(), "0_Images", "2_TCal").toFile();
+                    if(irDir1.exists() && irDir2.exists()) flight.getImageTypes().put(type, irDir1.getAbsolutePath());
                 }
             }
         }
