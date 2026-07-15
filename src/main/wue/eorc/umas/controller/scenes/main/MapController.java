@@ -36,7 +36,7 @@ public class MapController {
         this.localRoot = localRoot;
 
         // Create 3D objects
-        Box box = new Box(1, 1, 1);
+        /*Box box = new Box(1, 1, 1);
         box.setTranslateX(0);
         box.setTranslateY(0);
         box.setTranslateZ(0);
@@ -113,7 +113,7 @@ public class MapController {
         localRoot.layoutBoundsProperty().addListener((obs, oldVal, newVal) -> {
             subScene.setWidth(newVal.getWidth());
             subScene.setHeight(newVal.getHeight());
-        });
+        });*/
 
     }
 

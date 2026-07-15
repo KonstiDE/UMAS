@@ -24,7 +24,7 @@
             <VBox prefHeight="52.0" prefWidth="197.0" spacing="4.0">
                <children>
                   <Label text="Project name*" />
-                  <TextField id="newproject.name" accessibleText="Project name" promptText="Example project" text="SnowCover" />
+                  <TextField id="newproject.name" accessibleText="Project name" promptText="Example project" text="AirportTS_HQ" />
                </children>
             </VBox>
             <VBox prefHeight="52.0" prefWidth="197.0" spacing="4.0">
@@ -36,7 +36,7 @@
             <VBox prefHeight="52.0" prefWidth="197.0" spacing="4.0">
                <children>
                   <Label text="Main Location" />
-                  <TextField id="newproject.location" accessibleText="Project Location" promptText="Wagenhausen" text="Zugspitze" />
+                  <TextField id="newproject.location" accessibleText="Project Location" promptText="Wagenhausen" text="Skukuza" />
                </children>
             </VBox>
             <VBox prefHeight="52.0" prefWidth="197.0" spacing="4.0">

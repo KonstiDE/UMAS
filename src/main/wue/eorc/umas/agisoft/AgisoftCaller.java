@@ -169,6 +169,29 @@ public class AgisoftCaller {
         calibrateReflectanceCheck(stackPane, psxFile, workflowType);
     }
 
+    public void calibrateThermaleCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
+        Path filePath = Paths.get(snippetsPath, "calibrate_reflectance_check.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
+
+        enqueue(workflowType, AgisoftTask.CALIBRATE_THERMAL_CHECK, stackPane, pb, true);
+    }
+
+    public void calibrateThermal(StackPane stackPane, String psxFile, WorkflowType workflowType, HashMap<String, String> agisoftParams, boolean batch){
+        Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
+        Path filePath = Paths.get(snippetsPath, "calibrate_thermal.py");
+
+        ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
+                filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType),
+                "-batch", "" + batch);
+        extendProcessBuilder(pb, agisoftParams);
+
+        enqueue(workflowType, AgisoftTask.CALIBRATE_THERMAL, stackPane, pb, false);
+        calibrateReflectanceCheck(stackPane, psxFile, workflowType);
+    }
+
     public void alignPhotosCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
         Path filePath = Paths.get(snippetsPath, "align_images_check.py");

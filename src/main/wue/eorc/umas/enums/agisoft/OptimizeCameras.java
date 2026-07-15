@@ -17,9 +17,9 @@ public enum OptimizeCameras implements AgisoftParameter {
     FIT_B1("fitb1", AgiSoftList.of("True", "False"), 1),
     FIT_B2("fitb2", AgiSoftList.of("True", "False"), 1),
 
-    ADAPTIVE_FITTING("adaptivecameramodelfitting", AgiSoftList.of("True", "False"), 1),
-    ESTIMATING_TIE_COV("estimatetiepointcovariance", AgiSoftList.of("True", "False"), 1),
-    FIT_ADDITIONAL("fitadditionalcorrections", AgiSoftList.of("True", "False"), 1);
+    ADAPTIVE_FITTING("adaptivecameramodelfitting", AgiSoftList.of("True", "False"), 0),
+    ESTIMATING_TIE_COV("estimatetiepointcovariance", AgiSoftList.of("True", "False"), 0),
+    FIT_ADDITIONAL("fitadditionalcorrections", AgiSoftList.of("True", "False"), 0);
 
     private final String id;
     private final List<String> choices;

@@ -71,13 +71,13 @@
                         </Label>
                         <DatePicker id="addflight.date" prefWidth="191.0" GridPane.columnIndex="1" />
                         <Label text="Location" GridPane.rowIndex="1" />
-                        <TextField id="addflight.location" accessibleText="Location" text="Zugspitze" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <TextField id="addflight.location" accessibleText="Location" text="Airport" GridPane.columnIndex="1" GridPane.rowIndex="1" />
                         <Label text="AOI" GridPane.rowIndex="2" />
-                        <TextField id="addflight.aoi" accessibleText="AOI" text="West" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <TextField id="addflight.aoi" accessibleText="AOI" text="Main" GridPane.columnIndex="1" GridPane.rowIndex="2" />
                         <Label text="Pilot" GridPane.rowIndex="3" />
-                        <TextField id="addflight.pilot" accessibleText="Pilot" text="ER" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                        <TextField id="addflight.pilot" accessibleText="Pilot" text="BW" GridPane.columnIndex="1" GridPane.rowIndex="3" />
                         <Label text="CoPilot" GridPane.rowIndex="4" />
-                        <TextField id="addflight.copilot" accessibleText="CoPilot" text="KM" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                        <TextField id="addflight.copilot" accessibleText="CoPilot" text="LP" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                         <Label text="UAV" GridPane.rowIndex="5" />
                         <ComboBox id="addflight.uav" accessibleText="UAV" prefWidth="150.0" promptText="Select UAV" GridPane.columnIndex="1" GridPane.rowIndex="5" />
                         <Label text="Sensor" GridPane.rowIndex="6" />

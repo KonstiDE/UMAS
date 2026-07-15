@@ -71,7 +71,7 @@ public class ProcessActionsPreparer {
         this.workflowPane = switch (workflowType){
             case RGB -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
             case MULTISPECTRAL, RGB_PLUS_MULTISPECTRAL -> (AnchorPane) display.getSceneLoader().getScene("ms_workflow");
-            case IR -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
+            case IR -> (AnchorPane) display.getSceneLoader().getScene("ir_workflow");
             case RGB_PLUS_IR -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
             case HYPERSPECTRAL -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
             case LIDAR -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
@@ -115,7 +115,19 @@ public class ProcessActionsPreparer {
 
                 setupCheckProject(checkProject);
             }
-            case IR -> {}
+            case IR, RGB_PLUS_IR -> {
+                this.addPhotos = setupAddPhotos();
+                this.setBrightness = setupSetBrightness();
+                this.calibrateThermal = setupCalibrateThermal();
+                this.alignImages = setupAlignPhotos();
+                this.optimizeCameras = setupOptimizeCameras();
+                this.buildPointCloud = setupBuildPointCloud();
+                this.buildDem = setupBuildDem();
+                this.buildOrthomosaic = setupBuildOrthomosaic();
+                this.exportDem = setupExportDem();
+                this.exportOrthomosaic = setupExportOrthomosaic();
+                this.generateReport = setupGenerateReports();
+            }
             case LIDAR -> {}
             case HYPERSPECTRAL -> {}
         }
@@ -224,10 +236,44 @@ public class ProcessActionsPreparer {
                 if(result.isPresent()){
                     HashMap<String, String> agisoftParameters = gson.fromJson(result.get(), GsonTypeTokens.hashmapToken);
                     agisoftCaller.calibrateReflectance(calibrateReflectance, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType, agisoftParameters, false);
+                }else{
+
                 }
 
             }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
                 setupModificationDialog(calibrateReflectance, mouseEvent, CALIBRATE_REFLECTANCE, event -> {});
+            }
+        });
+
+        return calibrateReflectance;
+
+    }
+
+    private StackPane setupCalibrateThermal() throws UMASException {
+        StackPane calibrateReflectance = ItemSearcher.getItemById("processing." + CALIBRATE_THERMAL, this.workflowPane, StackPane.class);
+
+        calibrateReflectance.setCursor(Cursor.HAND);
+        calibrateReflectance.setOnMouseClicked(mouseEvent -> {
+            if(mouseEvent.getButton() == MouseButton.PRIMARY){
+                DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene(AgisoftDialog.CALIBRATE_THERMAL.getDialogId());
+                Dialog<String> dialog = new UMASDialog(dialogPane, "Calibrate Thermal", true, true);
+
+                CalibrateThermalController controller = new CalibrateThermalController();
+                try {
+                    controller.init(display, dialog);
+                } catch (UMASException e) {
+                    throw new RuntimeException(e);
+                }
+
+                Optional<String> result = dialog.showAndWait();
+
+                if(result.isPresent()){
+                    HashMap<String, String> agisoftParameters = gson.fromJson(result.get(), GsonTypeTokens.hashmapToken);
+                    agisoftCaller.calibrate(calibrateReflectance, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType, agisoftParameters, false);
+                }
+
+            }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
+                setupModificationDialog(calibrateReflectance, mouseEvent, CALIBRATE_THERMAL, event -> {});
             }
         });
 

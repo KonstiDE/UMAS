@@ -8,31 +8,18 @@ import wue.eorc.umas.models.agisoft.BandCalibration;
 import wue.eorc.umas.models.agisoft.CalibrationImage;
 import wue.eorc.umas.utils.ui.ItemSearcher;
 
-public class CalibrateReflectanceController implements StaticDialogController {
-
-    private TableView<CalibrationImage> calibrationImageTableView;
-    private TableView<BandCalibration> bandCalibrationTableView;
-
-    private Button locatePanels;
-    private Button selectPanel;
-
-    private CheckBox useReflectancePanels;
-    private CheckBox useSunSensor;
-
+public class CalibrateThermalController implements StaticDialogController  {
 
     @Override
     public void init(DisplayController display, Dialog<String> dialog) throws UMASException {
-        String prefix = "agisoft.calibratereflectance.";
-        DialogPane pane = dialog.getDialogPane();
+        String prefix = "agisoft.calibratethermal.";
 
-        locatePanels = ItemSearcher.getItemById(prefix + "locatepanels", pane, Button.class);
-        locatePanels.setOnAction(event -> {
-
-        });
+        return;
     }
 
     @Override
     public void setupResultConverter(Dialog<String> dialog) {
-
+        return;
     }
+
 }
