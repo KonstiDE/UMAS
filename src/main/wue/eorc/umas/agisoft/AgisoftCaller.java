@@ -169,9 +169,9 @@ public class AgisoftCaller {
         calibrateReflectanceCheck(stackPane, psxFile, workflowType);
     }
 
-    public void calibrateThermaleCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
+    public void calibrateThermalCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
         Path pythonPath = Paths.get(Settings.getSetting(Setting.AGISOFT_EXEC_PATH));
-        Path filePath = Paths.get(snippetsPath, "calibrate_reflectance_check.py");
+        Path filePath = Paths.get(snippetsPath, "calibrate_thermal_check.py");
 
         ProcessBuilder pb = new ProcessBuilder(pythonPath.toFile().getAbsolutePath(), "-r",
                 filePath.toFile().getAbsolutePath(), "-psxFile", psxFile, "-chunk_label", chunkLabel(workflowType));
@@ -189,7 +189,7 @@ public class AgisoftCaller {
         extendProcessBuilder(pb, agisoftParams);
 
         enqueue(workflowType, AgisoftTask.CALIBRATE_THERMAL, stackPane, pb, false);
-        calibrateReflectanceCheck(stackPane, psxFile, workflowType);
+        calibrateThermalCheck(stackPane, psxFile, workflowType);
     }
 
     public void alignPhotosCheck(StackPane stackPane, String psxFile, WorkflowType workflowType){
@@ -422,9 +422,30 @@ public class AgisoftCaller {
                                       String flightName, String reportDescription, String cloudExportTie,
                                       String cloudExportDense){
 
+        //TODO This is not true, addPhotos should not put a List.of() (empty list) for the calib folders. WTF?!?!?!
         addPhotos(stackPanes.get(0), psxFile, folders, List.of(), workflowType, true);
         setBrightness(stackPanes.get(1), psxFile, workflowType, agisoftParameters.get(0));
         calibrateReflectance(stackPanes.get(2), psxFile, workflowType, agisoftParameters.get(1), true);
+        alignPhotos(stackPanes.get(3), psxFile, workflowType, agisoftParameters.get(2), true, cloudExportTie);
+        optimizeCameras(stackPanes.get(4), psxFile, workflowType, agisoftParameters.get(3));
+        buildPointCloud(stackPanes.get(5), psxFile, workflowType, agisoftParameters.get(4), true, cloudExportDense);
+        buildDem(stackPanes.get(6), psxFile, workflowType, agisoftParameters.get(5), true);
+        buildOrthomosaic(stackPanes.get(7), psxFile, workflowType, agisoftParameters.get(6), true);
+        exportDem(stackPanes.get(8), psxFile, demFile, workflowType, agisoftParameters.get(7), true);
+        exportOrtho(stackPanes.get(9), psxFile, orthoFile, workflowType, agisoftParameters.get(8), true);
+        generateReport(stackPanes.get(10), psxFile, reportFile, flightName, reportDescription, workflowType, true);
+
+    }
+
+    public void completeBuildThermal(WorkflowType workflowType, List<StackPane> stackPanes,
+                                      List<HashMap<String, String>> agisoftParameters, List<String> folders,
+                                      String psxFile, String demFile, String orthoFile, String reportFile,
+                                      String flightName, String reportDescription, String cloudExportTie,
+                                      String cloudExportDense){
+
+        addPhotos(stackPanes.get(0), psxFile, folders, List.of(), workflowType, true);
+        setBrightness(stackPanes.get(1), psxFile, workflowType, agisoftParameters.get(0));
+        calibrateThermal(stackPanes.get(2), psxFile, workflowType, agisoftParameters.get(1), true);
         alignPhotos(stackPanes.get(3), psxFile, workflowType, agisoftParameters.get(2), true, cloudExportTie);
         optimizeCameras(stackPanes.get(4), psxFile, workflowType, agisoftParameters.get(3));
         buildPointCloud(stackPanes.get(5), psxFile, workflowType, agisoftParameters.get(4), true, cloudExportDense);

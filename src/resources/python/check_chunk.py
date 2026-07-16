@@ -24,6 +24,7 @@ def check_chunk(file, demFile, orthoFile, reportFile, chunk_lab):
         print("vn:ADD_PHOTOS_CHECK:false")
         print("vn:SET_BRIGHTNESS_CHECK:false")
         print("vn:CALIBRATE_REFLECTANCE_CHECK:false")
+        print("vn:CALIBRATE_THERMAL_CHECK:false")
         print("vn:ALIGN_IMAGES_CHECK:false")
         print("vn:OPTIMIZE_CAMERAS_CHECK:false")
         print("vn:BUILD_POINT_CLOUD_CHECK:false")
@@ -59,6 +60,11 @@ def check_chunk(file, demFile, orthoFile, reportFile, chunk_lab):
             else:
                 print("vn:CALIBRATE_REFLECTANCE_CHECK:false")
 
+            # calibrate_thermal check
+            if chunk.meta["ReflectanceThermal"] is not None and rb(chunk.meta["ReflectanceThermal"]):
+                print("vn:CALIBRATE_THERMAL_CHECK:true")
+            else:
+                print("vn:CALIBRATE_THERMAL_CHECK:false")
 
             # align_images check
             if chunk.tie_points is None:

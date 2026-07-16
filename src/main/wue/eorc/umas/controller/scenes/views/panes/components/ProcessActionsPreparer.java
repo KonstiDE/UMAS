@@ -72,8 +72,7 @@ public class ProcessActionsPreparer {
         this.workflowPane = switch (workflowType){
             case RGB -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
             case MULTISPECTRAL, RGB_PLUS_MULTISPECTRAL -> (AnchorPane) display.getSceneLoader().getScene("ms_workflow");
-            case IR -> (AnchorPane) display.getSceneLoader().getScene("ir_workflow");
-            case RGB_PLUS_IR -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
+            case IR, RGB_PLUS_IR -> (AnchorPane) display.getSceneLoader().getScene("ir_workflow");
             case HYPERSPECTRAL -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
             case LIDAR -> (AnchorPane) display.getSceneLoader().getScene("rgb_workflow");
             case INVALID -> null;
@@ -128,6 +127,8 @@ public class ProcessActionsPreparer {
                 this.exportDem = setupExportDem();
                 this.exportOrthomosaic = setupExportOrthomosaic();
                 this.generateReport = setupGenerateReports();
+
+                setupCheckProject(checkProject);
             }
             case LIDAR -> {}
             case HYPERSPECTRAL -> {}
@@ -153,17 +154,17 @@ public class ProcessActionsPreparer {
         addPhotos.setOnMouseClicked(mouseEvent -> {
             if(mouseEvent.getButton() == MouseButton.PRIMARY){
                 switch (this.workflowType){
-                    case RGB -> agisoftCaller.addPhotos(addPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
+                    case RGB, IR, RGB_PLUS_IR -> agisoftCaller.addPhotos(addPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
                             this.flight.getImageTypes().keySet().stream()
                                     .filter(i -> this.workflowType.getImageTypes().contains(i))
-                                    .map(ImageType::getName).toList(),
+                                    .map(i -> this.flight.getImageTypes().get(i)).toList(),
                             List.of(),
                             this.workflowType, false);
                     case MULTISPECTRAL, RGB_PLUS_MULTISPECTRAL -> agisoftCaller.addPhotos(addPhotos, DirectoryUtils.figureAgisoftFilePath(this.flight),
 
                             this.flight.getImageTypes().keySet().stream()
                                     .filter(i -> this.workflowType.getImageTypes().contains(i) && i != ImageType.CALIBRATION)
-                                    .map(ImageType::getName).toList(),
+                                    .map(i -> this.flight.getImageTypes().get(i)).toList(),
 
                             this.flight.getImageTypes().containsKey(ImageType.CALIBRATION) ?
                                     List.of(ImageType.CALIBRATION.getName()) :
@@ -256,22 +257,22 @@ public class ProcessActionsPreparer {
         calibrateThermal.setCursor(Cursor.HAND);
         calibrateThermal.setOnMouseClicked(mouseEvent -> {
             if(mouseEvent.getButton() == MouseButton.PRIMARY){
-                DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene(AgisoftDialog.CALIBRATE_THERMAL.getDialogId());
-                Dialog<String> dialog = new UMASDialog(dialogPane, "Calibrate Thermal", true, true);
+//                DialogPane dialogPane = (DialogPane) display.getSceneLoader().getScene(AgisoftDialog.CALIBRATE_THERMAL.getDialogId());
+//                Dialog<String> dialog = new UMASDialog(dialogPane, "Calibrate Thermal", true, true);
+//
+//                CalibrateThermalController controller = new CalibrateThermalController();
+//                try {
+//                    controller.init(display, dialog);
+//                } catch (UMASException e) {
+//                    throw new RuntimeException(e);
+//                }
+//
+//                Optional<String> result = dialog.showAndWait();
 
-                CalibrateThermalController controller = new CalibrateThermalController();
-                try {
-                    controller.init(display, dialog);
-                } catch (UMASException e) {
-                    throw new RuntimeException(e);
-                }
-
-                Optional<String> result = dialog.showAndWait();
-
-                if(result.isPresent()){
-                    HashMap<String, String> agisoftParameters = gson.fromJson(result.get(), GsonTypeTokens.hashmapToken);
-                    agisoftCaller.calibrateThermal(calibrateThermal, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType, agisoftParameters, false);
-                }
+//                if(result.isPresent()){
+//              HashMap<String, String> agisoftParameters = gson.fromJson(result.get(), GsonTypeTokens.hashmapToken);
+                agisoftCaller.calibrateThermal(calibrateThermal, DirectoryUtils.figureAgisoftFilePath(this.flight), this.workflowType, new HashMap<>(), false);
+//                }
 
             }else if (mouseEvent.getButton() == MouseButton.SECONDARY){
                 setupModificationDialog(calibrateThermal, mouseEvent, CALIBRATE_THERMAL, event -> {});
@@ -682,7 +683,7 @@ public class ProcessActionsPreparer {
                     }
                 }
                 case MULTISPECTRAL -> {
-
+                    //TODO modify batch multispectral
                 }
             }
 
@@ -738,8 +739,30 @@ public class ProcessActionsPreparer {
                 DirectoryUtils.figureExportPathClouds(flight, ALIGN_IMAGES, workflowType),
                 DirectoryUtils.figureExportPathClouds(flight, BUILD_POINT_CLOUD, workflowType)
             );
-            case IR, LIDAR, HYPERSPECTRAL, RGB_PLUS_IR -> {
-            }
+            case IR, RGB_PLUS_IR -> agisoftCaller.completeBuildThermal(workflowType,
+                    List.of(addPhotos, setBrightness, setCalibrateThermal, alignImages, optimizeCameras, buildPointCloud, buildDem,
+                            buildOrthomosaic, exportDem, exportOrthomosaic, generateReport),
+                    List.of(
+                            getDefaultParameters(SetBrightness.values()),
+                            getDefaultParameters(CalibrateThermal.values()),
+                            getDefaultParameters(AlignImages.values()),
+                            getDefaultParameters(OptimizeCameras.values()),
+                            getDefaultParameters(BuildPointCloud.values()),
+                            getDefaultParameters(BuildDem.values()),
+                            getDefaultParameters(BuildOrthomosaic.values()),
+                            getDefaultParameters(ExportDem.values()),
+                            getDefaultParameters(ExportOrthomosaic.values())
+                    ),
+                    flight.getOriginFlightDirs(),
+                    DirectoryUtils.figureAgisoftFilePath(flight),
+                    Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportDemName()).toFile().getAbsolutePath(),
+                    Paths.get(DirectoryUtils.figureExportPath(flight), flight.getExportOrthomosaicName()).toFile().getAbsolutePath(),
+                    Paths.get(DirectoryUtils.figureReportPath(flight), flight.getGenerateReportName()).toFile().getAbsolutePath(),
+                    flight.getGenerateReportName(),
+                    "Automatically generated Report",
+                    DirectoryUtils.figureExportPathClouds(flight, ALIGN_IMAGES, workflowType),
+                    DirectoryUtils.figureExportPathClouds(flight, BUILD_POINT_CLOUD, workflowType)
+            );
         }
 
     }
